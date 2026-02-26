@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { LineChart } from "@mui/x-charts/LineChart";
 import {
   Typography,
   Box,
@@ -75,6 +76,7 @@ const ProductPerformance = () => {
   const [selectedStock, setSelectedStock] = useState<StockPerformance | null>(
     null,
   );
+  const [symbolHistory, setSymbolHistory] = useState<any>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const isJobFinishedRef = useRef(false);
@@ -117,6 +119,12 @@ const ProductPerformance = () => {
   useEffect(() => {
     handleSearch();
   }, []); // Only run once on mount
+
+  useEffect(() => {
+    if (dialogOpen && symbolHistory) {
+      console.log(symbolHistory);
+    }
+  }, [symbolHistory, dialogOpen]);
 
   const handleSearch = async () => {
     // Reset job state when search is triggered
@@ -594,9 +602,12 @@ const ProductPerformance = () => {
                                 color: "#1c4670", // Blue on hover
                               },
                             }}
-                            onClick={() => {
+                            onClick={async () => {
                               setSelectedStock(product);
+                              setSymbolHistory(null);
                               setDialogOpen(true);
+                              const history = await realService.getSymbolHistory(product.symbol, exchange);
+                              setSymbolHistory(history);
                             }}
                           >
                             <Visibility fontSize="small" />
@@ -708,6 +719,7 @@ const ProductPerformance = () => {
         onClose={() => setDialogOpen(false)}
         maxWidth="md"
         fullWidth
+        PaperProps={{ sx: { maxWidth: "1035px" } }}
       >
         <DialogTitle>
           <Box
@@ -726,9 +738,30 @@ const ProductPerformance = () => {
           </Box>
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body1" color="textSecondary">
-            Detail content will be added here...
-          </Typography>
+          {symbolHistory?.prices ? (() => {
+            const ema20Map = new Map<number, number>(
+              (symbolHistory.ema20 ?? []).map((e: { value: number; unixDate: number }) => [e.unixDate, e.value])
+            );
+            return (
+              <LineChart
+                dataset={symbolHistory.prices.map((entry: { closePrice: number; unixDate: number }) => ({
+                  closePrice: entry.closePrice,
+                  ema20: ema20Map.get(entry.unixDate) ?? null,
+                  date: new Date(entry.unixDate).toLocaleDateString(undefined, {
+                    year: "numeric", month: "short", day: "numeric",
+                  }),
+                }))}
+                xAxis={[{ dataKey: "date", scaleType: "point", tickNumber: 6 }]}
+                series={[
+                  { dataKey: "closePrice", label: "Close Price", showMark: false },
+                  { dataKey: "ema20", label: "EMA 20", showMark: false },
+                ]}
+                height={350}
+              />
+            );
+          })() : (
+            <Typography variant="body2" color="textSecondary">Loading...</Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)} color="primary">

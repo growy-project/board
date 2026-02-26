@@ -17,3 +17,10 @@ export const getJobStatus = async (
   const response = await axios.get(`${API_BASE_URL}/status/${jobId}`);
   return response.data;
 };
+
+export const getSymbolHistory = async (symbol: string, exchange: string) => {
+  const response = await axios.get(`${API_BASE_URL}/history/${symbol}`, {
+    params: { exchange },
+  });
+  return response.data;
+};
