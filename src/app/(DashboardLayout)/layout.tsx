@@ -1,8 +1,10 @@
 "use client";
 import { styled, Container, Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 
 const MainWrapper = styled("div")(() => ({
@@ -21,10 +23,6 @@ const PageWrapper = styled("div")(() => ({
   width: "100%",
 }));
 
-interface Props {
-  children: React.ReactNode;
-}
-
 
 
 export default function RootLayout({
@@ -32,8 +30,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useAuth();
+  const router = useRouter();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (user === null) router.replace("/authentication/login");
+  }, [user]);
+
+  if (!user) return null;
   
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);

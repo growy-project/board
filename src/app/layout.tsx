@@ -2,6 +2,8 @@
 import { baselightTheme } from "@/utils/theme/DefaultColors";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { AuthProvider } from "@/app/context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -11,11 +13,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ThemeProvider theme={baselightTheme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          {children}
-        </ThemeProvider>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
+        >
+          <AuthProvider>
+            <ThemeProvider theme={baselightTheme}>
+              <CssBaseline />
+              {children}
+            </ThemeProvider>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
