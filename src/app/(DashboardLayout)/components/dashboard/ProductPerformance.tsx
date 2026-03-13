@@ -42,6 +42,7 @@ import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCa
 
 import * as realService from "../../services/statisticJobService";
 import * as symbolService from "../../services/symbolService";
+import type { SymbolDateRangeResult } from "../../services/symbolService";
 import { useAuth } from "@/app/context/AuthContext";
 
 const ADMIN_EMAIL = "growyserver@gmail.com";
@@ -90,6 +91,7 @@ const ProductPerformance = () => {
   const [notAdminAction, setNotAdminAction] = useState<"toxic" | "topGrowth" | null>(null);
   const [notAdminMessage, setNotAdminMessage] = useState("");
   const [symbolHistory, setSymbolHistory] = useState<any>(null);
+  const [dateRange, setDateRange] = useState<SymbolDateRangeResult | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const isJobFinishedRef = useRef(false);
@@ -132,6 +134,25 @@ const ProductPerformance = () => {
   useEffect(() => {
     handleSearch();
   }, []); // Only run once on mount
+
+  // Fetch valid date range whenever the selected exchange changes
+  useEffect(() => {
+    let cancelled = false;
+    const fetchDateRange = async () => {
+      try {
+        const range = await symbolService.getExchangeDateRange(exchange);
+        if (!cancelled) {
+          setDateRange(range);
+        }
+      } catch {
+        // Non-critical: leave dateRange as null so pickers remain unconstrained
+      }
+    };
+    fetchDateRange();
+    return () => {
+      cancelled = true;
+    };
+  }, [exchange]);
 
   useEffect(() => {
     if (dialogOpen && symbolHistory) {
@@ -264,6 +285,8 @@ const ProductPerformance = () => {
                 label="Start Date"
                 value={startDate}
                 onChange={(newValue: Dayjs | null) => setStartDate(newValue)}
+                minDate={dateRange ? dayjs(dateRange.firstDate) : undefined}
+                maxDate={endDate ?? (dateRange ? dayjs(dateRange.lastDate) : undefined)}
                 slotProps={{
                   textField: {
                     size: "small",
@@ -275,6 +298,8 @@ const ProductPerformance = () => {
                 label="End Date"
                 value={endDate}
                 onChange={(newValue: Dayjs | null) => setEndDate(newValue)}
+                minDate={startDate ?? (dateRange ? dayjs(dateRange.firstDate) : undefined)}
+                maxDate={dateRange ? dayjs(dateRange.lastDate) : undefined}
                 slotProps={{
                   textField: {
                     size: "small",
