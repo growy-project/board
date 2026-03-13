@@ -24,12 +24,15 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Menu,
+  Alert,
 } from "@mui/material";
 import {
   Visibility,
   Close,
   InfoOutlined,
   ErrorOutline,
+  MoreVert,
 } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -38,6 +41,10 @@ import dayjs, { Dayjs } from "dayjs";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 
 import * as realService from "../../services/statisticJobService";
+import * as symbolService from "../../services/symbolService";
+import { useAuth } from "@/app/context/AuthContext";
+
+const ADMIN_EMAIL = "growyserver@gmail.com";
 //import * as mockService from "../../services/mockStatisticJobService";
 
 // const useMock = process.env.NEXT_PUBLIC_USE_MOCK === "true";
@@ -62,6 +69,7 @@ function GradientCircularProgress() {
 }
 
 const ProductPerformance = () => {
+  const { user } = useAuth();
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +84,11 @@ const ProductPerformance = () => {
   const [selectedStock, setSelectedStock] = useState<StockPerformance | null>(
     null,
   );
+  const [actionsMenuAnchor, setActionsMenuAnchor] = useState<null | HTMLElement>(null);
+  const [actionsMenuStock, setActionsMenuStock] = useState<StockPerformance | null>(null);
+  const [notAdminDialogOpen, setNotAdminDialogOpen] = useState(false);
+  const [notAdminAction, setNotAdminAction] = useState<"toxic" | "topGrowth" | null>(null);
+  const [notAdminMessage, setNotAdminMessage] = useState("");
   const [symbolHistory, setSymbolHistory] = useState<any>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -467,6 +480,18 @@ const ProductPerformance = () => {
                         Detail
                       </Typography>
                     </TableCell>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        right: 0,
+                        backgroundColor: "background.paper",
+                        zIndex: 1,
+                      }}
+                    >
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        Actions
+                      </Typography>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -613,6 +638,30 @@ const ProductPerformance = () => {
                             <Visibility fontSize="small" />
                           </IconButton>
                         </TableCell>
+                        <TableCell
+                          sx={{
+                            position: "sticky",
+                            right: 0,
+                            backgroundColor: "background.paper",
+                          }}
+                        >
+                          <IconButton
+                            size="small"
+                            sx={{
+                              color: "#278ab0",
+                              "&:hover": {
+                                backgroundColor: "#eaeae0",
+                                color: "#1c4670",
+                              },
+                            }}
+                            onClick={(e) => {
+                              setActionsMenuAnchor(e.currentTarget);
+                              setActionsMenuStock(product);
+                            }}
+                          >
+                            <MoreVert fontSize="small" />
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
@@ -657,6 +706,62 @@ const ProductPerformance = () => {
           </Box>
         )}
       </DashboardCard>
+
+      {/* Not Admin Dialog */}
+      <Dialog
+        open={notAdminDialogOpen}
+        onClose={() => setNotAdminDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Administrator action required</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <Alert severity="warning">
+              To mark this item as{" "}
+              <strong>{notAdminAction === "toxic" ? "Toxic" : "Top Growth"}</strong>,
+              you must be an administrator. Send a message to the administrator
+              to request this.
+            </Alert>
+            <TextField
+              label="Reason"
+              multiline
+              rows={4}
+              value={notAdminMessage}
+              onChange={(e) => {
+                if (e.target.value.length <= 300) setNotAdminMessage(e.target.value);
+              }}
+              inputProps={{ maxLength: 300 }}
+              helperText={`${notAdminMessage.length}/300`}
+              fullWidth
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNotAdminDialogOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            disabled={notAdminMessage.trim().length < 5}
+            onClick={async () => {
+              if (actionsMenuStock && notAdminAction) {
+                await symbolService.requestTag(
+                  actionsMenuStock.symbol,
+                  notAdminAction,
+                  notAdminMessage.trim(),
+                  user?.email ?? "unknown"
+                );
+              }
+              setNotAdminDialogOpen(false);
+            }}
+            sx={{
+              backgroundColor: "#278ab0",
+              "&:hover": { backgroundColor: "#1c4670" },
+            }}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Error Dialog */}
       <Dialog
@@ -712,6 +817,42 @@ const ProductPerformance = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Actions Menu */}
+      <Menu
+        anchorEl={actionsMenuAnchor}
+        open={Boolean(actionsMenuAnchor)}
+        onClose={() => setActionsMenuAnchor(null)}
+      >
+        <MenuItem
+          onClick={async () => {
+            setActionsMenuAnchor(null);
+            if (user?.email === ADMIN_EMAIL) {
+              if (actionsMenuStock) await symbolService.setToxic(actionsMenuStock.symbol, true);
+            } else {
+              setNotAdminAction("toxic");
+              setNotAdminMessage("");
+              setNotAdminDialogOpen(true);
+            }
+          }}
+        >
+          Tag as Toxic
+        </MenuItem>
+        <MenuItem
+          onClick={async () => {
+            setActionsMenuAnchor(null);
+            if (user?.email === ADMIN_EMAIL) {
+              if (actionsMenuStock) await symbolService.setTopGrowth(actionsMenuStock.symbol, true);
+            } else {
+              setNotAdminAction("topGrowth");
+              setNotAdminMessage("");
+              setNotAdminDialogOpen(true);
+            }
+          }}
+        >
+          Tag as Top Growth
+        </MenuItem>
+      </Menu>
 
       {/* Detail Dialog */}
       <Dialog
