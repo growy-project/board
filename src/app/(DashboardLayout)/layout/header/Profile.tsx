@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Link from "next/link";
 import {
   Avatar,
   Box,
@@ -11,8 +10,10 @@ import {
   ListItemText,
 } from "@mui/material";
 import { IconUser, IconMail, IconListCheck } from "@tabler/icons-react";
+import { useAuth } from "@/app/context/AuthContext";
 
 const Profile = () => {
+  const { logout } = useAuth();
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
@@ -82,9 +83,8 @@ const Profile = () => {
         </MenuItem>
         <Box mt={1} py={1} px={2}>
           <Button
-            href="/authentication/login"
+            onClick={logout}
             variant="outlined"
-            component={Link}
             fullWidth
             sx={{
               borderColor: "#278ab0", // Blue Grotto

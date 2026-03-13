@@ -16,6 +16,7 @@ import Link from "next/link";
 // components
 import Profile from "./Profile";
 import { IconBellRinging, IconMenu } from "@tabler/icons-react";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface ItemType {
   toggleMobileSidebar: (event: React.MouseEvent<HTMLElement>) => void;
@@ -25,6 +26,7 @@ interface ItemType {
 const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
+  const { user } = useAuth();
 
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
@@ -70,21 +72,23 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
         </IconButton>
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
-          <Button
-            variant="contained"
-            component={Link}
-            href="/authentication/login"
-            disableElevation
-            sx={{
-              backgroundColor: "#278ab0", // Blue Grotto
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#1c4670", // Blue
-              },
-            }}
-          >
-            Login
-          </Button>
+          {!user && (
+            <Button
+              variant="contained"
+              component={Link}
+              href="/authentication/login"
+              disableElevation
+              sx={{
+                backgroundColor: "#278ab0", // Blue Grotto
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#1c4670", // Blue
+                },
+              }}
+            >
+              Login
+            </Button>
+          )}
           <Profile />
         </Stack>
       </ToolbarStyled>
