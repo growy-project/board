@@ -74,10 +74,11 @@ const ProductPerformance = () => {
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [exchange, setExchange] = useState<string>("CEDEAR");
-  const [minPercentageChange, setMinPercentageChange] = useState<number>(50);
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs("2025-01-01"));
-  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs("2025-05-31"));
+  const [exchange, setExchange] = useState<string>("NASDAQ");
+  const [minPercentageChange, setMinPercentageChange] = useState<number>(30);
+  //YYYY-MM-DD
+  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs("2025-11-01"));
+  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs("2026-01-31"));
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize] = useState<number>(20);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
@@ -85,18 +86,26 @@ const ProductPerformance = () => {
   const [selectedStock, setSelectedStock] = useState<StockPerformance | null>(
     null,
   );
-  const [actionsMenuAnchor, setActionsMenuAnchor] = useState<null | HTMLElement>(null);
-  const [actionsMenuStock, setActionsMenuStock] = useState<StockPerformance | null>(null);
+  const [actionsMenuAnchor, setActionsMenuAnchor] =
+    useState<null | HTMLElement>(null);
+  const [actionsMenuStock, setActionsMenuStock] =
+    useState<StockPerformance | null>(null);
   const [notAdminDialogOpen, setNotAdminDialogOpen] = useState(false);
-  const [notAdminAction, setNotAdminAction] = useState<"toxic" | "topGrowth" | null>(null);
+  const [notAdminAction, setNotAdminAction] = useState<
+    "toxic" | "topGrowth" | null
+  >(null);
   const [notAdminMessage, setNotAdminMessage] = useState("");
   const [symbolHistory, setSymbolHistory] = useState<any>(null);
-  const [dateRange, setDateRange] = useState<SymbolDateRangeResult | null>(null);
+  const [dateRange, setDateRange] = useState<SymbolDateRangeResult | null>(
+    null,
+  );
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const isJobFinishedRef = useRef(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
   const startPolling = (startedJobId: string) => {
     const poll = async () => {
@@ -286,7 +295,9 @@ const ProductPerformance = () => {
                 value={startDate}
                 onChange={(newValue: Dayjs | null) => setStartDate(newValue)}
                 minDate={dateRange ? dayjs(dateRange.firstDate) : undefined}
-                maxDate={endDate ?? (dateRange ? dayjs(dateRange.lastDate) : undefined)}
+                maxDate={
+                  endDate ?? (dateRange ? dayjs(dateRange.lastDate) : undefined)
+                }
                 slotProps={{
                   textField: {
                     size: "small",
@@ -298,7 +309,10 @@ const ProductPerformance = () => {
                 label="End Date"
                 value={endDate}
                 onChange={(newValue: Dayjs | null) => setEndDate(newValue)}
-                minDate={startDate ?? (dateRange ? dayjs(dateRange.firstDate) : undefined)}
+                minDate={
+                  startDate ??
+                  (dateRange ? dayjs(dateRange.firstDate) : undefined)
+                }
                 maxDate={dateRange ? dayjs(dateRange.lastDate) : undefined}
                 slotProps={{
                   textField: {
@@ -350,9 +364,17 @@ const ProductPerformance = () => {
             <GradientCircularProgress />
           </Box>
         ) : (
-          <Box sx={{ overflow: "auto", width: { xs: "280px", sm: "auto" } }}>
+          <Box sx={{ width: { xs: "280px", sm: "auto" } }}>
             {/* Table with loading overlay */}
-            <Box sx={{ position: "relative" }}>
+            <Box
+              ref={tableContainerRef}
+              sx={{
+                position: "relative",
+                overflowX: "auto",
+                overflowY: "auto",
+                maxHeight: "500px",
+              }}
+            >
               {isPageLoading && (
                 <Box
                   sx={{
@@ -365,7 +387,7 @@ const ProductPerformance = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    zIndex: 1,
+                    zIndex: 2,
                     minHeight: "400px",
                   }}
                 >
@@ -381,22 +403,22 @@ const ProductPerformance = () => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Symbol
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ width: "120px" }}>
+                    <TableCell sx={{ width: "120px", position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Percentage Change
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Volatility %
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                       >
@@ -433,12 +455,12 @@ const ProductPerformance = () => {
                         </Tooltip>
                       </Box>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Target Price
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                       >
@@ -475,32 +497,37 @@ const ProductPerformance = () => {
                         </Tooltip>
                       </Box>
                     </TableCell>
-                    <TableCell sx={{ width: "100px" }}>
+                    <TableCell sx={{ width: "100px", position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Oldest Price
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ width: "100px" }}>
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Oldest Date
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={{ width: "100px" }}>
+                    <TableCell sx={{ width: "100px", position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Newest Price
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
-                        Newest Date
+                        Company
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        Description
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        Sector
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Market Cap
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
                       <Typography variant="subtitle2" fontWeight={600}>
                         Detail
                       </Typography>
@@ -508,9 +535,10 @@ const ProductPerformance = () => {
                     <TableCell
                       sx={{
                         position: "sticky",
+                        top: 0,
                         right: 0,
                         backgroundColor: "background.paper",
-                        zIndex: 1,
+                        zIndex: 3,
                       }}
                     >
                       <Typography variant="subtitle2" fontWeight={600}>
@@ -569,7 +597,7 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            ${product.earningsPerShare.toFixed(2)}
+                            {product.eps != null ? `$${product.eps.toFixed(2)}` : '—'}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -578,7 +606,7 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            ${product.targetPrice.toFixed(2)}
+                            {product.targetPrice != null ? `$${product.targetPrice.toFixed(2)}` : '—'}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -612,15 +640,6 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.oldestPriceDate}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
                             ${product.newestPrice.toFixed(2)}
                           </Typography>
                         </TableCell>
@@ -630,7 +649,11 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.newestPriceDate}
+                            {product.companyName == null ? '—' : product.companyName.length > 25 ? (
+                              <Tooltip title={product.companyName} arrow placement="top">
+                                <span>{product.companyName.slice(0, 25)}…</span>
+                              </Tooltip>
+                            ) : product.companyName}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -639,7 +662,29 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            ${(product.marketCap / 1000000000).toFixed(2)}B
+                            {product.description == null ? '—' : product.description.length > 25 ? (
+                              <Tooltip title={product.description} arrow placement="top">
+                                <span>{product.description.slice(0, 25)}…</span>
+                              </Tooltip>
+                            ) : product.description}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            color="textSecondary"
+                            variant="subtitle2"
+                            fontWeight={400}
+                          >
+                            {product.sector ?? '—'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            color="textSecondary"
+                            variant="subtitle2"
+                            fontWeight={400}
+                          >
+                            {product.marketCapitalization ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B` : '—'}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -656,7 +701,11 @@ const ProductPerformance = () => {
                               setSelectedStock(product);
                               setSymbolHistory(null);
                               setDialogOpen(true);
-                              const history = await realService.getSymbolHistory(product.symbol, exchange);
+                              const history =
+                                await realService.getSymbolHistory(
+                                  product.symbol,
+                                  exchange,
+                                );
                               setSymbolHistory(history);
                             }}
                           >
@@ -744,9 +793,11 @@ const ProductPerformance = () => {
           <Stack spacing={2} sx={{ mt: 1 }}>
             <Alert severity="warning">
               To mark this item as{" "}
-              <strong>{notAdminAction === "toxic" ? "Toxic" : "Top Growth"}</strong>,
-              you must be an administrator. Send a message to the administrator
-              to request this.
+              <strong>
+                {notAdminAction === "toxic" ? "Toxic" : "Top Growth"}
+              </strong>
+              , you must be an administrator. Send a message to the
+              administrator to request this.
             </Alert>
             <TextField
               label="Reason"
@@ -754,7 +805,8 @@ const ProductPerformance = () => {
               rows={4}
               value={notAdminMessage}
               onChange={(e) => {
-                if (e.target.value.length <= 300) setNotAdminMessage(e.target.value);
+                if (e.target.value.length <= 300)
+                  setNotAdminMessage(e.target.value);
               }}
               inputProps={{ maxLength: 300 }}
               helperText={`${notAdminMessage.length}/300`}
@@ -773,7 +825,7 @@ const ProductPerformance = () => {
                   actionsMenuStock.symbol,
                   notAdminAction,
                   notAdminMessage.trim(),
-                  user?.email ?? "unknown"
+                  user?.email ?? "unknown",
                 );
               }
               setNotAdminDialogOpen(false);
@@ -853,7 +905,8 @@ const ProductPerformance = () => {
           onClick={async () => {
             setActionsMenuAnchor(null);
             if (user?.email === ADMIN_EMAIL) {
-              if (actionsMenuStock) await symbolService.setToxic(actionsMenuStock.symbol, true);
+              if (actionsMenuStock)
+                await symbolService.setToxic(actionsMenuStock.symbol, true);
             } else {
               setNotAdminAction("toxic");
               setNotAdminMessage("");
@@ -867,7 +920,8 @@ const ProductPerformance = () => {
           onClick={async () => {
             setActionsMenuAnchor(null);
             if (user?.email === ADMIN_EMAIL) {
-              if (actionsMenuStock) await symbolService.setTopGrowth(actionsMenuStock.symbol, true);
+              if (actionsMenuStock)
+                await symbolService.setTopGrowth(actionsMenuStock.symbol, true);
             } else {
               setNotAdminAction("topGrowth");
               setNotAdminMessage("");
@@ -904,29 +958,51 @@ const ProductPerformance = () => {
           </Box>
         </DialogTitle>
         <DialogContent>
-          {symbolHistory?.prices ? (() => {
-            const ema20Map = new Map<number, number>(
-              (symbolHistory.ema20 ?? []).map((e: { value: number; unixDate: number }) => [e.unixDate, e.value])
-            );
-            return (
-              <LineChart
-                dataset={symbolHistory.prices.map((entry: { closePrice: number; unixDate: number }) => ({
-                  closePrice: entry.closePrice,
-                  ema20: ema20Map.get(entry.unixDate) ?? null,
-                  date: new Date(entry.unixDate).toLocaleDateString(undefined, {
-                    year: "numeric", month: "short", day: "numeric",
-                  }),
-                }))}
-                xAxis={[{ dataKey: "date", scaleType: "point", tickNumber: 6 }]}
-                series={[
-                  { dataKey: "closePrice", label: "Close Price", showMark: false },
-                  { dataKey: "ema20", label: "EMA 20", showMark: false },
-                ]}
-                height={350}
-              />
-            );
-          })() : (
-            <Typography variant="body2" color="textSecondary">Loading...</Typography>
+          {symbolHistory?.prices ? (
+            (() => {
+              const ema20Map = new Map<number, number>(
+                (symbolHistory.ema20 ?? []).map(
+                  (e: { value: number; unixDate: number }) => [
+                    e.unixDate,
+                    e.value,
+                  ],
+                ),
+              );
+              return (
+                <LineChart
+                  dataset={symbolHistory.prices.map(
+                    (entry: { closePrice: number; unixDate: number }) => ({
+                      closePrice: entry.closePrice,
+                      ema20: ema20Map.get(entry.unixDate) ?? null,
+                      date: new Date(entry.unixDate).toLocaleDateString(
+                        undefined,
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        },
+                      ),
+                    }),
+                  )}
+                  xAxis={[
+                    { dataKey: "date", scaleType: "point", tickNumber: 6 },
+                  ]}
+                  series={[
+                    {
+                      dataKey: "closePrice",
+                      label: "Close Price",
+                      showMark: false,
+                    },
+                    { dataKey: "ema20", label: "EMA 20", showMark: false },
+                  ]}
+                  height={350}
+                />
+              );
+            })()
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              Loading...
+            </Typography>
           )}
         </DialogContent>
         <DialogActions>
@@ -944,11 +1020,12 @@ export interface StockPerformance {
   percentageChange: number;
   oldestPrice: number;
   newestPrice: number;
-  oldestPriceDate: string;
-  newestPriceDate: string;
-  marketCap: number;
-  earningsPerShare: number;
-  targetPrice: number;
+  marketCapitalization: number | null;
+  eps: number | null;
+  companyName: string | null;
+  description: string | null;
+  sector: string | null;
+  targetPrice: number | null;
   rsi: number;
   volatility: number;
 }

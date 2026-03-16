@@ -1,8 +1,14 @@
 <svg width="200" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <!-- Reference to the shark logo SVG -->
+  <!-- Shark logo -->
   <image href="/images/logos/sharkLogo.svg" x="0" y="5" height="40" width="40"/>
-  
-  <!-- "Easy Shark" text -->
-  <text x="50" y="20" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2C5282">Easy</text>
-  <text x="50" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#5B9BD5">Shark</text>
+
+  <!-- ShowChart (line-chart) icon, vertically centered -->
+  <g transform="translate(43, 16) scale(0.75)">
+    <path fill="#278ab0" d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
+  </g>
+
+  <!-- "Growy Server" on one line, vertically centered -->
+  <text x="68" y="31" font-family="Arial, sans-serif" font-size="16" font-weight="bold">
+    <tspan fill="#2C5282">Growy </tspan><tspan fill="#5B9BD5">Server</tspan>
+  </text>
 </svg>

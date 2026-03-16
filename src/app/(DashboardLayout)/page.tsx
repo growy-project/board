@@ -11,7 +11,7 @@ import MonthlyEarnings from '@/app/(DashboardLayout)/components/dashboard/Monthl
 
 const Dashboard = () => {
   return (
-    <PageContainer title="Easy Shark" description="Easy Shark - Stock Performance Dashboard">
+    <PageContainer title="Growy Server" description="Growy Server - Stock Performance Dashboard">
       <Box>
         <Grid item xs={12} lg={8}>
           <ProductPerformance />

@@ -65,12 +65,6 @@ const Profile = () => {
       >
         <MenuItem>
           <ListItemIcon>
-            <IconUser width={20} />
-          </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
             <IconMail width={20} />
           </ListItemIcon>
           <ListItemText>My Account</ListItemText>
@@ -79,7 +73,7 @@ const Profile = () => {
           <ListItemIcon>
             <IconListCheck width={20} />
           </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
+          <ListItemText>My Selected Stocks</ListItemText>
         </MenuItem>
         <Box mt={1} py={1} px={2}>
           <Button
@@ -93,7 +87,7 @@ const Profile = () => {
                 borderColor: "#1c4670", // Blue
                 color: "#1c4670", // Blue
                 backgroundColor: "#eaeae0", // Ivory
-              }
+              },
             }}
           >
             Logout
