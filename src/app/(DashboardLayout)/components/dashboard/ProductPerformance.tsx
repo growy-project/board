@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { keyframes } from "@emotion/react";
 import { LineChart } from "@mui/x-charts/LineChart";
 import {
   Typography,
@@ -46,10 +47,12 @@ import type { SymbolDateRangeResult } from "../../services/symbolService";
 import { useAuth } from "@/app/context/AuthContext";
 
 const ADMIN_EMAIL = "growyserver@gmail.com";
-//import * as mockService from "../../services/mockStatisticJobService";
 
-// const useMock = process.env.NEXT_PUBLIC_USE_MOCK === "true";
-// const service = useMock ? mockService : realService;
+const pulseAnimation = keyframes`
+  0%   { box-shadow: 0 0 0 0 rgba(39, 138, 176, 0.7); }
+  70%  { box-shadow: 0 0 0 8px rgba(39, 138, 176, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(39, 138, 176, 0); }
+`;
 
 function GradientCircularProgress() {
   return (
@@ -100,6 +103,7 @@ const ProductPerformance = () => {
     null,
   );
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [needsSearch, setNeedsSearch] = useState(false);
 
   const isJobFinishedRef = useRef(false);
 
@@ -114,7 +118,6 @@ const ProductPerformance = () => {
       try {
         const info = await realService.getJobStatus(startedJobId, 1, pageSize);
         setStatus(info);
-        console.log(info);
 
         if (info.isFinished || info.percentComplete === 100) {
           isJobFinishedRef.current = true;
@@ -171,6 +174,7 @@ const ProductPerformance = () => {
 
   const handleSearch = async () => {
     // Reset job state when search is triggered
+    setNeedsSearch(false);
     setStatus(null);
     setJobId(null);
     setError(null);
@@ -198,10 +202,8 @@ const ProductPerformance = () => {
         exchange: exchange,
       };
 
-      console.log("Starting job with params:", params);
       const newJobId = await realService.startStatisticJob(params);
 
-      console.log("Job iniciado con ID:", newJobId);
       setJobId(newJobId);
 
       startPolling(newJobId); // 🔹 Aquí arrancamos el polling recursivo
@@ -254,7 +256,7 @@ const ProductPerformance = () => {
                   id="exchange-select"
                   value={exchange}
                   label="Exchange"
-                  onChange={(e) => setExchange(e.target.value)}
+                  onChange={(e) => { setExchange(e.target.value); setNeedsSearch(true); }}
                   MenuProps={{
                     PaperProps: {
                       sx: {
@@ -286,14 +288,14 @@ const ProductPerformance = () => {
                 focused
                 type="number"
                 value={minPercentageChange}
-                onChange={(e) => setMinPercentageChange(Number(e.target.value))}
+                onChange={(e) => { setMinPercentageChange(Number(e.target.value)); setNeedsSearch(true); }}
                 size="small"
                 sx={{ minWidth: "180px" }}
               />
               <DatePicker
                 label="Start Date"
                 value={startDate}
-                onChange={(newValue: Dayjs | null) => setStartDate(newValue)}
+                onChange={(newValue: Dayjs | null) => { setStartDate(newValue); setNeedsSearch(true); }}
                 minDate={dateRange ? dayjs(dateRange.firstDate) : undefined}
                 maxDate={
                   endDate ?? (dateRange ? dayjs(dateRange.lastDate) : undefined)
@@ -308,7 +310,7 @@ const ProductPerformance = () => {
               <DatePicker
                 label="End Date"
                 value={endDate}
-                onChange={(newValue: Dayjs | null) => setEndDate(newValue)}
+                onChange={(newValue: Dayjs | null) => { setEndDate(newValue); setNeedsSearch(true); }}
                 minDate={
                   startDate ??
                   (dateRange ? dayjs(dateRange.firstDate) : undefined)
@@ -337,6 +339,9 @@ const ProductPerformance = () => {
                   },
                   minWidth: "100px",
                   height: "40px",
+                  ...(needsSearch && {
+                    animation: `${pulseAnimation} 1.2s ease-in-out infinite`,
+                  }),
                 }}
               >
                 Search
@@ -357,7 +362,11 @@ const ProductPerformance = () => {
             }}
           >
             {status?.processingMessage && (
-              <Typography variant="body1" color="textSecondary">
+              <Typography
+                variant="body1"
+                color="textPrimary"
+                sx={{ fontSize: "1.1rem" }}
+              >
                 {status.processingMessage}
               </Typography>
             )}
@@ -403,22 +412,51 @@ const ProductPerformance = () => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Symbol
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ width: "120px", position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        width: "120px",
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Percentage Change
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Volatility %
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                       >
@@ -455,12 +493,26 @@ const ProductPerformance = () => {
                         </Tooltip>
                       </Box>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Target Price
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                       >
@@ -497,37 +549,88 @@ const ProductPerformance = () => {
                         </Tooltip>
                       </Box>
                     </TableCell>
-                    <TableCell sx={{ width: "100px", position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        width: "100px",
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Oldest Price
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ width: "100px", position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        width: "100px",
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Newest Price
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Company
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Description
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Sector
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Market Cap
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "background.paper" }}>
+                    <TableCell
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Detail
                       </Typography>
@@ -556,7 +659,7 @@ const ProductPerformance = () => {
                             sx={{ fontSize: "15px", fontWeight: "500" }}
                           >
                             <a
-                              href={`https://www.google.com/finance/quote/${product.symbol}:NASDAQ?window=1Y`}
+                              href={`https://www.google.com/finance/quote/${product.symbol}${exchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
                               target="_blank"
                               rel="noopener noreferrer"
                               style={{
@@ -597,7 +700,9 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.eps != null ? `$${product.eps.toFixed(2)}` : '—'}
+                            {product.eps != null
+                              ? `$${product.eps.toFixed(2)}`
+                              : "—"}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -606,7 +711,9 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.targetPrice != null ? `$${product.targetPrice.toFixed(2)}` : '—'}
+                            {product.targetPrice != null
+                              ? `$${product.targetPrice.toFixed(2)}`
+                              : "—"}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -649,11 +756,19 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.companyName == null ? '—' : product.companyName.length > 25 ? (
-                              <Tooltip title={product.companyName} arrow placement="top">
+                            {product.companyName == null ? (
+                              "—"
+                            ) : product.companyName.length > 25 ? (
+                              <Tooltip
+                                title={product.companyName}
+                                arrow
+                                placement="top"
+                              >
                                 <span>{product.companyName.slice(0, 25)}…</span>
                               </Tooltip>
-                            ) : product.companyName}
+                            ) : (
+                              product.companyName
+                            )}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -662,11 +777,19 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.description == null ? '—' : product.description.length > 25 ? (
-                              <Tooltip title={product.description} arrow placement="top">
+                            {product.description == null ? (
+                              "—"
+                            ) : product.description.length > 25 ? (
+                              <Tooltip
+                                title={product.description}
+                                arrow
+                                placement="top"
+                              >
                                 <span>{product.description.slice(0, 25)}…</span>
                               </Tooltip>
-                            ) : product.description}
+                            ) : (
+                              product.description
+                            )}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -675,7 +798,7 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.sector ?? '—'}
+                            {product.sector ?? "—"}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -684,7 +807,9 @@ const ProductPerformance = () => {
                             variant="subtitle2"
                             fontWeight={400}
                           >
-                            {product.marketCapitalization ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B` : '—'}
+                            {product.marketCapitalization
+                              ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B`
+                              : "—"}
                           </Typography>
                         </TableCell>
                         <TableCell>

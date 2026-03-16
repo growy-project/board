@@ -1,4 +1,4 @@
-import { IconAperture, IconLayoutDashboard, IconMoodHappy } from "@tabler/icons-react";
+import { IconAperture, IconInfoCircle, IconLayoutDashboard, IconMoodHappy } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
 
@@ -13,6 +13,12 @@ const Menuitems = [
     title: "Dashboard",
     icon: IconLayoutDashboard,
     href: "/",
+  },
+  {
+    id: uniqueId(),
+    title: "About",
+    icon: IconInfoCircle,
+    href: "/about",
   },
 ];
 

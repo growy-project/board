@@ -74,7 +74,7 @@ const MSidebar = ({
               {/* ------------------------------------------- */}
               {/* Sidebar Items */}
               {/* ------------------------------------------- */}
-              <SidebarItems />
+              <SidebarItems toggleMobileSidebar={handleSidebarClose} />
             </Box>
           </Sidebar >
         </Box>

@@ -8,8 +8,10 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import { IconUser, IconMail, IconListCheck } from "@tabler/icons-react";
+import FaceIcon from "@mui/icons-material/Face";
 import { useAuth } from "@/app/context/AuthContext";
 
 const Profile = () => {
@@ -38,13 +40,15 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src="/images/profile/user-1.jpg"
-          alt="image"
           sx={{
             width: 35,
             height: 35,
+            bgcolor: "white",
+            color: "#278ab0",
           }}
-        />
+        >
+          <FaceIcon />
+        </Avatar>
       </IconButton>
       {/* ------------------------------------------- */}
       {/* Message Dropdown */}
@@ -63,18 +67,22 @@ const Profile = () => {
           },
         }}
       >
-        <MenuItem>
-          <ListItemIcon>
-            <IconMail width={20} />
-          </ListItemIcon>
-          <ListItemText>My Account</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <IconListCheck width={20} />
-          </ListItemIcon>
-          <ListItemText>My Selected Stocks</ListItemText>
-        </MenuItem>
+        <Tooltip title="To be developed" placement="left">
+          <MenuItem>
+            <ListItemIcon>
+              <IconMail width={20} />
+            </ListItemIcon>
+            <ListItemText>200 Top Growths</ListItemText>
+          </MenuItem>
+        </Tooltip>
+        <Tooltip title="To be developed" placement="left">
+          <MenuItem>
+            <ListItemIcon>
+              <IconListCheck width={20} />
+            </ListItemIcon>
+            <ListItemText>My Selected Stocks</ListItemText>
+          </MenuItem>
+        </Tooltip>
         <Box mt={1} py={1} px={2}>
           <Button
             onClick={logout}

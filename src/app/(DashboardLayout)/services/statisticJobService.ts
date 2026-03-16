@@ -5,7 +5,6 @@ const API_BASE_URL = "https://localhost:7138/Statistics"; // Reemplazá con tu U
 export const startStatisticJob = async (params: any) => {
 
   const response = await axios.post(`${API_BASE_URL}/start`, params);
-  console.log(response.data.jobId);
   return response.data.jobId;
 };
 
