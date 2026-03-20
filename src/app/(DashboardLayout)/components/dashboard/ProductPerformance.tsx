@@ -77,11 +77,11 @@ const ProductPerformance = () => {
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [exchange, setExchange] = useState<string>("NASDAQ");
+  const [exchange, setExchange] = useState<string>("NYSE");
   const [minPercentageChange, setMinPercentageChange] = useState<number>(30);
   //YYYY-MM-DD
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs("2025-11-01"));
-  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs("2026-01-31"));
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize] = useState<number>(20);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
@@ -102,6 +102,8 @@ const ProductPerformance = () => {
   const [dateRange, setDateRange] = useState<SymbolDateRangeResult | null>(
     null,
   );
+  const [dateRangeLoading, setDateRangeLoading] = useState<boolean>(true);
+  const hasInitiallySearched = useRef<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [needsSearch, setNeedsSearch] = useState(false);
 
@@ -142,22 +144,23 @@ const ProductPerformance = () => {
     poll(); // lanzar la primera vez
   };
 
-  // Load initial data on component mount
-  useEffect(() => {
-    handleSearch();
-  }, []); // Only run once on mount
-
-  // Fetch valid date range whenever the selected exchange changes
+  // Fetch valid date range whenever the selected exchange changes; seeds start/end dates
   useEffect(() => {
     let cancelled = false;
+    setDateRangeLoading(true);
     const fetchDateRange = async () => {
       try {
         const range = await symbolService.getExchangeDateRange(exchange);
         if (!cancelled) {
           setDateRange(range);
+          const end = dayjs(range.lastDate);
+          setStartDate(end.subtract(1, "year"));
+          setEndDate(end);
         }
       } catch {
-        // Non-critical: leave dateRange as null so pickers remain unconstrained
+        // Non-critical: pickers remain disabled
+      } finally {
+        if (!cancelled) setDateRangeLoading(false);
       }
     };
     fetchDateRange();
@@ -165,6 +168,14 @@ const ProductPerformance = () => {
       cancelled = true;
     };
   }, [exchange]);
+
+  // Trigger initial search once dates are loaded for the first time
+  useEffect(() => {
+    if (!dateRangeLoading && startDate !== null && endDate !== null && !hasInitiallySearched.current) {
+      hasInitiallySearched.current = true;
+      handleSearch();
+    }
+  }, [dateRangeLoading, startDate, endDate]);
 
   useEffect(() => {
     if (dialogOpen && symbolHistory) {
@@ -194,10 +205,8 @@ const ProductPerformance = () => {
 
     try {
       const params = {
-        startUnixDate: startDate
-          ? startDate.unix()
-          : dayjs("2025-01-01").unix(),
-        endUnixDate: endDate ? endDate.unix() : dayjs("2025-05-31").unix(),
+        startUnixDate: startDate!.unix(),
+        endUnixDate: endDate!.unix(),
         minimumExpectedGrowth: minPercentageChange,
         exchange: exchange,
       };
@@ -256,7 +265,11 @@ const ProductPerformance = () => {
                   id="exchange-select"
                   value={exchange}
                   label="Exchange"
-                  onChange={(e) => { setExchange(e.target.value); setNeedsSearch(true); }}
+                  disabled={dateRangeLoading}
+                  onChange={(e) => {
+                    setExchange(e.target.value);
+                    setNeedsSearch(true);
+                  }}
                   MenuProps={{
                     PaperProps: {
                       sx: {
@@ -288,14 +301,22 @@ const ProductPerformance = () => {
                 focused
                 type="number"
                 value={minPercentageChange}
-                onChange={(e) => { setMinPercentageChange(Number(e.target.value)); setNeedsSearch(true); }}
+                onChange={(e) => {
+                  setMinPercentageChange(Number(e.target.value));
+                  setNeedsSearch(true);
+                }}
                 size="small"
                 sx={{ minWidth: "180px" }}
+                disabled={dateRangeLoading}
               />
               <DatePicker
                 label="Start Date"
                 value={startDate}
-                onChange={(newValue: Dayjs | null) => { setStartDate(newValue); setNeedsSearch(true); }}
+                disabled={dateRangeLoading}
+                onChange={(newValue: Dayjs | null) => {
+                  setStartDate(newValue);
+                  setNeedsSearch(true);
+                }}
                 minDate={dateRange ? dayjs(dateRange.firstDate) : undefined}
                 maxDate={
                   endDate ?? (dateRange ? dayjs(dateRange.lastDate) : undefined)
@@ -304,13 +325,18 @@ const ProductPerformance = () => {
                   textField: {
                     size: "small",
                     sx: { minWidth: "140px" },
+                    disabled: dateRangeLoading,
                   },
                 }}
               />
               <DatePicker
                 label="End Date"
                 value={endDate}
-                onChange={(newValue: Dayjs | null) => { setEndDate(newValue); setNeedsSearch(true); }}
+                disabled={dateRangeLoading}
+                onChange={(newValue: Dayjs | null) => {
+                  setEndDate(newValue);
+                  setNeedsSearch(true);
+                }}
                 minDate={
                   startDate ??
                   (dateRange ? dayjs(dateRange.firstDate) : undefined)
@@ -320,13 +346,19 @@ const ProductPerformance = () => {
                   textField: {
                     size: "small",
                     sx: { minWidth: "140px" },
+                    disabled: dateRangeLoading,
                   },
                 }}
               />
               <Button
                 variant="contained"
                 onClick={handleSearch}
-                disabled={status && !status.isFinished}
+                disabled={
+                  dateRangeLoading ||
+                  startDate === null ||
+                  endDate === null ||
+                  Boolean(status && !status.isFinished)
+                }
                 sx={{
                   backgroundColor: "#278ab0", // Blue Grotto
                   color: "white",
@@ -425,6 +457,7 @@ const ProductPerformance = () => {
                       </Typography>
                     </TableCell>
                     <TableCell
+                      align="right"
                       sx={{
                         width: "120px",
                         position: "sticky",
@@ -438,6 +471,7 @@ const ProductPerformance = () => {
                       </Typography>
                     </TableCell>
                     <TableCell
+                      align="right"
                       sx={{
                         position: "sticky",
                         top: 0,
@@ -450,6 +484,7 @@ const ProductPerformance = () => {
                       </Typography>
                     </TableCell>
                     <TableCell
+                      align="right"
                       sx={{
                         position: "sticky",
                         top: 0,
@@ -458,7 +493,7 @@ const ProductPerformance = () => {
                       }}
                     >
                       <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}
                       >
                         <Typography variant="subtitle2" fontWeight={600}>
                           EPS
@@ -494,18 +529,7 @@ const ProductPerformance = () => {
                       </Box>
                     </TableCell>
                     <TableCell
-                      sx={{
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 1,
-                        backgroundColor: "background.paper",
-                      }}
-                    >
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Target Price
-                      </Typography>
-                    </TableCell>
-                    <TableCell
+                      align="right"
                       sx={{
                         position: "sticky",
                         top: 0,
@@ -514,7 +538,7 @@ const ProductPerformance = () => {
                       }}
                     >
                       <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}
                       >
                         <Typography variant="subtitle2" fontWeight={600}>
                           RSI
@@ -550,6 +574,7 @@ const ProductPerformance = () => {
                       </Box>
                     </TableCell>
                     <TableCell
+                      align="right"
                       sx={{
                         width: "100px",
                         position: "sticky",
@@ -563,6 +588,7 @@ const ProductPerformance = () => {
                       </Typography>
                     </TableCell>
                     <TableCell
+                      align="right"
                       sx={{
                         width: "100px",
                         position: "sticky",
@@ -573,6 +599,19 @@ const ProductPerformance = () => {
                     >
                       <Typography variant="subtitle2" fontWeight={600}>
                         Newest Price
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        Target Price
                       </Typography>
                     </TableCell>
                     <TableCell
@@ -588,6 +627,7 @@ const ProductPerformance = () => {
                       </Typography>
                     </TableCell>
                     <TableCell
+                      align="right"
                       sx={{
                         position: "sticky",
                         top: 0,
@@ -596,7 +636,7 @@ const ProductPerformance = () => {
                       }}
                     >
                       <Typography variant="subtitle2" fontWeight={600}>
-                        Description
+                        Market Cap
                       </Typography>
                     </TableCell>
                     <TableCell
@@ -620,7 +660,7 @@ const ProductPerformance = () => {
                       }}
                     >
                       <Typography variant="subtitle2" fontWeight={600}>
-                        Market Cap
+                        Description
                       </Typography>
                     </TableCell>
                     <TableCell
@@ -671,7 +711,7 @@ const ProductPerformance = () => {
                             </a>
                           </Typography>
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           <Chip
                             sx={{
                               px: "4px",
@@ -685,7 +725,7 @@ const ProductPerformance = () => {
                             label={`${product.percentageChange.toFixed(2)}%`}
                           ></Chip>
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           <Typography
                             color="textSecondary"
                             variant="subtitle2"
@@ -694,7 +734,7 @@ const ProductPerformance = () => {
                             {product.volatility.toFixed(1)}%
                           </Typography>
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           <Typography
                             color="textSecondary"
                             variant="subtitle2"
@@ -705,18 +745,7 @@ const ProductPerformance = () => {
                               : "—"}
                           </Typography>
                         </TableCell>
-                        <TableCell>
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.targetPrice != null
-                              ? `$${product.targetPrice.toFixed(2)}`
-                              : "—"}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           <Chip
                             sx={{
                               px: "4px",
@@ -732,7 +761,7 @@ const ProductPerformance = () => {
                             label={product.rsi.toFixed(1)}
                           />
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           <Typography
                             color="textSecondary"
                             variant="subtitle2"
@@ -741,13 +770,24 @@ const ProductPerformance = () => {
                             ${product.oldestPrice.toFixed(2)}
                           </Typography>
                         </TableCell>
-                        <TableCell>
+                        <TableCell align="right">
                           <Typography
                             color="textSecondary"
                             variant="subtitle2"
                             fontWeight={400}
                           >
                             ${product.newestPrice.toFixed(2)}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Typography
+                            color="textSecondary"
+                            variant="subtitle2"
+                            fontWeight={400}
+                          >
+                            {product.targetPrice != null
+                              ? `$${product.targetPrice.toFixed(2)}`
+                              : "—"}
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -771,6 +811,26 @@ const ProductPerformance = () => {
                             )}
                           </Typography>
                         </TableCell>
+                        <TableCell align="right">
+                          <Typography
+                            color="textSecondary"
+                            variant="subtitle2"
+                            fontWeight={400}
+                          >
+                            {product.marketCapitalization
+                              ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B`
+                              : "—"}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            color="textSecondary"
+                            variant="subtitle2"
+                            fontWeight={400}
+                          >
+                            {product.sector ?? "—"}
+                          </Typography>
+                        </TableCell>
                         <TableCell>
                           <Typography
                             color="textSecondary"
@@ -790,26 +850,6 @@ const ProductPerformance = () => {
                             ) : (
                               product.description
                             )}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.sector ?? "—"}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.marketCapitalization
-                              ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B`
-                              : "—"}
                           </Typography>
                         </TableCell>
                         <TableCell>
