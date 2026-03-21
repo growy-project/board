@@ -9,6 +9,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TableSortLabel,
   Chip,
   Button,
   CircularProgress,
@@ -107,6 +108,15 @@ const ProductPerformance = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [needsSearch, setNeedsSearch] = useState(false);
 
+  type SortableColumn = keyof Pick<
+    StockPerformance,
+    "percentageChange" | "volatility" | "eps" | "rsi" |
+    "oldestPrice" | "newestPrice" | "targetPrice" | "marketCapitalization"
+  >;
+
+  const [orderBy, setOrderBy] = useState<SortableColumn>("percentageChange");
+  const [order, setOrder] = useState<"asc" | "desc">("desc");
+
   const isJobFinishedRef = useRef(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -183,6 +193,15 @@ const ProductPerformance = () => {
     }
   }, [symbolHistory, dialogOpen]);
 
+  const handleSort = (column: SortableColumn) => {
+    if (orderBy === column) {
+      setOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setOrderBy(column);
+      setOrder("desc");
+    }
+  };
+
   const handleSearch = async () => {
     // Reset job state when search is triggered
     setNeedsSearch(false);
@@ -232,6 +251,25 @@ const ProductPerformance = () => {
   };
 
   // Separate effect for page changes (without resetting the job)
+
+  const descendingComparator = (a: StockPerformance, b: StockPerformance, key: SortableColumn): number => {
+    const aVal = a[key];
+    const bVal = b[key];
+    if (aVal == null && bVal == null) return 0;
+    if (aVal == null) return 1;
+    if (bVal == null) return -1;
+    if (bVal < aVal) return -1;
+    if (bVal > aVal) return 1;
+    return 0;
+  };
+
+  const sortedResults: StockPerformance[] = Array.isArray(status?.result)
+    ? [...status.result].sort((a, b) =>
+        order === "desc"
+          ? descendingComparator(a, b, orderBy)
+          : -descendingComparator(a, b, orderBy)
+      )
+    : [];
 
   return (
     <>
@@ -466,67 +504,15 @@ const ProductPerformance = () => {
                         backgroundColor: "background.paper",
                       }}
                     >
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Percentage Change
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 1,
-                        backgroundColor: "background.paper",
-                      }}
-                    >
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Volatility %
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 1,
-                        backgroundColor: "background.paper",
-                      }}
-                    >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}
+                      <TableSortLabel
+                        active={orderBy === "percentageChange"}
+                        direction={orderBy === "percentageChange" ? order : "desc"}
+                        onClick={() => handleSort("percentageChange")}
                       >
                         <Typography variant="subtitle2" fontWeight={600}>
-                          EPS
+                          Percentage Change
                         </Typography>
-                        <Tooltip
-                          title={
-                            <Box>
-                              <Typography
-                                variant="body2"
-                                fontWeight={600}
-                                sx={{ mb: 1 }}
-                              >
-                                Earnings Per Share(EPS)
-                              </Typography>
-                              <Typography variant="body2" sx={{ mb: 0.5 }}>
-                                It tells you how much profit a company makes for
-                                each outstanding share.
-                              </Typography>
-                              <Typography variant="body2">
-                                EPS = (Net Income − Preferred Dividends) /
-                                Average Outstanding Shares
-                              </Typography>
-                            </Box>
-                          }
-                          arrow
-                          placement="top"
-                        >
-                          <InfoOutlined
-                            fontSize="small"
-                            sx={{ color: "text.secondary", cursor: "help" }}
-                          />
-                        </Tooltip>
-                      </Box>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell
                       align="right"
@@ -537,41 +523,117 @@ const ProductPerformance = () => {
                         backgroundColor: "background.paper",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}
+                      <TableSortLabel
+                        active={orderBy === "volatility"}
+                        direction={orderBy === "volatility" ? order : "desc"}
+                        onClick={() => handleSort("volatility")}
                       >
                         <Typography variant="subtitle2" fontWeight={600}>
-                          RSI
+                          Volatility %
                         </Typography>
-                        <Tooltip
-                          title={
-                            <Box>
-                              <Typography
-                                variant="body2"
-                                fontWeight={600}
-                                sx={{ mb: 1 }}
-                              >
-                                Relative Strength Index (RSI)
-                              </Typography>
-                              <Typography variant="body2" sx={{ mb: 0.5 }}>
-                                Stocks trending up often hold RSI above 50
-                                without dipping too much.
-                              </Typography>
-                              <Typography variant="body2">
-                                A sustained RSI between 55–70 indicates
-                                controlled growth (not overheated).
-                              </Typography>
-                            </Box>
-                          }
-                          arrow
-                          placement="top"
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
+                      <TableSortLabel
+                        active={orderBy === "eps"}
+                        direction={orderBy === "eps" ? order : "desc"}
+                        onClick={() => handleSort("eps")}
+                      >
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}
                         >
-                          <InfoOutlined
-                            fontSize="small"
-                            sx={{ color: "text.secondary", cursor: "help" }}
-                          />
-                        </Tooltip>
-                      </Box>
+                          <Typography variant="subtitle2" fontWeight={600}>
+                            EPS
+                          </Typography>
+                          <Tooltip
+                            title={
+                              <Box>
+                                <Typography
+                                  variant="body2"
+                                  fontWeight={600}
+                                  sx={{ mb: 1 }}
+                                >
+                                  Earnings Per Share(EPS)
+                                </Typography>
+                                <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                  It tells you how much profit a company makes for
+                                  each outstanding share.
+                                </Typography>
+                                <Typography variant="body2">
+                                  EPS = (Net Income − Preferred Dividends) /
+                                  Average Outstanding Shares
+                                </Typography>
+                              </Box>
+                            }
+                            arrow
+                            placement="top"
+                          >
+                            <InfoOutlined
+                              fontSize="small"
+                              sx={{ color: "text.secondary", cursor: "help" }}
+                            />
+                          </Tooltip>
+                        </Box>
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 1,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
+                      <TableSortLabel
+                        active={orderBy === "rsi"}
+                        direction={orderBy === "rsi" ? order : "desc"}
+                        onClick={() => handleSort("rsi")}
+                      >
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}
+                        >
+                          <Typography variant="subtitle2" fontWeight={600}>
+                            RSI
+                          </Typography>
+                          <Tooltip
+                            title={
+                              <Box>
+                                <Typography
+                                  variant="body2"
+                                  fontWeight={600}
+                                  sx={{ mb: 1 }}
+                                >
+                                  Relative Strength Index (RSI)
+                                </Typography>
+                                <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                  Stocks trending up often hold RSI above 50
+                                  without dipping too much.
+                                </Typography>
+                                <Typography variant="body2">
+                                  A sustained RSI between 55–70 indicates
+                                  controlled growth (not overheated).
+                                </Typography>
+                              </Box>
+                            }
+                            arrow
+                            placement="top"
+                          >
+                            <InfoOutlined
+                              fontSize="small"
+                              sx={{ color: "text.secondary", cursor: "help" }}
+                            />
+                          </Tooltip>
+                        </Box>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell
                       align="right"
@@ -583,9 +645,15 @@ const ProductPerformance = () => {
                         backgroundColor: "background.paper",
                       }}
                     >
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Oldest Price
-                      </Typography>
+                      <TableSortLabel
+                        active={orderBy === "oldestPrice"}
+                        direction={orderBy === "oldestPrice" ? order : "desc"}
+                        onClick={() => handleSort("oldestPrice")}
+                      >
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Oldest Price
+                        </Typography>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell
                       align="right"
@@ -597,9 +665,15 @@ const ProductPerformance = () => {
                         backgroundColor: "background.paper",
                       }}
                     >
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Newest Price
-                      </Typography>
+                      <TableSortLabel
+                        active={orderBy === "newestPrice"}
+                        direction={orderBy === "newestPrice" ? order : "desc"}
+                        onClick={() => handleSort("newestPrice")}
+                      >
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Newest Price
+                        </Typography>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell
                       align="right"
@@ -610,9 +684,15 @@ const ProductPerformance = () => {
                         backgroundColor: "background.paper",
                       }}
                     >
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Target Price
-                      </Typography>
+                      <TableSortLabel
+                        active={orderBy === "targetPrice"}
+                        direction={orderBy === "targetPrice" ? order : "desc"}
+                        onClick={() => handleSort("targetPrice")}
+                      >
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Target Price
+                        </Typography>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell
                       sx={{
@@ -635,9 +715,15 @@ const ProductPerformance = () => {
                         backgroundColor: "background.paper",
                       }}
                     >
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        Market Cap
-                      </Typography>
+                      <TableSortLabel
+                        active={orderBy === "marketCapitalization"}
+                        direction={orderBy === "marketCapitalization" ? order : "desc"}
+                        onClick={() => handleSort("marketCapitalization")}
+                      >
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          Market Cap
+                        </Typography>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell
                       sx={{
@@ -691,8 +777,7 @@ const ProductPerformance = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {Array.isArray(status?.result) &&
-                    status.result.map((product) => (
+                  {sortedResults.map((product) => (
                       <TableRow key={product.symbol}>
                         <TableCell>
                           <Typography
