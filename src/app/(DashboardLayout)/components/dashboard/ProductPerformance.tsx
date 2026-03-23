@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { keyframes } from "@emotion/react";
 import { LineChart } from "@mui/x-charts/LineChart";
 import {
@@ -28,6 +28,7 @@ import {
   MenuItem,
   Menu,
   Alert,
+  SelectChangeEvent,
 } from "@mui/material";
 import {
   Visibility,
@@ -73,6 +74,202 @@ function GradientCircularProgress() {
   );
 }
 
+const EPS_TOOLTIP_CONTENT = (
+  <Box>
+    <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
+      Earnings Per Share(EPS)
+    </Typography>
+    <Typography variant="body2" sx={{ mb: 0.5 }}>
+      It tells you how much profit a company makes for each outstanding share.
+    </Typography>
+    <Typography variant="body2">
+      EPS = (Net Income − Preferred Dividends) / Average Outstanding Shares
+    </Typography>
+  </Box>
+);
+
+const RSI_TOOLTIP_CONTENT = (
+  <Box>
+    <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
+      Relative Strength Index (RSI)
+    </Typography>
+    <Typography variant="body2" sx={{ mb: 0.5 }}>
+      Stocks trending up often hold RSI above 50 without dipping too much.
+    </Typography>
+    <Typography variant="body2">
+      A sustained RSI between 55–70 indicates controlled growth (not overheated).
+    </Typography>
+  </Box>
+);
+
+interface StockTableRowProps {
+  product: StockPerformance;
+  exchange: string;
+  onDetailClick: (product: StockPerformance) => void;
+  onActionsClick: (e: React.MouseEvent<HTMLButtonElement>, product: StockPerformance) => void;
+}
+
+const StockTableRow = React.memo(function StockTableRow({
+  product,
+  exchange,
+  onDetailClick,
+  onActionsClick,
+}: StockTableRowProps) {
+  return (
+    <TableRow>
+      <TableCell>
+        <Typography sx={{ fontSize: "15px", fontWeight: "500" }}>
+          <a
+            href={`https://www.google.com/finance/quote/${product.symbol}${exchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "inherit", textDecoration: "underline" }}
+          >
+            {product.symbol}
+          </a>
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Chip
+          sx={{
+            px: "4px",
+            backgroundColor: product.percentageChange > 0 ? "#1dc690" : "#1c4670",
+            color: "#fff",
+          }}
+          size="small"
+          label={`${product.percentageChange.toFixed(2)}%`}
+        />
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.volatility.toFixed(1)}%
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.eps != null ? `$${product.eps.toFixed(2)}` : "—"}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Chip
+          sx={{
+            px: "4px",
+            backgroundColor:
+              product.rsi > 70
+                ? "#1c4670"
+                : product.rsi < 30
+                  ? "#1dc690"
+                  : "#278ab0",
+            color: "#fff",
+          }}
+          size="small"
+          label={product.rsi.toFixed(1)}
+        />
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          ${product.oldestPrice.toFixed(2)}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          ${product.newestPrice.toFixed(2)}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.targetPrice != null ? `$${product.targetPrice.toFixed(2)}` : "—"}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.companyName == null ? (
+            "—"
+          ) : product.companyName.length > 25 ? (
+            <Tooltip title={product.companyName} arrow placement="top">
+              <span>{product.companyName.slice(0, 25)}…</span>
+            </Tooltip>
+          ) : (
+            product.companyName
+          )}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.marketCapitalization
+            ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B`
+            : "—"}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.sector ?? "—"}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.description == null ? (
+            "—"
+          ) : product.description.length > 25 ? (
+            <Tooltip title={product.description} arrow placement="top">
+              <span>{product.description.slice(0, 25)}…</span>
+            </Tooltip>
+          ) : (
+            product.description
+          )}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <IconButton
+          size="small"
+          sx={{
+            color: "#278ab0",
+            "&:hover": { backgroundColor: "#eaeae0", color: "#1c4670" },
+          }}
+          onClick={() => onDetailClick(product)}
+        >
+          <Visibility fontSize="small" />
+        </IconButton>
+      </TableCell>
+      <TableCell
+        sx={{
+          position: "sticky",
+          right: 0,
+          backgroundColor: "background.paper",
+        }}
+      >
+        <IconButton
+          size="small"
+          sx={{
+            color: "#278ab0",
+            "&:hover": { backgroundColor: "#eaeae0", color: "#1c4670" },
+          }}
+          onClick={(e) => onActionsClick(e, product)}
+        >
+          <MoreVert fontSize="small" />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  );
+});
+
+type SortableColumn = keyof Pick<
+  StockPerformance,
+  "percentageChange" | "volatility" | "eps" | "rsi" |
+  "oldestPrice" | "newestPrice" | "targetPrice" | "marketCapitalization"
+>;
+
+function descendingComparator(a: StockPerformance, b: StockPerformance, key: SortableColumn): number {
+  const aVal = a[key];
+  const bVal = b[key];
+  if (aVal == null && bVal == null) return 0;
+  if (aVal == null) return 1;
+  if (bVal == null) return -1;
+  if (bVal < aVal) return -1;
+  if (bVal > aVal) return 1;
+  return 0;
+}
+
 const ProductPerformance = () => {
   const { user } = useAuth();
   const [status, setStatus] = useState<JobStatus | null>(null);
@@ -107,12 +304,6 @@ const ProductPerformance = () => {
   const hasInitiallySearched = useRef<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [needsSearch, setNeedsSearch] = useState(false);
-
-  type SortableColumn = keyof Pick<
-    StockPerformance,
-    "percentageChange" | "volatility" | "eps" | "rsi" |
-    "oldestPrice" | "newestPrice" | "targetPrice" | "marketCapitalization"
-  >;
 
   const [orderBy, setOrderBy] = useState<SortableColumn>("percentageChange");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
@@ -188,12 +379,6 @@ const ProductPerformance = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRangeLoading, startDate, endDate]);
 
-  useEffect(() => {
-    if (dialogOpen && symbolHistory) {
-      console.log(symbolHistory);
-    }
-  }, [symbolHistory, dialogOpen]);
-
   const handleSort = (column: SortableColumn) => {
     if (orderBy === column) {
       setOrder((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -251,26 +436,73 @@ const ProductPerformance = () => {
     }
   };
 
-  // Separate effect for page changes (without resetting the job)
+  const sortedResults = useMemo<StockPerformance[]>(() => {
+    if (!status || !Array.isArray(status.result)) return [];
+    return [...status.result].sort((a, b) =>
+      order === "desc"
+        ? descendingComparator(a, b, orderBy)
+        : -descendingComparator(a, b, orderBy)
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, order, orderBy]);
 
-  const descendingComparator = (a: StockPerformance, b: StockPerformance, key: SortableColumn): number => {
-    const aVal = a[key];
-    const bVal = b[key];
-    if (aVal == null && bVal == null) return 0;
-    if (aVal == null) return 1;
-    if (bVal == null) return -1;
-    if (bVal < aVal) return -1;
-    if (bVal > aVal) return 1;
-    return 0;
-  };
+  const handleExchangeChange = useCallback((e: SelectChangeEvent) => {
+    setExchange(e.target.value);
+    setNeedsSearch(true);
+  }, []);
 
-  const sortedResults: StockPerformance[] = Array.isArray(status?.result)
-    ? [...status.result].sort((a, b) =>
-        order === "desc"
-          ? descendingComparator(a, b, orderBy)
-          : -descendingComparator(a, b, orderBy)
+  const handleMinPercentageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setMinPercentageChange(Number(e.target.value));
+    setNeedsSearch(true);
+  }, []);
+
+  const handleStartDateChange = useCallback((newValue: Dayjs | null) => {
+    setStartDate(newValue);
+    setNeedsSearch(true);
+  }, []);
+
+  const handleEndDateChange = useCallback((newValue: Dayjs | null) => {
+    setEndDate(newValue);
+    setNeedsSearch(true);
+  }, []);
+
+  const handlePageChange = useCallback((_: React.ChangeEvent<unknown>, page: number) => {
+    if (!isPageLoading) {
+      setCurrentPage(page);
+    }
+  }, [isPageLoading]);
+
+  const handleDetailClick = useCallback((product: StockPerformance) => {
+    setSelectedStock(product);
+    setSymbolHistory(null);
+    setDialogOpen(true);
+    realService.getSymbolHistory(product.symbol, exchange).then(setSymbolHistory);
+  }, [exchange]);
+
+  const handleActionsClick = useCallback((e: React.MouseEvent<HTMLButtonElement>, product: StockPerformance) => {
+    setActionsMenuAnchor(e.currentTarget);
+    setActionsMenuStock(product);
+  }, []);
+
+  const chartDataset = useMemo(() => {
+    if (!symbolHistory?.prices) return null;
+    const ema20Map = new Map<number, number>(
+      (symbolHistory.ema20 ?? []).map(
+        (e: { value: number; unixDate: number }) => [e.unixDate, e.value]
       )
-    : [];
+    );
+    return symbolHistory.prices.map(
+      (entry: { closePrice: number; unixDate: number }) => ({
+        closePrice: entry.closePrice,
+        ema20: ema20Map.get(entry.unixDate) ?? null,
+        date: new Date(entry.unixDate).toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
+      })
+    );
+  }, [symbolHistory]);
 
   return (
     <>
@@ -305,10 +537,7 @@ const ProductPerformance = () => {
                   value={exchange}
                   label="Exchange"
                   disabled={dateRangeLoading}
-                  onChange={(e) => {
-                    setExchange(e.target.value);
-                    setNeedsSearch(true);
-                  }}
+                  onChange={handleExchangeChange}
                   MenuProps={{
                     PaperProps: {
                       sx: {
@@ -340,10 +569,7 @@ const ProductPerformance = () => {
                 focused
                 type="number"
                 value={minPercentageChange}
-                onChange={(e) => {
-                  setMinPercentageChange(Number(e.target.value));
-                  setNeedsSearch(true);
-                }}
+                onChange={handleMinPercentageChange}
                 size="small"
                 sx={{ minWidth: "180px" }}
                 disabled={dateRangeLoading}
@@ -352,10 +578,7 @@ const ProductPerformance = () => {
                 label="Start Date"
                 value={startDate}
                 disabled={dateRangeLoading}
-                onChange={(newValue: Dayjs | null) => {
-                  setStartDate(newValue);
-                  setNeedsSearch(true);
-                }}
+                onChange={handleStartDateChange}
                 minDate={dateRange ? dayjs(dateRange.firstDate) : undefined}
                 maxDate={
                   endDate ?? (dateRange ? dayjs(dateRange.lastDate) : undefined)
@@ -372,10 +595,7 @@ const ProductPerformance = () => {
                 label="End Date"
                 value={endDate}
                 disabled={dateRangeLoading}
-                onChange={(newValue: Dayjs | null) => {
-                  setEndDate(newValue);
-                  setNeedsSearch(true);
-                }}
+                onChange={handleEndDateChange}
                 minDate={
                   startDate ??
                   (dateRange ? dayjs(dateRange.firstDate) : undefined)
@@ -555,25 +775,7 @@ const ProductPerformance = () => {
                             EPS
                           </Typography>
                           <Tooltip
-                            title={
-                              <Box>
-                                <Typography
-                                  variant="body2"
-                                  fontWeight={600}
-                                  sx={{ mb: 1 }}
-                                >
-                                  Earnings Per Share(EPS)
-                                </Typography>
-                                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                                  It tells you how much profit a company makes for
-                                  each outstanding share.
-                                </Typography>
-                                <Typography variant="body2">
-                                  EPS = (Net Income − Preferred Dividends) /
-                                  Average Outstanding Shares
-                                </Typography>
-                              </Box>
-                            }
+                            title={EPS_TOOLTIP_CONTENT}
                             arrow
                             placement="top"
                           >
@@ -606,25 +808,7 @@ const ProductPerformance = () => {
                             RSI
                           </Typography>
                           <Tooltip
-                            title={
-                              <Box>
-                                <Typography
-                                  variant="body2"
-                                  fontWeight={600}
-                                  sx={{ mb: 1 }}
-                                >
-                                  Relative Strength Index (RSI)
-                                </Typography>
-                                <Typography variant="body2" sx={{ mb: 0.5 }}>
-                                  Stocks trending up often hold RSI above 50
-                                  without dipping too much.
-                                </Typography>
-                                <Typography variant="body2">
-                                  A sustained RSI between 55–70 indicates
-                                  controlled growth (not overheated).
-                                </Typography>
-                              </Box>
-                            }
+                            title={RSI_TOOLTIP_CONTENT}
                             arrow
                             placement="top"
                           >
@@ -779,216 +963,14 @@ const ProductPerformance = () => {
                 </TableHead>
                 <TableBody>
                   {sortedResults.map((product) => (
-                      <TableRow key={product.symbol}>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontSize: "15px", fontWeight: "500" }}
-                          >
-                            <a
-                              href={`https://www.google.com/finance/quote/${product.symbol}${exchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{
-                                color: "inherit",
-                                textDecoration: "underline",
-                              }}
-                            >
-                              {product.symbol}
-                            </a>
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Chip
-                            sx={{
-                              px: "4px",
-                              backgroundColor:
-                                product.percentageChange > 0
-                                  ? "#1dc690" // Neon Green
-                                  : "#1c4670", // Blue
-                              color: "#fff",
-                            }}
-                            size="small"
-                            label={`${product.percentageChange.toFixed(2)}%`}
-                          ></Chip>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.volatility.toFixed(1)}%
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.eps != null
-                              ? `$${product.eps.toFixed(2)}`
-                              : "—"}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Chip
-                            sx={{
-                              px: "4px",
-                              backgroundColor:
-                                product.rsi > 70
-                                  ? "#1c4670" // Blue (overbought)
-                                  : product.rsi < 30
-                                    ? "#1dc690" // Neon Green (oversold)
-                                    : "#278ab0", // Blue Grotto (neutral)
-                              color: "#fff",
-                            }}
-                            size="small"
-                            label={product.rsi.toFixed(1)}
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            ${product.oldestPrice.toFixed(2)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            ${product.newestPrice.toFixed(2)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.targetPrice != null
-                              ? `$${product.targetPrice.toFixed(2)}`
-                              : "—"}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.companyName == null ? (
-                              "—"
-                            ) : product.companyName.length > 25 ? (
-                              <Tooltip
-                                title={product.companyName}
-                                arrow
-                                placement="top"
-                              >
-                                <span>{product.companyName.slice(0, 25)}…</span>
-                              </Tooltip>
-                            ) : (
-                              product.companyName
-                            )}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.marketCapitalization
-                              ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B`
-                              : "—"}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.sector ?? "—"}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            color="textSecondary"
-                            variant="subtitle2"
-                            fontWeight={400}
-                          >
-                            {product.description == null ? (
-                              "—"
-                            ) : product.description.length > 25 ? (
-                              <Tooltip
-                                title={product.description}
-                                arrow
-                                placement="top"
-                              >
-                                <span>{product.description.slice(0, 25)}…</span>
-                              </Tooltip>
-                            ) : (
-                              product.description
-                            )}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            size="small"
-                            sx={{
-                              color: "#278ab0", // Blue Grotto
-                              "&:hover": {
-                                backgroundColor: "#eaeae0", // Ivory
-                                color: "#1c4670", // Blue on hover
-                              },
-                            }}
-                            onClick={async () => {
-                              setSelectedStock(product);
-                              setSymbolHistory(null);
-                              setDialogOpen(true);
-                              const history =
-                                await realService.getSymbolHistory(
-                                  product.symbol,
-                                  exchange,
-                                );
-                              setSymbolHistory(history);
-                            }}
-                          >
-                            <Visibility fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            position: "sticky",
-                            right: 0,
-                            backgroundColor: "background.paper",
-                          }}
-                        >
-                          <IconButton
-                            size="small"
-                            sx={{
-                              color: "#278ab0",
-                              "&:hover": {
-                                backgroundColor: "#eaeae0",
-                                color: "#1c4670",
-                              },
-                            }}
-                            onClick={(e) => {
-                              setActionsMenuAnchor(e.currentTarget);
-                              setActionsMenuStock(product);
-                            }}
-                          >
-                            <MoreVert fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    <StockTableRow
+                      key={product.symbol}
+                      product={product}
+                      exchange={exchange}
+                      onDetailClick={handleDetailClick}
+                      onActionsClick={handleActionsClick}
+                    />
+                  ))}
                 </TableBody>
               </Table>
             </Box>
@@ -1014,11 +996,7 @@ const ProductPerformance = () => {
                   <Pagination
                     count={status.totalPages}
                     page={currentPage}
-                    onChange={(event, page) => {
-                      if (!isPageLoading) {
-                        setCurrentPage(page);
-                      }
-                    }}
+                    onChange={handlePageChange}
                     disabled={isPageLoading}
                     color="primary"
                     size="medium"
@@ -1209,47 +1187,16 @@ const ProductPerformance = () => {
           </Box>
         </DialogTitle>
         <DialogContent>
-          {symbolHistory?.prices ? (
-            (() => {
-              const ema20Map = new Map<number, number>(
-                (symbolHistory.ema20 ?? []).map(
-                  (e: { value: number; unixDate: number }) => [
-                    e.unixDate,
-                    e.value,
-                  ],
-                ),
-              );
-              return (
-                <LineChart
-                  dataset={symbolHistory.prices.map(
-                    (entry: { closePrice: number; unixDate: number }) => ({
-                      closePrice: entry.closePrice,
-                      ema20: ema20Map.get(entry.unixDate) ?? null,
-                      date: new Date(entry.unixDate).toLocaleDateString(
-                        undefined,
-                        {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        },
-                      ),
-                    }),
-                  )}
-                  xAxis={[
-                    { dataKey: "date", scaleType: "point", tickNumber: 6 },
-                  ]}
-                  series={[
-                    {
-                      dataKey: "closePrice",
-                      label: "Close Price",
-                      showMark: false,
-                    },
-                    { dataKey: "ema20", label: "EMA 20", showMark: false },
-                  ]}
-                  height={350}
-                />
-              );
-            })()
+          {chartDataset ? (
+            <LineChart
+              dataset={chartDataset}
+              xAxis={[{ dataKey: "date", scaleType: "point", tickNumber: 6 }]}
+              series={[
+                { dataKey: "closePrice", label: "Close Price", showMark: false },
+                { dataKey: "ema20", label: "EMA 20", showMark: false },
+              ]}
+              height={350}
+            />
           ) : (
             <Typography variant="body2" color="textSecondary">
               Loading...
