@@ -185,6 +185,7 @@ const ProductPerformance = () => {
       hasInitiallySearched.current = true;
       handleSearch();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRangeLoading, startDate, endDate]);
 
   useEffect(() => {

@@ -24,7 +24,7 @@ const AboutPage = () => {
             institutional investors gradually building positions, companies
             reporting strong earnings growth, and market psychology like the
             fear of missing out. This alignment of institutional flow and retail
-            sentiment creates 'persistent momentum,' allowing trends to develop
+            sentiment creates &apos;persistent momentum,&apos; allowing trends to develop
             deep roots and sustain themselves over time.
           </Typography>
           <Typography variant="body1" sx={{ fontSize: "1.1rem" }}>
