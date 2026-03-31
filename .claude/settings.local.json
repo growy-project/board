@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(ls:*)",
-      "WebFetch(domain:mui.com)"
+      "WebFetch(domain:mui.com)",
+      "Bash(tree -L 3 /c/Users/Usuario/source/growy/growy_server -I 'bin|obj|.vs|.git|.github' 2>/dev/null || find /c/Users/Usuario/source/growy/growy_server -type d -not -path '*/bin/*' -not -path '*/obj/*' -not -path '*/.vs/*' -not -path '*/.git/*' -not -path '*/.github/*' | grep -v '\\\\$' | sort)",
+      "Bash(npm run:*)",
+      "Bash(wc:*)",
+      "Bash(find \"c:\\\\Users\\\\Usuario\\\\source\\\\growy\\\\board\\\\src\\\\app\\\\\\(DashboardLayout\\)\\\\components\" -type f -name \"*.tsx\" -o -name \"*.ts\")",
+      "Bash(wc -l \"c:\\\\Users\\\\Usuario\\\\source\\\\growy\\\\board\\\\src\\\\app\\\\\\(DashboardLayout\\)\\\\components\\\\dashboard\\\\ProductPerformance.tsx\")",
+      "Bash(ls -la \"c:\\\\Users\\\\Usuario\\\\source\\\\growy\\\\board\\\\src\\\\app\\\\\\(DashboardLayout\\)\\\\components\"\")",
+      "Bash(cd /c/Users/Usuario/source/growy/board/src/app/'\\(DashboardLayout\\)'/components)",
+      "Bash(cd /c/Users/Usuario/source/growy/board/src/app/'\\(DashboardLayout\\)'/services)",
+      "Bash(ls \"c:/Users/Usuario/source/growy/board/src/app/\\(DashboardLayout\\)/components/dashboard/\")"
     ]
   }
 }
