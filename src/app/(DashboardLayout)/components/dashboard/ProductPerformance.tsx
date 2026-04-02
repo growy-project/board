@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { Box, Typography } from "@mui/material";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 
 import { useFilters } from "./ProductPerformance/hooks/useFilters";
@@ -51,6 +53,7 @@ const ProductPerformance = () => {
 
   const isJobRunning = Boolean(job.status && !job.status.isFinished);
   const showTable = !job.error && job.status?.isFinished;
+  const hasResults = (job.status?.result?.length ?? 0) > 0;
 
   return (
     <>
@@ -74,7 +77,7 @@ const ProductPerformance = () => {
           />
         }
       >
-        {showTable ? (
+        {showTable && hasResults ? (
           <StockTable
             sortedResults={sort.sortedResults}
             exchange={filters.exchange}
@@ -90,6 +93,14 @@ const ProductPerformance = () => {
             onDetailClick={actions.handleDetailClick}
             onActionsClick={actions.handleActionsClick}
           />
+        ) : showTable && !hasResults ? (
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 6, gap: 1, color: "text.secondary" }}>
+            <SearchOffIcon sx={{ fontSize: 48 }} />
+            <Typography variant="h6">No stocks matched your search</Typography>
+            <Typography variant="body2">
+              Try adjusting the exchange, minimum % change, or date range.
+            </Typography>
+          </Box>
         ) : (
           <StockLoadingOverlay message={job.status?.processingMessage} />
         )}

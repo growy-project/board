@@ -27,6 +27,9 @@ export function useStockJob() {
         setStatus(info);
         if (info.isFinished || info.percentComplete === 100) {
           isJobFinishedRef.current = true;
+          if (info.errors) {
+            setError("Something went wrong while processing your request. Please try again.");
+          }
           return;
         }
         timeoutRef.current = setTimeout(poll, 1000);
