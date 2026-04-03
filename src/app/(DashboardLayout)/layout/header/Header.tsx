@@ -16,6 +16,10 @@ import Link from "next/link";
 import Profile from "./Profile";
 import { IconMenu } from "@tabler/icons-react";
 import { useAuth } from "@/app/context/AuthContext";
+import { useAppTheme } from "@/app/context/ThemeContext";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import AnchorOutlinedIcon from "@mui/icons-material/AnchorOutlined";
 
 interface ItemType {
   toggleMobileSidebar: (event: React.MouseEvent<HTMLElement>) => void;
@@ -26,6 +30,14 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
   const { user } = useAuth();
+  const { mode, cycleMode } = useAppTheme();
+
+  const ThemeIcon =
+    mode === "light"
+      ? LightModeOutlinedIcon
+      : mode === "dark"
+      ? DarkModeOutlinedIcon
+      : AnchorOutlinedIcon;
 
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
@@ -60,6 +72,9 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
 
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
+          <IconButton color="inherit" aria-label="toggle theme" onClick={cycleMode}>
+            <ThemeIcon width={20} height={20} />
+          </IconButton>
           {!user && (
             <Button
               variant="contained"

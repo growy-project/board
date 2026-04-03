@@ -1,6 +1,7 @@
 import { useMediaQuery, Box, Drawer } from "@mui/material";
 import SidebarItems from "./SidebarItems";
 import { Sidebar, Logo } from 'react-mui-sidebar';
+import { useAppTheme } from "@/app/context/ThemeContext";
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
@@ -14,6 +15,8 @@ const MSidebar = ({
   isSidebarOpen,
 }: ItemType) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
+  const { mode } = useAppTheme();
+  const sidebarMode = mode === "light" ? "light" : "dark";
 
   const sidebarWidth = "270px";
   
@@ -103,7 +106,7 @@ const MSidebar = ({
           width={'270px'}
           collapsewidth="80px"
           isCollapse={false}
-          mode="light"
+          mode={sidebarMode}
           direction="ltr"
           themeColor="#5d87ff"
           themeSecondaryColor="#49beff"
