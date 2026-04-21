@@ -39,7 +39,7 @@ src/
 
 ## Key Conventions
 - All API calls go through service modules in `src/app/(DashboardLayout)/services/`. Never call the backend directly from a page or component.
-- **Backend base URL**: `https://localhost:7138` (HTTPS, not HTTP).
+- **Backend base URL**: `http://20.51.170.82:5000` (HTTPS, not HTTP).
 - Use MUI components for all UI — do not introduce other component libraries.
 - Follow existing file naming: `PascalCase` for components, `camelCase` for utilities/services.
 - TypeScript strict mode is enabled — avoid `any`.
