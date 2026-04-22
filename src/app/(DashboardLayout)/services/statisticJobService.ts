@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://20.51.170.82:5000"}/Statistics`;
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://growy-api.eastus.cloudapp.azure.com"}/Statistics`;
 
 export const startStatisticJob = async (params: any) => {
 
