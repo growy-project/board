@@ -1,7 +1,5 @@
 import { useMediaQuery, Box, Drawer } from "@mui/material";
 import SidebarItems from "./SidebarItems";
-import { Sidebar, Logo } from 'react-mui-sidebar';
-import { useAppTheme } from "@/app/context/ThemeContext";
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
@@ -9,33 +7,43 @@ interface ItemType {
   isSidebarOpen: boolean;
 }
 
+const SIDEBAR_WIDTH = "270px";
+
+const scrollbarStyles = {
+  "&::-webkit-scrollbar": { width: "7px" },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "#eff2f7",
+    borderRadius: "15px",
+  },
+};
+
+const SidebarContent = ({
+  onItemClick,
+}: {
+  onItemClick?: () => void;
+}) => (
+  <Box sx={{ width: SIDEBAR_WIDTH, height: "100%", py: 2 }}>
+    <Box sx={{ px: 3, pb: 2 }}>
+      <img
+        src="/images/logos/dark-logo.svg"
+        alt="Logo"
+        style={{ maxWidth: "100%", height: "auto" }}
+      />
+    </Box>
+    <SidebarItems toggleMobileSidebar={onItemClick} />
+  </Box>
+);
+
 const MSidebar = ({
   isMobileSidebarOpen,
   onSidebarClose,
   isSidebarOpen,
 }: ItemType) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
-  const { mode } = useAppTheme();
-  const sidebarMode = mode === "light" ? "light" : "dark";
 
-  const sidebarWidth = "270px";
-  
   const handleSidebarClose = () => {
     onSidebarClose({} as React.MouseEvent<HTMLElement>);
   };
-
-  // Custom CSS for short scrollbar
-  const scrollbarStyles = {
-    '&::-webkit-scrollbar': {
-      width: '7px',
-
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#eff2f7',
-      borderRadius: '15px',
-    },
-  };
-
 
   if (lgUp) {
     return (
@@ -47,40 +55,13 @@ const MSidebar = ({
         PaperProps={{
           sx: {
             boxSizing: "border-box",
-            width: sidebarWidth,
+            width: SIDEBAR_WIDTH,
             boxShadow: (theme) => theme.shadows[8],
             ...scrollbarStyles,
           },
         }}
       >
-        {/* ------------------------------------------- */}
-        {/* Sidebar Box */}
-        {/* ------------------------------------------- */}
-        <Box
-          sx={{
-            height: "100%",
-          }}
-        >
-          <Sidebar
-            width={'270px'}
-            collapsewidth="80px"
-            open={true}
-            themeColor="#5d87ff"
-            themeSecondaryColor="#49beff"
-            showProfile={false}
-          >
-            {/* ------------------------------------------- */}
-            {/* Logo */}
-            {/* ------------------------------------------- */}
-            <Logo img="/images/logos/dark-logo.svg" />
-            <Box>
-              {/* ------------------------------------------- */}
-              {/* Sidebar Items */}
-              {/* ------------------------------------------- */}
-              <SidebarItems toggleMobileSidebar={handleSidebarClose} />
-            </Box>
-          </Sidebar >
-        </Box>
+        <SidebarContent onItemClick={handleSidebarClose} />
       </Drawer>
     );
   }
@@ -98,41 +79,9 @@ const MSidebar = ({
         },
       }}
     >
-      {/* ------------------------------------------- */}
-      {/* Sidebar Box */}
-      {/* ------------------------------------------- */}
-      <Box px={2}>
-        <Sidebar
-          width={'270px'}
-          collapsewidth="80px"
-          isCollapse={false}
-          mode={sidebarMode}
-          direction="ltr"
-          themeColor="#5d87ff"
-          themeSecondaryColor="#49beff"
-          showProfile={false}
-        >
-          {/* ------------------------------------------- */}
-          {/* Logo */}
-          {/* ------------------------------------------- */}
-          <Logo img="/images/logos/dark-logo.svg" />
-          {/* ------------------------------------------- */}
-          {/* Sidebar Items */}
-          {/* ------------------------------------------- */}
-          <SidebarItems />
-        </Sidebar>
-      </Box>
-      {/* ------------------------------------------- */}
-      {/* Sidebar For Mobile */}
-      {/* ------------------------------------------- */}
-
+      <SidebarContent onItemClick={handleSidebarClose} />
     </Drawer>
   );
 };
 
 export default MSidebar;
-
-
-
-
-
