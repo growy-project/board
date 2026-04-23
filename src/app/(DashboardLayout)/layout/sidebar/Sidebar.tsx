@@ -23,11 +23,11 @@ const SidebarContent = ({
   onItemClick?: () => void;
 }) => (
   <Box sx={{ width: SIDEBAR_WIDTH, height: "100%", py: 2 }}>
-    <Box sx={{ px: 3, pb: 2 }}>
+    <Box sx={{ pl: 0, pr: 1, pb: 2 }}>
       <img
         src="/images/logos/dark-logo.svg"
         alt="Logo"
-        style={{ maxWidth: "100%", height: "auto" }}
+        style={{ display: "block", maxWidth: "100%", height: "auto" }}
       />
     </Box>
     <SidebarItems toggleMobileSidebar={onItemClick} />

@@ -58,7 +58,7 @@ const ProductPerformance = () => {
   return (
     <>
       <DashboardCard
-        title="Stock Performance"
+        title="Momentum Scanner"
         action={
           <StockFilterToolbar
             exchange={filters.exchange}
