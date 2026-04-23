@@ -31,7 +31,7 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={stickyCell}>
+        <TableCell sx={{ ...stickyCell, left: 0, zIndex: 3 }}>
           <Typography variant="subtitle2" fontWeight={600}>Symbol</Typography>
         </TableCell>
         <TableCell align="right" sx={{ ...stickyCell, width: "120px" }}>

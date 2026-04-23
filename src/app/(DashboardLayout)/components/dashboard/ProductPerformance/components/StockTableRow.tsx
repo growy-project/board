@@ -25,7 +25,14 @@ const StockTableRow = React.memo(function StockTableRow({
 }: StockTableRowProps) {
   return (
     <TableRow>
-      <TableCell>
+      <TableCell
+        sx={{
+          position: "sticky",
+          left: 0,
+          zIndex: 1,
+          backgroundColor: "background.paper",
+        }}
+      >
         <Typography sx={{ fontSize: "15px", fontWeight: "500" }}>
           <a
             href={`https://www.google.com/finance/quote/${product.symbol}${exchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
