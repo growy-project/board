@@ -1,6 +1,5 @@
-// import { Helmet } from 'react-helmet';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-
+'use client';
+import { useEffect } from 'react';
 
 type Props = {
   description?: string;
@@ -8,16 +7,23 @@ type Props = {
   title?: string;
 };
 
-const PageContainer = ({ title, description, children }: Props) => (
-  <HelmetProvider>
-    <div>
-      <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-      </Helmet>
-      {children}
-    </div>
-  </HelmetProvider>
-);
+const PageContainer = ({ title, description, children }: Props) => {
+  useEffect(() => {
+    if (title) {
+      document.title = title;
+    }
+    if (description) {
+      let tag = document.querySelector('meta[name="description"]');
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', 'description');
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', description);
+    }
+  }, [title, description]);
+
+  return <div>{children}</div>;
+};
 
 export default PageContainer;
