@@ -6,7 +6,7 @@ import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/Pro
 
 const Dashboard = () => {
   return (
-    <PageContainer title="Growy Server" description="Growy Server - Stock Performance Dashboard">
+    <PageContainer title="MS" description="Momentum Scanner Dashboard">
       <Box>
         <Grid
           size={{
