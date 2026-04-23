@@ -8,12 +8,16 @@ const Dashboard = () => {
   return (
     <PageContainer title="Growy Server" description="Growy Server - Stock Performance Dashboard">
       <Box>
-        <Grid item xs={12} lg={8}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 8
+          }}>
           <ProductPerformance />
         </Grid>
       </Box>
     </PageContainer>
-  )
+  );
 }
 
 export default Dashboard;
