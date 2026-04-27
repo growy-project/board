@@ -31,7 +31,7 @@ export function useStockJob() {
           }
           return;
         }
-        timeoutRef.current = setTimeout(poll, 1000);
+        timeoutRef.current = setTimeout(poll, 2000);
       } catch (err: unknown) {
         isJobFinishedRef.current = true;
         const e = err as { response?: { data?: { message?: string } | string }; message?: string };
