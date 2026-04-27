@@ -6,7 +6,7 @@ import type { SymbolDateRangeResult } from "../../../../services/symbolService";
 
 export function useFilters() {
   const [exchange, setExchange] = useState<string>("NASDAQ");
-  const [minPercentageChange, setMinPercentageChange] = useState<number>(20);
+  const [minPercentageChange, setMinPercentageChange] = useState<number>(30);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [needsSearch, setNeedsSearch] = useState(false);
@@ -25,7 +25,7 @@ export function useFilters() {
         if (!cancelled) {
           setDateRange(range);
           const end = dayjs(range.lastDate);
-          setStartDate(end.subtract(1, "year"));
+          setStartDate(end.subtract(3, "month"));
           setEndDate(end);
         }
       } catch {
