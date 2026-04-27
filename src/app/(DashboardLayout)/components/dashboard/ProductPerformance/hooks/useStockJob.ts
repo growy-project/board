@@ -17,13 +17,12 @@ export function useStockJob() {
   const isJobFinishedRef = useRef(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const pageSize = 20;
 
   const startPolling = useCallback((startedJobId: string) => {
     const poll = async () => {
       if (isJobFinishedRef.current) return;
       try {
-        const info = await realService.getJobStatus(startedJobId, 1, pageSize);
+        const info = await realService.getJobStatus(startedJobId);
         setStatus(info);
         if (info.isFinished || info.percentComplete === 100) {
           isJobFinishedRef.current = true;
@@ -44,7 +43,7 @@ export function useStockJob() {
       }
     };
     poll();
-  }, [pageSize]);
+  }, []);
 
   const handleSearch = useCallback(async (params: SearchParams) => {
     setStatus(null);
