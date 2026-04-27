@@ -93,14 +93,14 @@ export default function StockFilterToolbar({
         </FormControl>
 
         <TextField
-          label="Minimum Percentage Change"
+          label="Minimum % Change"
           color="secondary"
           focused
           type="number"
           value={minPercentageChange}
           onChange={onMinPercentageChange}
           size="small"
-          sx={{ minWidth: "180px" }}
+          sx={{ width: "130px" }}
           disabled={dateRangeLoading}
         />
 
@@ -112,7 +112,7 @@ export default function StockFilterToolbar({
           minDate={dateRange ? dayjs(dateRange.firstDate) : undefined}
           maxDate={endDate ?? (dateRange ? dayjs(dateRange.lastDate) : undefined)}
           slotProps={{
-            textField: { size: "small", sx: { minWidth: "140px" }, disabled: dateRangeLoading },
+            textField: { size: "small", sx: { width: "160px" }, disabled: dateRangeLoading },
           }}
         />
 
@@ -124,7 +124,7 @@ export default function StockFilterToolbar({
           minDate={startDate ?? (dateRange ? dayjs(dateRange.firstDate) : undefined)}
           maxDate={dateRange ? dayjs(dateRange.lastDate) : undefined}
           slotProps={{
-            textField: { size: "small", sx: { minWidth: "140px" }, disabled: dateRangeLoading },
+            textField: { size: "small", sx: { width: "160px" }, disabled: dateRangeLoading },
           }}
         />
 

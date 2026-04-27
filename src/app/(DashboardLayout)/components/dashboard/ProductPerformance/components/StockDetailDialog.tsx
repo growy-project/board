@@ -16,7 +16,7 @@ interface ChartDataPoint {
   [key: string]: unknown;
   closePrice: number;
   ema20: number | null;
-  date: string;
+  unixDate: number;
 }
 
 interface StockDetailDialogProps {
@@ -52,7 +52,12 @@ export default function StockDetailDialog({
         {chartDataset ? (
           <LineChart
             dataset={chartDataset}
-            xAxis={[{ dataKey: "date", scaleType: "point", tickNumber: 6 }]}
+            xAxis={[{
+              dataKey: "unixDate",
+              scaleType: "time",
+              valueFormatter: (v: number) =>
+                new Date(v).toLocaleDateString(undefined, { month: "short", year: "numeric" }),
+            }]}
             series={[
               { dataKey: "closePrice", label: "Close Price", showMark: false },
               { dataKey: "ema20", label: "EMA 20", showMark: false },

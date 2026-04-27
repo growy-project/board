@@ -5,8 +5,8 @@ import * as symbolService from "../../../../services/symbolService";
 import type { SymbolDateRangeResult } from "../../../../services/symbolService";
 
 export function useFilters() {
-  const [exchange, setExchange] = useState<string>("NYSE");
-  const [minPercentageChange, setMinPercentageChange] = useState<number>(30);
+  const [exchange, setExchange] = useState<string>("NASDAQ");
+  const [minPercentageChange, setMinPercentageChange] = useState<number>(20);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [needsSearch, setNeedsSearch] = useState(false);

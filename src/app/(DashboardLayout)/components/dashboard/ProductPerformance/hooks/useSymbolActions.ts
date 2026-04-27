@@ -5,7 +5,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { ADMIN_EMAIL } from "../constants";
 import type { StockPerformance } from "../types";
 
-export function useSymbolActions(exchange: string) {
+export function useSymbolActions(exchange: string, startUnixDate?: number | null, endUnixDate?: number | null) {
   const { user } = useAuth();
   const [actionsMenuAnchor, setActionsMenuAnchor] = useState<null | HTMLElement>(null);
   const [actionsMenuStock, setActionsMenuStock] = useState<StockPerformance | null>(null);
@@ -28,11 +28,7 @@ export function useSymbolActions(exchange: string) {
     return history.prices.map((entry) => ({
       closePrice: entry.closePrice,
       ema20: ema20Map.get(entry.unixDate) ?? null,
-      date: new Date(entry.unixDate).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
+      unixDate: entry.unixDate,
     }));
   }, [symbolHistory]);
 
@@ -45,8 +41,8 @@ export function useSymbolActions(exchange: string) {
     setSelectedStock(product);
     setSymbolHistory(null);
     setDialogOpen(true);
-    realService.getSymbolHistory(product.symbol, exchange).then(setSymbolHistory);
-  }, [exchange]);
+    realService.getSymbolHistory(product.symbol, { exchange, startUnixDate, endUnixDate }).then(setSymbolHistory);
+  }, [exchange, startUnixDate, endUnixDate]);
 
   const closeActionsMenu = useCallback(() => setActionsMenuAnchor(null), []);
 

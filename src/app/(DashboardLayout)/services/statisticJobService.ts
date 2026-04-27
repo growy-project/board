@@ -8,18 +8,17 @@ export const startStatisticJob = async (params: any) => {
   return response.data.jobId;
 };
 
-export const getJobStatus = async (
-  jobId: any,
-  page: number = 1,
-  pageSize: number = 20
-) => {
+export const getJobStatus = async (jobId: any) => {
   const response = await axios.get(`${API_BASE_URL}/status/${jobId}`);
   return response.data;
 };
 
-export const getSymbolHistory = async (symbol: string, exchange: string) => {
+export const getSymbolHistory = async (
+  symbol: string,
+  params: { exchange: string; startUnixDate?: number | null; endUnixDate?: number | null }
+) => {
   const response = await axios.get(`${API_BASE_URL}/history/${symbol}`, {
-    params: { exchange },
+    params,
   });
   return response.data;
 };

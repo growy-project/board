@@ -22,7 +22,7 @@ const ProductPerformance = () => {
   const filters = useFilters();
   const job = useStockJob();
   const sort = useStockSort(job.status);
-  const actions = useSymbolActions(filters.exchange);
+  const actions = useSymbolActions(filters.exchange, filters.startDate?.unix(), filters.endDate?.unix());
 
   // Run the initial search once the date range has been seeded
   useEffect(() => {

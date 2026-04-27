@@ -134,7 +134,15 @@ const StockTableRow = React.memo(function StockTableRow({
           )}
         </Typography>
       </TableCell>
-      <TableCell>
+      <TableCell
+        sx={{
+          position: "sticky",
+          right: 80,
+          width: "80px",
+          zIndex: 1,
+          backgroundColor: "background.paper",
+        }}
+      >
         <IconButton
           size="small"
           sx={{
@@ -150,6 +158,8 @@ const StockTableRow = React.memo(function StockTableRow({
         sx={{
           position: "sticky",
           right: 0,
+          width: "80px",
+          zIndex: 1,
           backgroundColor: "background.paper",
         }}
       >

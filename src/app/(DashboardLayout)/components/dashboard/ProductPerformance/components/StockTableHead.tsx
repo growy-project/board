@@ -68,10 +68,10 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
             </Box>
           </TableSortLabel>
         </TableCell>
-        <TableCell align="right" sx={{ ...stickyCell, width: "100px" }}>
+        <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
           {sortLabel("oldestPrice", "Oldest Price")}
         </TableCell>
-        <TableCell align="right" sx={{ ...stickyCell, width: "100px" }}>
+        <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
           {sortLabel("newestPrice", "Newest Price")}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
@@ -83,16 +83,16 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("marketCapitalization", "Market Cap")}
         </TableCell>
-        <TableCell sx={stickyCell}>
+        <TableCell sx={{ ...stickyCell, width: "90px" }}>
           <Typography variant="subtitle2" fontWeight={600}>Sector</Typography>
         </TableCell>
         <TableCell sx={stickyCell}>
           <Typography variant="subtitle2" fontWeight={600}>Description</Typography>
         </TableCell>
-        <TableCell sx={stickyCell}>
-          <Typography variant="subtitle2" fontWeight={600}>Detail</Typography>
+        <TableCell sx={{ ...stickyCell, right: 80, width: "80px", zIndex: 3 }}>
+          <Typography variant="subtitle2" fontWeight={600}>Details</Typography>
         </TableCell>
-        <TableCell sx={{ ...stickyCell, right: 0, zIndex: 3 }}>
+        <TableCell sx={{ ...stickyCell, right: 0, width: "80px", zIndex: 3 }}>
           <Typography variant="subtitle2" fontWeight={600}>Actions</Typography>
         </TableCell>
       </TableRow>
