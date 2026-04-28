@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
@@ -51,6 +51,18 @@ const ProductPerformance = () => {
     });
   };
 
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+  useEffect(() => {
+    if (!filters.dateRangeLoading) return;
+    const id = setInterval(() => setLoadingMessageIndex((i) => (i + 1) % 2), 2500);
+    return () => clearInterval(id);
+  }, [filters.dateRangeLoading]);
+
+  const dateRangeLoadingMessages = [
+    `Loading ${filters.exchange} symbols and ranges…`,
+    "This will be amazing",
+  ];
+
   const isJobRunning = Boolean(job.status && !job.status.isFinished);
   const showTable = !job.error && job.status?.isFinished;
   const hasResults = (job.status?.result?.length ?? 0) > 0;
@@ -102,7 +114,13 @@ const ProductPerformance = () => {
             </Typography>
           </Box>
         ) : (
-          <StockLoadingOverlay message={job.status?.processingMessage} />
+          <StockLoadingOverlay
+            message={
+              filters.dateRangeLoading
+                ? dateRangeLoadingMessages[loadingMessageIndex]
+                : job.status?.processingMessage
+            }
+          />
         )}
       </DashboardCard>
 
