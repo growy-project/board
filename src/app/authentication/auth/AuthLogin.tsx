@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { JSX } from "react";
 import { Box, Typography } from "@mui/material";
 import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";

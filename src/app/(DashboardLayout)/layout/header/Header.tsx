@@ -10,7 +10,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import PropTypes from "prop-types";
 import Link from "next/link";
 // components
 import Profile from "./Profile";
@@ -97,10 +96,6 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
       </ToolbarStyled>
     </AppBarStyled>
   );
-};
-
-Header.propTypes = {
-  sx: PropTypes.object,
 };
 
 export default Header;
