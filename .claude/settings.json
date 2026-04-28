@@ -1,4 +1,19 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command'); if echo \"$cmd\" | grep -q 'npm install'; then cd /Users/dario/Source/growy/board && npm run build; fi",
+            "statusMessage": "Verifying build after npm install…",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(ls \"c:/Users/Usuario/source/growy/board/src/app/\\(DashboardLayout\\)/\")",
