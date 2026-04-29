@@ -1,8 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { SelectChangeEvent } from "@mui/material";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as symbolService from "../../../../services/symbolService";
-import type { SymbolDateRangeResult } from "../../../../services/symbolService";
+
+const ALL_EXCHANGES = ["NASDAQ", "NYSE", "CEDEAR"] as const;
+
+const dateRangeQueryOptions = (exchange: string) => ({
+  queryKey: ["date-range", exchange] as const,
+  queryFn: () => symbolService.getExchangeDateRange(exchange),
+});
 
 export function useFilters() {
   const [exchange, setExchange] = useState<string>("NASDAQ");
@@ -10,33 +17,32 @@ export function useFilters() {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [needsSearch, setNeedsSearch] = useState(false);
-  const [dateRange, setDateRange] = useState<SymbolDateRangeResult | null>(null);
-  const [dateRangeLoading, setDateRangeLoading] = useState<boolean>(true);
   const [triggerInitialSearch, setTriggerInitialSearch] = useState(false);
   const hasInitiallySearched = useRef<boolean>(false);
+  const lastSeededExchange = useRef<string | null>(null);
 
-  // Fetch valid date range whenever the selected exchange changes; seeds start/end dates
+  const queryClient = useQueryClient();
+
+  const { data: dateRange, isFetching: dateRangeLoading } = useQuery({
+    ...dateRangeQueryOptions(exchange),
+  });
+
+  // Seed start/end dates when the selected exchange's range arrives or changes
   useEffect(() => {
-    let cancelled = false;
-    setDateRangeLoading(true);
-    const fetchDateRange = async () => {
-      try {
-        const range = await symbolService.getExchangeDateRange(exchange);
-        if (!cancelled) {
-          setDateRange(range);
-          const end = dayjs(range.lastDate);
-          setStartDate(end.subtract(3, "month"));
-          setEndDate(end);
-        }
-      } catch {
-        // Non-critical: pickers remain disabled
-      } finally {
-        if (!cancelled) setDateRangeLoading(false);
-      }
-    };
-    fetchDateRange();
-    return () => { cancelled = true; };
-  }, [exchange]);
+    if (!dateRange || lastSeededExchange.current === exchange) return;
+    lastSeededExchange.current = exchange;
+    const end = dayjs(dateRange.lastDate);
+    setStartDate(end.subtract(3, "month"));
+    setEndDate(end);
+  }, [dateRange, exchange]);
+
+  // Prefetch the other two exchanges in the background after first paint
+  useEffect(() => {
+    ALL_EXCHANGES
+      .filter((e) => e !== exchange)
+      .forEach((e) => queryClient.prefetchQuery(dateRangeQueryOptions(e)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Trigger initial search once dates are loaded for the first time
   useEffect(() => {
@@ -75,7 +81,7 @@ export function useFilters() {
     startDate,
     endDate,
     needsSearch,
-    dateRange,
+    dateRange: dateRange ?? null,
     dateRangeLoading,
     triggerInitialSearch,
     handleExchangeChange,
