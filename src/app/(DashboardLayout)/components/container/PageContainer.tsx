@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { JSX, useEffect } from 'react';
 
 type Props = {
   description?: string;
