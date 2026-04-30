@@ -2,14 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { SelectChangeEvent } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import * as symbolService from "../../../../services/symbolService";
-
-const ALL_EXCHANGES = ["NASDAQ", "NYSE", "CEDEAR"] as const;
-
-const dateRangeQueryOptions = (exchange: string) => ({
-  queryKey: ["date-range", exchange] as const,
-  queryFn: () => symbolService.getExchangeDateRange(exchange),
-});
+import { ALL_EXCHANGES, dateRangeQueryOptions } from "@/app/(DashboardLayout)/queries/dateRangeQuery";
 
 export function useFilters() {
   const [exchange, setExchange] = useState<string>("NASDAQ");
