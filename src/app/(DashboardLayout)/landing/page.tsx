@@ -3,8 +3,10 @@
 import { useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { useAppTheme } from '@/app/context/ThemeContext'
 import { markLandingSeen } from '@/utils/landingGate'
+import { prefetchAllExchangeDateRanges } from '@/app/(DashboardLayout)/queries/dateRangeQuery'
 
 const fadeInDown = `
   @keyframes fadeInDown {
@@ -42,12 +44,14 @@ const animated = (delay: string): React.CSSProperties => ({
 export default function Page() {
   const { mode } = useAppTheme()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const arrowColor = mode === 'light' ? '#1a1a1a' : '#ffffff'
   const goHome = () => router.push('/')
 
   useEffect(() => {
     markLandingSeen()
-  }, [])
+    prefetchAllExchangeDateRanges(queryClient)
+  }, [queryClient])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 160px)', padding: '0 5vw', boxSizing: 'border-box' }}>
