@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 
@@ -89,11 +89,31 @@ const ProductPerformance = () => {
           />
         }
       >
+        <>
+        {filters.needsSearch && showTable && (
+          <Alert
+            severity="warning"
+            sx={{ mb: 2 }}
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                onClick={handleSearch}
+                disabled={isJobRunning || !filters.startDate || !filters.endDate}
+              >
+                Refresh results
+              </Button>
+            }
+          >
+            Filters changed — results below are out of date.
+          </Alert>
+        )}
         {showTable && hasResults ? (
           <StockTable
             sortedResults={sort.sortedResults}
             exchange={filters.exchange}
             isPageLoading={job.isPageLoading}
+            isStale={filters.needsSearch}
             orderBy={sort.orderBy}
             order={sort.order}
             currentPage={sort.currentPage}
@@ -122,6 +142,7 @@ const ProductPerformance = () => {
             }
           />
         )}
+        </>
       </DashboardCard>
 
       <ErrorDialog error={job.error} onClose={job.clearError} />
