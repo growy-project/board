@@ -6,12 +6,15 @@ import { ADMIN_EMAIL } from "../constants";
 import type { StockPerformance } from "../types";
 
 export function useSymbolActions(exchange: string, startUnixDate?: number | null, endUnixDate?: number | null) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [actionsMenuAnchor, setActionsMenuAnchor] = useState<null | HTMLElement>(null);
   const [actionsMenuStock, setActionsMenuStock] = useState<StockPerformance | null>(null);
   const [notAdminDialogOpen, setNotAdminDialogOpen] = useState(false);
   const [notAdminAction, setNotAdminAction] = useState<"toxic" | "topGrowth" | null>(null);
   const [notAdminMessage, setNotAdminMessage] = useState("");
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
+  const [tagRequestSuccess, setTagRequestSuccess] = useState<string | null>(null);
+  const [isSubmittingTag, setIsSubmittingTag] = useState(false);
   const [symbolHistory, setSymbolHistory] = useState<unknown>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedStock, setSelectedStock] = useState<StockPerformance | null>(null);
@@ -48,41 +51,57 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
 
   const handleTagToxic = useCallback(async () => {
     setActionsMenuAnchor(null);
-    if (user?.email === ADMIN_EMAIL) {
-      if (actionsMenuStock) await symbolService.setToxic(actionsMenuStock.symbol, true);
+    if (!user || !token) {
+      setLoginPromptOpen(true);
+      return;
+    }
+    if (user.email === ADMIN_EMAIL) {
+      if (actionsMenuStock) await symbolService.setToxic(actionsMenuStock.symbol, true, token);
     } else {
       setNotAdminAction("toxic");
       setNotAdminMessage("");
       setNotAdminDialogOpen(true);
     }
-  }, [user, actionsMenuStock]);
+  }, [user, token, actionsMenuStock]);
 
   const handleTagTopGrowth = useCallback(async () => {
     setActionsMenuAnchor(null);
-    if (user?.email === ADMIN_EMAIL) {
-      if (actionsMenuStock) await symbolService.setTopGrowth(actionsMenuStock.symbol, true);
+    if (!user || !token) {
+      setLoginPromptOpen(true);
+      return;
+    }
+    if (user.email === ADMIN_EMAIL) {
+      if (actionsMenuStock) await symbolService.setTopGrowth(actionsMenuStock.symbol, true, token);
     } else {
       setNotAdminAction("topGrowth");
       setNotAdminMessage("");
       setNotAdminDialogOpen(true);
     }
-  }, [user, actionsMenuStock]);
+  }, [user, token, actionsMenuStock]);
 
   const handleNotAdminMessageChange = useCallback((value: string) => {
     if (value.length <= 300) setNotAdminMessage(value);
   }, []);
 
   const handleSubmitTag = useCallback(async () => {
-    if (actionsMenuStock && notAdminAction) {
-      await symbolService.requestTag(
-        actionsMenuStock.symbol,
-        notAdminAction,
-        notAdminMessage.trim(),
-        user?.email ?? "unknown"
-      );
+    if (actionsMenuStock && notAdminAction && user && token) {
+      setIsSubmittingTag(true);
+      try {
+        await symbolService.requestTag(
+          actionsMenuStock.symbol,
+          notAdminAction,
+          notAdminMessage.trim(),
+          user.email,
+          token
+        );
+        const tagLabel = notAdminAction === "toxic" ? "toxic" : "top-growth";
+        setTagRequestSuccess(`Tag request submitted: ${actionsMenuStock.symbol} as ${tagLabel}.`);
+      } finally {
+        setIsSubmittingTag(false);
+      }
     }
     setNotAdminDialogOpen(false);
-  }, [actionsMenuStock, notAdminAction, notAdminMessage, user]);
+  }, [actionsMenuStock, notAdminAction, notAdminMessage, user, token]);
 
   return {
     actionsMenuAnchor,
@@ -91,6 +110,11 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
     setNotAdminDialogOpen,
     notAdminAction,
     notAdminMessage,
+    loginPromptOpen,
+    setLoginPromptOpen,
+    tagRequestSuccess,
+    setTagRequestSuccess,
+    isSubmittingTag,
     symbolHistory,
     chartDataset,
     dialogOpen,

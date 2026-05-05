@@ -9,11 +9,13 @@ import {
   Stack,
   Alert,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 interface NotAdminDialogProps {
   open: boolean;
   action: "toxic" | "topGrowth" | null;
   message: string;
+  submitting: boolean;
   onMessageChange: (value: string) => void;
   onCancel: () => void;
   onSubmit: () => void;
@@ -23,12 +25,18 @@ export default function NotAdminDialog({
   open,
   action,
   message,
+  submitting,
   onMessageChange,
   onCancel,
   onSubmit,
 }: NotAdminDialogProps) {
   return (
-    <Dialog open={open} onClose={onCancel} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={submitting ? undefined : onCancel}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogTitle>Administrator action required</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
@@ -46,19 +54,21 @@ export default function NotAdminDialog({
             inputProps={{ maxLength: 300 }}
             helperText={`${message.length}/300`}
             fullWidth
+            disabled={submitting}
           />
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button
+        <Button onClick={onCancel} disabled={submitting}>Cancel</Button>
+        <LoadingButton
           variant="contained"
+          loading={submitting}
           disabled={message.trim().length < 5}
           onClick={onSubmit}
           sx={{ backgroundColor: "#278ab0", "&:hover": { backgroundColor: "#1c4670" } }}
         >
           Submit
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

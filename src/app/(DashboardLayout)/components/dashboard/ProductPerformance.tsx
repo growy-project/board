@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 
@@ -130,6 +130,7 @@ const ProductPerformance = () => {
         open={actions.notAdminDialogOpen}
         action={actions.notAdminAction}
         message={actions.notAdminMessage}
+        submitting={actions.isSubmittingTag}
         onMessageChange={actions.handleNotAdminMessageChange}
         onCancel={() => actions.setNotAdminDialogOpen(false)}
         onSubmit={actions.handleSubmitTag}
@@ -148,6 +149,36 @@ const ProductPerformance = () => {
         chartDataset={actions.chartDataset}
         onClose={() => actions.setDialogOpen(false)}
       />
+
+      <Snackbar
+        open={actions.loginPromptOpen}
+        autoHideDuration={4000}
+        onClose={() => actions.setLoginPromptOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          onClose={() => actions.setLoginPromptOpen(false)}
+        >
+          Please log in to tag a symbol.
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={Boolean(actions.tagRequestSuccess)}
+        autoHideDuration={4000}
+        onClose={() => actions.setTagRequestSuccess(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          severity="success"
+          variant="filled"
+          onClose={() => actions.setTagRequestSuccess(null)}
+        >
+          {actions.tagRequestSuccess}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
