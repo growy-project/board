@@ -16,6 +16,7 @@ interface StockTableProps {
   sortedResults: StockPerformance[];
   exchange: string;
   isPageLoading: boolean;
+  isStale: boolean;
   orderBy: SortableColumn;
   order: "asc" | "desc";
   currentPage: number;
@@ -32,6 +33,7 @@ export default function StockTable({
   sortedResults,
   exchange,
   isPageLoading,
+  isStale,
   orderBy,
   order,
   currentPage,
@@ -51,6 +53,11 @@ export default function StockTable({
           overflowX: "auto",
           overflowY: "auto",
           maxHeight: "500px",
+          transition: "opacity 200ms ease, filter 200ms ease",
+          ...(isStale && {
+            opacity: 0.55,
+            filter: "grayscale(40%)",
+          }),
         }}
       >
         {isPageLoading && (
