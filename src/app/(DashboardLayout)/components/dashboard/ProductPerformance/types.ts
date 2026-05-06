@@ -1,5 +1,6 @@
 export interface StockPerformance {
   symbol: string;
+  exchange?: string | null;
   percentageChange: number;
   oldestPrice: number;
   newestPrice: number;

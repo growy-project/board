@@ -4,15 +4,42 @@ import { SelectChangeEvent } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ALL_EXCHANGES, dateRangeQueryOptions } from "@/app/(DashboardLayout)/queries/dateRangeQuery";
 
+const FILTER_STORAGE_KEY = "dashboard_filters";
+
+interface SavedFilters {
+  exchange: string;
+  minPct: number;
+  startDate: number; // unix
+  endDate: number;   // unix
+}
+
+function readSavedFilters(): SavedFilters | null {
+  try {
+    const raw = localStorage.getItem(FILTER_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as SavedFilters) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function useFilters() {
-  const [exchange, setExchange] = useState<string>("NASDAQ");
-  const [minPercentageChange, setMinPercentageChange] = useState<number>(30);
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const saved = readSavedFilters();
+
+  const [exchange, setExchange] = useState<string>(saved?.exchange ?? "NASDAQ");
+  const [minPercentageChange, setMinPercentageChange] = useState<number>(saved?.minPct ?? 30);
+  const [startDate, setStartDate] = useState<Dayjs | null>(
+    saved?.startDate ? dayjs.unix(saved.startDate) : null
+  );
+  const [endDate, setEndDate] = useState<Dayjs | null>(
+    saved?.endDate ? dayjs.unix(saved.endDate) : null
+  );
   const [needsSearch, setNeedsSearch] = useState(false);
   const [triggerInitialSearch, setTriggerInitialSearch] = useState(false);
   const hasInitiallySearched = useRef<boolean>(false);
-  const lastSeededExchange = useRef<string | null>(null);
+  // Pre-seed the guard so the seeding effect doesn't overwrite restored dates
+  const lastSeededExchange = useRef<string | null>(
+    saved?.startDate ? (saved.exchange ?? null) : null
+  );
 
   const queryClient = useQueryClient();
 
@@ -45,6 +72,20 @@ export function useFilters() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRangeLoading, startDate, endDate]);
+
+  // Persist filters to localStorage whenever they change
+  useEffect(() => {
+    if (!startDate || !endDate) return;
+    localStorage.setItem(
+      FILTER_STORAGE_KEY,
+      JSON.stringify({
+        exchange,
+        minPct: minPercentageChange,
+        startDate: startDate.unix(),
+        endDate: endDate.unix(),
+      })
+    );
+  }, [exchange, minPercentageChange, startDate, endDate]);
 
   const handleExchangeChange = useCallback((e: SelectChangeEvent) => {
     setExchange(e.target.value);

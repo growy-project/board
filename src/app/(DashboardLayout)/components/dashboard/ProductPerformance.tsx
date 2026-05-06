@@ -160,6 +160,7 @@ const ProductPerformance = () => {
       <StockActionsMenu
         anchorEl={actions.actionsMenuAnchor}
         onClose={actions.closeActionsMenu}
+        onAddToWatchlist={actions.handleAddToWatchlist}
         onTagToxic={actions.handleTagToxic}
         onTagTopGrowth={actions.handleTagTopGrowth}
       />
@@ -198,6 +199,21 @@ const ProductPerformance = () => {
           onClose={() => actions.setTagRequestSuccess(null)}
         >
           {actions.tagRequestSuccess}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={Boolean(actions.watchlistFeedback)}
+        autoHideDuration={4000}
+        onClose={() => actions.setWatchlistFeedback(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          severity={actions.watchlistFeedback?.severity ?? "success"}
+          variant="filled"
+          onClose={() => actions.setWatchlistFeedback(null)}
+        >
+          {actions.watchlistFeedback?.message}
         </Alert>
       </Snackbar>
     </>

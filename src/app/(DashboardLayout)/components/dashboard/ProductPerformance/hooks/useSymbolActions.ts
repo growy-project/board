@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback } from "react";
+import axios from "axios";
 import * as symbolService from "../../../../services/symbolService";
 import * as realService from "../../../../services/statisticJobService";
+import * as watchlistService from "../../../../services/watchlistService";
 import { useAuth } from "@/app/context/AuthContext";
 import { ADMIN_EMAIL } from "../constants";
 import type { StockPerformance } from "../types";
@@ -18,6 +20,9 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
   const [symbolHistory, setSymbolHistory] = useState<unknown>(null);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [selectedStock, setSelectedStock] = useState<StockPerformance | null>(null);
+  const [watchlistFeedback, setWatchlistFeedback] = useState<
+    { severity: "success" | "warning" | "error"; message: string } | null
+  >(null);
 
   const chartDataset = useMemo(() => {
     const history = symbolHistory as {
@@ -79,6 +84,33 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
     }
   }, [user, token, actionsMenuStock]);
 
+  const handleAddToWatchlist = useCallback(async () => {
+    setActionsMenuAnchor(null);
+    if (!user || !token) {
+      setLoginPromptOpen(true);
+      return;
+    }
+    if (!actionsMenuStock) return;
+    try {
+      await watchlistService.addToWatchlist(actionsMenuStock.symbol, exchange, token);
+      setWatchlistFeedback({
+        severity: "success",
+        message: `${actionsMenuStock.symbol} added to your watchlist.`,
+      });
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 409) {
+        const message = (err.response.data as { message?: string })?.message
+          ?? "Could not add symbol to watchlist.";
+        setWatchlistFeedback({ severity: "warning", message });
+      } else {
+        setWatchlistFeedback({
+          severity: "error",
+          message: "Failed to add symbol to your watchlist.",
+        });
+      }
+    }
+  }, [user, token, actionsMenuStock, exchange]);
+
   const handleNotAdminMessageChange = useCallback((value: string) => {
     if (value.length <= 300) setNotAdminMessage(value);
   }, []);
@@ -125,6 +157,9 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
     closeActionsMenu,
     handleTagToxic,
     handleTagTopGrowth,
+    handleAddToWatchlist,
+    watchlistFeedback,
+    setWatchlistFeedback,
     handleNotAdminMessageChange,
     handleSubmitTag,
   };

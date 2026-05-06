@@ -23,6 +23,7 @@ const StockTableRow = React.memo(function StockTableRow({
   onDetailClick,
   onActionsClick,
 }: StockTableRowProps) {
+  const effectiveExchange = product.exchange ?? exchange;
   return (
     <TableRow>
       <TableCell
@@ -35,7 +36,7 @@ const StockTableRow = React.memo(function StockTableRow({
       >
         <Typography sx={{ fontSize: "15px", fontWeight: "500" }}>
           <a
-            href={`https://www.google.com/finance/quote/${product.symbol}${exchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
+            href={`https://www.google.com/finance/quote/${product.symbol}${effectiveExchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: "inherit", textDecoration: "underline" }}
