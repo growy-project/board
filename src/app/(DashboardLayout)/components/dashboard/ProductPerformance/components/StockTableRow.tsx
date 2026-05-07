@@ -63,6 +63,26 @@ const StockTableRow = React.memo(function StockTableRow({
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.percentPositiveDays != null ? `${product.percentPositiveDays.toFixed(1)}%` : "—"}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.returnStdDev != null ? `${product.returnStdDev.toFixed(2)}%` : "—"}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.maxDrawdown != null ? `${product.maxDrawdown.toFixed(2)}%` : "—"}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.isInMomentum == null ? "—" : product.isInMomentum ? "Yes" : "No"}
+        </Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.eps != null ? `$${product.eps.toFixed(2)}` : "—"}
         </Typography>
       </TableCell>

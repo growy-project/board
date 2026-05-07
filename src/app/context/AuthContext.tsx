@@ -1,7 +1,9 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { googleLogin } from "@/app/(DashboardLayout)/services/authService";
+import { isJwtExpired } from "@/app/(DashboardLayout)/utilities/jwt";
 import { useRouter } from "next/navigation";
 
 type AuthUser = {
@@ -32,11 +34,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const storedUser = localStorage.getItem("growy_user");
     const storedToken = localStorage.getItem("growy_token");
-    if (storedUser && storedToken) {
+    if (storedUser && storedToken && !isJwtExpired(storedToken)) {
       const parsed: AuthUser = JSON.parse(storedUser);
       setUser(parsed);
       setToken(storedToken);
       queryClient.setQueryData(USER_QUERY_KEY, parsed);
+    } else if (storedToken) {
+      localStorage.removeItem("growy_user");
+      localStorage.removeItem("growy_token");
     }
   }, [queryClient]);
 
@@ -63,6 +68,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     queryClient.removeQueries({ queryKey: ["auth"] });
     router.replace("/authentication/login");
   };
+
+  useEffect(() => {
+    const id = axios.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        if (err?.response?.status === 401 && localStorage.getItem("growy_token")) {
+          logout();
+        }
+        return Promise.reject(err);
+      },
+    );
+    return () => axios.interceptors.response.eject(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>

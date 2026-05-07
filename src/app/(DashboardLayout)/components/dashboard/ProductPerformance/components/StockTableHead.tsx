@@ -41,6 +41,18 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
           {sortLabel("volatility", "Volatility %")}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
+          {sortLabel("percentPositiveDays", "% Positive Days")}
+        </TableCell>
+        <TableCell align="right" sx={stickyCell}>
+          {sortLabel("returnStdDev", "Return StdDev")}
+        </TableCell>
+        <TableCell align="right" sx={stickyCell}>
+          {sortLabel("maxDrawdown", "Max Drawdown")}
+        </TableCell>
+        <TableCell align="right" sx={stickyCell}>
+          <Typography variant="subtitle2" fontWeight={600}>Is Momentum</Typography>
+        </TableCell>
+        <TableCell align="right" sx={stickyCell}>
           <TableSortLabel
             active={orderBy === "eps"}
             direction={orderBy === "eps" ? order : "desc"}

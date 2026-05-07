@@ -10,6 +10,9 @@ export type SortableColumn = keyof Pick<
   | "newestPrice"
   | "targetPrice"
   | "marketCapitalization"
+  | "percentPositiveDays"
+  | "returnStdDev"
+  | "maxDrawdown"
 >;
 
 export function descendingComparator(

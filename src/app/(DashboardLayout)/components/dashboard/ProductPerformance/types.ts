@@ -12,6 +12,10 @@ export interface StockPerformance {
   targetPrice: number | null;
   rsi: number;
   volatility: number;
+  percentPositiveDays: number | null;
+  returnStdDev: number | null;
+  maxDrawdown: number | null;
+  isInMomentum: boolean | null;
 }
 
 export interface JobStatus {
