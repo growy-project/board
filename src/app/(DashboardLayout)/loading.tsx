@@ -1,7 +1,3 @@
-const Loading = () =>{
-    return(
-        <div>Dash Loading</div>
-    )
-}
+const Loading = () => null;
 
 export default Loading;
