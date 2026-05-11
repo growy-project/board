@@ -36,7 +36,8 @@ export const useLandingGate = (): boolean => {
     }
     writeStamp();
     setReady(true);
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return ready;
 };
