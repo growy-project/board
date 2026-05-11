@@ -147,7 +147,29 @@ const StockTableRow = React.memo(function StockTableRow({
           {product.description == null ? (
             "—"
           ) : product.description.length > 25 ? (
-            <Tooltip title={product.description} arrow placement="top">
+            <Tooltip
+              title={product.description}
+              arrow
+              placement="top"
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    maxWidth: 360,
+                    maxHeight: "60vh",
+                    overflowY: "auto",
+                    whiteSpace: "normal",
+                    fontSize: 12,
+                    lineHeight: 1.5,
+                  },
+                },
+                popper: {
+                  modifiers: [
+                    { name: "preventOverflow", options: { padding: 16 } },
+                    { name: "flip", options: { fallbackPlacements: ["bottom", "right", "left"] } },
+                  ],
+                },
+              }}
+            >
               <span>{product.description.slice(0, 25)}…</span>
             </Tooltip>
           ) : (
