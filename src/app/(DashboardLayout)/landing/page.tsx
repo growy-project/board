@@ -110,7 +110,7 @@ export default function Page() {
             </h2>
             <div style={{ marginTop: '110px', ...animated('2.9s') }}>
               <Image
-                src="/grid.png"
+                src="/grid.webp"
                 alt="Top growth grid"
                 width={240}
                 height={120}
@@ -120,7 +120,7 @@ export default function Page() {
           </div>
           <div onClick={openWizard} style={{ flex: '0 0 auto', cursor: 'pointer', ...animated('0.3s') }}>
             <Image
-              src="/chart.png"
+              src="/chart.webp"
               alt="Stock momentum chart"
               width={600}
               height={500}
