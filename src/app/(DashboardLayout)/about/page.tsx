@@ -68,6 +68,7 @@ const columnReference: { label: string; body: React.ReactNode }[] = [
 
 const AboutPage = () => {
   const [expanded, setExpanded] = useState(false);
+  const [devExpanded, setDevExpanded] = useState(false);
 
   return (
     <PageContainer title="MS" description="About">
@@ -207,6 +208,37 @@ const AboutPage = () => {
                 </Box>
               ))}
             </Stack>
+          </Collapse>
+
+          <Divider sx={{ my: 3 }} />
+
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => setDevExpanded((v) => !v)}
+            endIcon={devExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            sx={{ pl: 0, fontSize: ".99rem" }}
+          >
+            About the developer
+          </Button>
+
+          <Collapse in={devExpanded} timeout="auto" unmountOnExit>
+            <Typography variant="body1" sx={{ fontSize: "1.05rem", mt: 2 }}>
+              As a <Link
+                href="https://www.linkedin.com/in/dario-olinuck/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                software developer
+              </Link>
+              , I wanted to figure out what to do with my
+              savings — how to make them grow — so I bought some stocks: a
+              handful of blue chips and a few green-energy names. Six months
+              later I was down 1%. It wasn&apos;t scary — a 30% drop would have
+              sent me running — but losing 1% on half a year of patience felt
+              ridiculous. So I started researching, and eventually built the
+              tool I wished I&apos;d had from day one.
+            </Typography>
           </Collapse>
         </Box>
       </DashboardCard>
