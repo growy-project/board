@@ -35,7 +35,7 @@ export default function ScanSetupWizard({ open, onClose }: Props) {
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [exchange, setExchange] = useState<ExchangeId>("NASDAQ");
-  const [minPct, setMinPct] = useState<number>(5);
+  const [minPct, setMinPct] = useState<number>(30);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [lastSeededExchange, setLastSeededExchange] = useState<string | null>(null);
@@ -56,8 +56,9 @@ export default function ScanSetupWizard({ open, onClose }: Props) {
   useEffect(() => {
     if (open) {
       setStep(1);
+      router.prefetch("/");
     }
-  }, [open]);
+  }, [open, router]);
 
   const stepValid = useMemo(() => {
     if (step === 1) return Boolean(exchange);
@@ -83,9 +84,8 @@ export default function ScanSetupWizard({ open, onClose }: Props) {
     }
     if (!startDate || !endDate) return;
     saveDashboardFilters({ exchange, minPct, startDate, endDate });
-    onClose();
-    router.push("/");
-  }, [step, stepValid, exchange, minPct, startDate, endDate, onClose, router]);
+    router.replace("/");
+  }, [step, stepValid, exchange, minPct, startDate, endDate, router]);
 
   const handleBack = useCallback(() => {
     if (step > 1) setStep((s) => (s - 1) as Step);
