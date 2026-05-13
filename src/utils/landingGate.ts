@@ -1,7 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 const LAST_SEEN_KEY = 'growy_last_seen';
 const LANDING_TTL_MS = 7 * 24 * 60 * 60 * 1000;
@@ -27,7 +30,7 @@ export const useLandingGate = (): boolean => {
   const router = useRouter();
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const stamp = readStamp();
     const fresh = stamp !== null && Date.now() - stamp < LANDING_TTL_MS;
     if (!fresh) {
