@@ -1,15 +1,17 @@
 import React from "react";
 import { Box, ButtonBase, Typography } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import type { SymbolDateRangeResult } from "../../services/symbolService";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "./wizardTheme";
-
-export type DatePresetId = "5d" | "1m" | "3m" | "6m" | "YTD" | "1y" | "Max";
-
-const PRESETS: DatePresetId[] = ["5d", "1m", "3m", "6m", "YTD", "1y", "Max"];
+import {
+  PRESETS,
+  DatePresetId,
+  computePresetStart,
+  detectActivePreset,
+} from "../dateRange/presets";
+import DateField from "../dateRange/DateField";
 
 interface Props {
   startDate: Dayjs | null;
@@ -17,49 +19,6 @@ interface Props {
   range: SymbolDateRangeResult | undefined;
   onStartChange: (d: Dayjs | null) => void;
   onEndChange: (d: Dayjs | null) => void;
-}
-
-export function computePresetStart(
-  preset: DatePresetId,
-  rangeEnd: Dayjs,
-  rangeStart: Dayjs
-): Dayjs {
-  switch (preset) {
-    case "5d":
-      return maxDate(rangeEnd.subtract(5, "day"), rangeStart);
-    case "1m":
-      return maxDate(rangeEnd.subtract(1, "month"), rangeStart);
-    case "3m":
-      return maxDate(rangeEnd.subtract(3, "month"), rangeStart);
-    case "6m":
-      return maxDate(rangeEnd.subtract(6, "month"), rangeStart);
-    case "YTD":
-      return maxDate(rangeEnd.startOf("year"), rangeStart);
-    case "1y":
-      return maxDate(rangeEnd.subtract(1, "year"), rangeStart);
-    case "Max":
-      return rangeStart;
-  }
-}
-
-function maxDate(a: Dayjs, b: Dayjs): Dayjs {
-  return a.isBefore(b) ? b : a;
-}
-
-export function detectActivePreset(
-  start: Dayjs | null,
-  end: Dayjs | null,
-  range: SymbolDateRangeResult | undefined
-): DatePresetId | null {
-  if (!start || !end || !range) return null;
-  const rangeEnd = dayjs(range.lastDate);
-  const rangeStart = dayjs(range.firstDate);
-  if (!end.isSame(rangeEnd, "day")) return null;
-  for (const p of PRESETS) {
-    const expected = computePresetStart(p, rangeEnd, rangeStart);
-    if (expected.isSame(start, "day")) return p;
-  }
-  return null;
 }
 
 export default function DateRangeStep({
@@ -140,91 +99,5 @@ export default function DateRangeStep({
         })}
       </Box>
     </LocalizationProvider>
-  );
-}
-
-interface DateFieldProps {
-  label: string;
-  value: Dayjs | null;
-  onChange: (d: Dayjs | null) => void;
-  minDate?: Dayjs;
-  maxDate?: Dayjs;
-}
-
-function DateField({ label, value, onChange, minDate, maxDate }: DateFieldProps) {
-  return (
-    <Box
-      sx={{
-        border: `1px solid ${WIZARD_COLORS.ink500}`,
-        borderRadius: "10px",
-        padding: "10px 14px",
-        background: WIZARD_COLORS.sand100,
-        display: "flex",
-        flexDirection: "column",
-        gap: "4px",
-        transition: "0.15s",
-        "&:hover, &:focus-within": {
-          borderColor: WIZARD_COLORS.blue700,
-          background: "white",
-          boxShadow: `0 0 0 3px rgba(39, 138, 176, 0.15)`,
-        },
-      }}
-    >
-      <Typography
-        sx={{
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: WIZARD_COLORS.ink700,
-        }}
-      >
-        {label}
-      </Typography>
-      <DatePicker
-        value={value}
-        onChange={onChange}
-        minDate={minDate}
-        maxDate={maxDate}
-        slotProps={{
-          textField: {
-            variant: "standard",
-            InputProps: { disableUnderline: true },
-            sx: {
-              fontFamily: WIZARD_MONO_FONT,
-              fontSize: 16,
-              fontWeight: 700,
-              color: WIZARD_COLORS.ink900,
-              "& .MuiPickersInputBase-root, & .MuiPickersOutlinedInput-root": {
-                fontFamily: WIZARD_MONO_FONT,
-                fontSize: 16,
-                fontWeight: 700,
-                color: WIZARD_COLORS.ink900,
-              },
-              "& .MuiPickersSectionList-root": {
-                padding: 0,
-                color: WIZARD_COLORS.ink900,
-              },
-              "& .MuiPickersSectionList-section, & .MuiPickersInputBase-sectionContent":
-                {
-                  color: WIZARD_COLORS.ink900,
-                  fontWeight: 700,
-                },
-              "& input": {
-                fontFamily: WIZARD_MONO_FONT,
-                fontSize: 16,
-                fontWeight: 700,
-                color: WIZARD_COLORS.ink900,
-                padding: 0,
-                WebkitTextFillColor: WIZARD_COLORS.ink900,
-              },
-              "& .MuiInputAdornment-root .MuiIconButton-root": {
-                color: WIZARD_COLORS.ink700,
-              },
-            },
-          },
-        }}
-      />
-    </Box>
   );
 }

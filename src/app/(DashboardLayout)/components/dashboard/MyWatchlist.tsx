@@ -30,16 +30,16 @@ const MyWatchlist = () => {
   });
 
   useEffect(() => {
-    if (!token || !filters.startDate || !filters.endDate) return;
+    if (!token || !filters.triggerInitialSearch || !filters.startDate || !filters.endDate) return;
+    filters.clearTriggerInitialSearch();
     filters.clearNeedsSearch();
     sort.resetPage();
     job.handleSearch(
       { startUnixDate: filters.startDate.unix(), endUnixDate: filters.endDate.unix() },
       token,
     );
-  // Run once when the user is authenticated and dates are seeded
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, filters.triggerInitialSearch, filters.startDate, filters.endDate]);
 
   const handleSearch = () => {
     if (!token || !filters.startDate || !filters.endDate) return;
@@ -86,6 +86,8 @@ const MyWatchlist = () => {
           <WatchlistFilterToolbar
             startDate={filters.startDate}
             endDate={filters.endDate}
+            dateRange={filters.dateRange}
+            dateRangeLoading={filters.dateRangeLoading}
             needsSearch={filters.needsSearch}
             isJobRunning={isJobRunning}
             onStartDateChange={filters.handleStartDateChange}
