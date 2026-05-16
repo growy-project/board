@@ -58,6 +58,20 @@ export default function StockDetailDialog({
         )}`
       : null;
 
+  const yBounds = React.useMemo(() => {
+    if (!chartDataset || chartDataset.length === 0) return null;
+    const values: number[] = [];
+    for (const point of chartDataset) {
+      values.push(point.closePrice);
+      if (point.ema20 !== null) values.push(point.ema20);
+    }
+    if (values.length === 0) return null;
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const padding = (max - min) * 0.08 || max * 0.02;
+    return { min: Math.max(0, min - padding), max: max + padding };
+  }, [chartDataset]);
+
   return (
     <Dialog
       open={open}
@@ -121,7 +135,14 @@ export default function StockDetailDialog({
               disableTicks: true,
             },
           ]}
-          yAxis={[{ disableLine: true, disableTicks: true }]}
+          yAxis={[
+            {
+              disableLine: true,
+              disableTicks: true,
+              min: yBounds?.min,
+              max: yBounds?.max,
+            },
+          ]}
           series={[
             {
               id: "closePrice",
