@@ -29,6 +29,7 @@ interface PresetChipGroupProps {
   disabled?: boolean;
   onStartChange: (d: Dayjs | null) => void;
   onEndChange: (d: Dayjs | null) => void;
+  onCustomRangeApply?: (start: Dayjs, end: Dayjs) => void;
 }
 
 export default function PresetChipGroup({
@@ -38,6 +39,7 @@ export default function PresetChipGroup({
   disabled = false,
   onStartChange,
   onEndChange,
+  onCustomRangeApply,
 }: PresetChipGroupProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const activePreset = detectActivePreset(startDate, endDate, range);
@@ -145,6 +147,7 @@ export default function PresetChipGroup({
           range={range}
           onStartChange={onStartChange}
           onEndChange={onEndChange}
+          onApply={onCustomRangeApply}
         />
       </Box>
     </LocalizationProvider>
@@ -207,6 +210,7 @@ interface PopoverProps {
   range: SymbolDateRangeResult | null;
   onStartChange: (d: Dayjs | null) => void;
   onEndChange: (d: Dayjs | null) => void;
+  onApply?: (start: Dayjs, end: Dayjs) => void;
 }
 
 function CustomRangePopover({
@@ -217,6 +221,7 @@ function CustomRangePopover({
   range,
   onStartChange,
   onEndChange,
+  onApply,
 }: PopoverProps) {
   const [draftStart, setDraftStart] = React.useState<Dayjs | null>(startDate);
   const [draftEnd, setDraftEnd] = React.useState<Dayjs | null>(endDate);
@@ -231,9 +236,34 @@ function CustomRangePopover({
   const minDate = range ? dayjs(range.firstDate) : undefined;
   const maxDate = range ? dayjs(range.lastDate) : undefined;
 
+  const isStartOutOfRange = Boolean(
+    draftStart &&
+      ((minDate && draftStart.isBefore(minDate, "day")) ||
+        (maxDate && draftStart.isAfter(maxDate, "day"))),
+  );
+  const isEndOutOfRange = Boolean(
+    draftEnd &&
+      ((minDate && draftEnd.isBefore(minDate, "day")) ||
+        (maxDate && draftEnd.isAfter(maxDate, "day"))),
+  );
+  const isOrderInvalid = Boolean(
+    draftStart && draftEnd && !draftEnd.isAfter(draftStart, "day"),
+  );
+  const errorMessage = isOrderInvalid
+    ? "End date must be at least one day after start date"
+    : isStartOutOfRange || isEndOutOfRange
+      ? "Selected date is outside the available range"
+      : null;
+  const isInvalid = Boolean(errorMessage);
+
   const apply = () => {
-    onStartChange(draftStart);
-    onEndChange(draftEnd);
+    if (isInvalid || !draftStart || !draftEnd) return;
+    if (onApply) {
+      onApply(draftStart, draftEnd);
+    } else {
+      onStartChange(draftStart);
+      onEndChange(draftEnd);
+    }
     onClose();
   };
 
@@ -246,7 +276,8 @@ function CustomRangePopover({
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       PaperProps={{
         sx: {
-          width: 380,
+          width: 440,
+          maxWidth: "calc(100vw - 32px)",
           mt: 1,
           borderRadius: "12px",
           boxShadow: "0 24px 60px -20px rgba(20,35,55,0.35)",
@@ -294,16 +325,32 @@ function CustomRangePopover({
           value={draftStart}
           onChange={setDraftStart}
           minDate={minDate}
-          maxDate={draftEnd ?? maxDate}
+          maxDate={maxDate}
+          error={isOrderInvalid || isStartOutOfRange}
         />
         <DateField
           label="End"
           value={draftEnd}
           onChange={setDraftEnd}
-          minDate={draftStart ?? minDate}
+          minDate={minDate}
           maxDate={maxDate}
+          error={isOrderInvalid || isEndOutOfRange}
         />
       </Box>
+
+      {errorMessage && (
+        <Typography
+          role="alert"
+          sx={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#c62828",
+            mb: 1.5,
+          }}
+        >
+          {errorMessage}
+        </Typography>
+      )}
 
       {range && (
         <Typography
@@ -350,7 +397,7 @@ function CustomRangePopover({
         <Button
           variant="contained"
           onClick={apply}
-          disabled={!draftStart || !draftEnd}
+          disabled={!draftStart || !draftEnd || isInvalid}
           sx={{
             height: 32,
             bgcolor: WIZARD_COLORS.blue700,

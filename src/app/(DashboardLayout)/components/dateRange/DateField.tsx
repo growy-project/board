@@ -10,6 +10,7 @@ interface DateFieldProps {
   onChange: (d: Dayjs | null) => void;
   minDate?: Dayjs;
   maxDate?: Dayjs;
+  error?: boolean;
 }
 
 export default function DateField({
@@ -18,22 +19,27 @@ export default function DateField({
   onChange,
   minDate,
   maxDate,
+  error = false,
 }: DateFieldProps) {
   return (
     <Box
       sx={{
-        border: `1px solid ${WIZARD_COLORS.ink500}`,
+        border: `1px solid ${error ? "#c62828" : WIZARD_COLORS.ink500}`,
         borderRadius: "10px",
         padding: "10px 14px",
-        background: WIZARD_COLORS.sand100,
+        background: error ? "rgba(198, 40, 40, 0.05)" : WIZARD_COLORS.sand100,
         display: "flex",
         flexDirection: "column",
         gap: "4px",
+        minWidth: 0,
+        overflow: "hidden",
         transition: "0.15s",
         "&:hover, &:focus-within": {
-          borderColor: WIZARD_COLORS.blue700,
-          background: "white",
-          boxShadow: `0 0 0 3px rgba(39, 138, 176, 0.15)`,
+          borderColor: error ? "#c62828" : WIZARD_COLORS.blue700,
+          background: error ? "rgba(198, 40, 40, 0.05)" : "white",
+          boxShadow: error
+            ? `0 0 0 3px rgba(198, 40, 40, 0.15)`
+            : `0 0 0 3px rgba(39, 138, 176, 0.15)`,
         },
       }}
     >
@@ -56,17 +62,20 @@ export default function DateField({
         slotProps={{
           textField: {
             variant: "standard",
+            fullWidth: true,
             InputProps: { disableUnderline: true },
             sx: {
               fontFamily: WIZARD_MONO_FONT,
               fontSize: 16,
               fontWeight: 700,
               color: WIZARD_COLORS.ink900,
+              minWidth: 0,
               "& .MuiPickersInputBase-root, & .MuiPickersOutlinedInput-root": {
                 fontFamily: WIZARD_MONO_FONT,
                 fontSize: 16,
                 fontWeight: 700,
                 color: WIZARD_COLORS.ink900,
+                minWidth: 0,
               },
               "& .MuiPickersSectionList-root": {
                 padding: 0,
