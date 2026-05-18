@@ -27,6 +27,7 @@ interface StockFilterToolbarProps {
   onMinPercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onStartDateChange: (v: Dayjs | null) => void;
   onEndDateChange: (v: Dayjs | null) => void;
+  onCustomRangeApply: (start: Dayjs, end: Dayjs) => void;
   onSearch: () => void;
 }
 
@@ -43,6 +44,7 @@ export default function StockFilterToolbar({
   onMinPercentageChange,
   onStartDateChange,
   onEndDateChange,
+  onCustomRangeApply,
   onSearch,
 }: StockFilterToolbarProps) {
   return (
@@ -108,6 +110,7 @@ export default function StockFilterToolbar({
         disabled={dateRangeLoading}
         onStartChange={onStartDateChange}
         onEndChange={onEndDateChange}
+        onCustomRangeApply={onCustomRangeApply}
       />
 
       <Button

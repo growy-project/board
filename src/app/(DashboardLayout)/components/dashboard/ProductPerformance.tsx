@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Dayjs } from "dayjs";
 import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
@@ -51,6 +52,19 @@ const ProductPerformance = () => {
     });
   };
 
+  const handleCustomRangeApply = (start: Dayjs, end: Dayjs) => {
+    filters.handleStartDateChange(start);
+    filters.handleEndDateChange(end);
+    filters.clearNeedsSearch();
+    sort.resetPage();
+    job.handleSearch({
+      startUnixDate: start.unix(),
+      endUnixDate: end.unix(),
+      minimumExpectedGrowth: filters.minPercentageChange,
+      exchange: filters.exchange,
+    });
+  };
+
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   useEffect(() => {
     if (!filters.dateRangeLoading) return;
@@ -85,6 +99,7 @@ const ProductPerformance = () => {
             onMinPercentageChange={filters.handleMinPercentageChange}
             onStartDateChange={filters.handleStartDateChange}
             onEndDateChange={filters.handleEndDateChange}
+            onCustomRangeApply={handleCustomRangeApply}
             onSearch={handleSearch}
           />
         }
