@@ -1,0 +1,214 @@
+{
+  "brand": {
+    "name": "Scanner de Tendencias",
+    "tagline": "Encontrá acciones que ya están subiendo.",
+    "description": "Escaneá miles de tickers en busca de momentum y profundizá en volatilidad, RSI y datos sectoriales — para analizar tendencias con el contexto adecuado.",
+    "quote": "«Las acciones que ya están subiendo suelen seguir subiendo por un tiempo. Scanner de Tendencias te ayuda a detectar tendencias fuertes y analizarlas con mayor claridad.»"
+  },
+  "menu": {
+    "home": "Inicio",
+    "dashboard": "Tablero",
+    "watchlist": "Mi lista",
+    "about": "Acerca de",
+    "auth": "Cuenta",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión"
+  },
+  "languageToggle": {
+    "label": "English",
+    "ariaLabel": "Cambiar a inglés"
+  },
+  "dashboard": {
+    "title": "Scanner de Tendencias",
+    "loadingSymbols": "Cargando símbolos y rangos de {exchange}…",
+    "loadingExtra": "Esto va a estar increíble",
+    "filtersStale": "Los filtros cambiaron — los resultados están desactualizados.",
+    "refresh": "Actualizar resultados",
+    "search": "Buscar",
+    "emptyTitle": "Ninguna acción coincide con tu búsqueda",
+    "emptyHint": "Probá ajustar el mercado, el % mínimo de variación o el rango de fechas.",
+    "loginToTag": "Iniciá sesión para etiquetar un símbolo.",
+    "actions": {
+      "watchlist": "Agregar a mi lista",
+      "toxic": "Marcar como Tóxica",
+      "topGrowth": "Marcar como Top Growth"
+    },
+    "filters": {
+      "exchange": "Mercado",
+      "minChange": "Variación % mínima",
+      "dateRangeAria": "Rango de fechas"
+    },
+    "watchlistFeedback": {
+      "added": "{symbol} agregada a tu lista.",
+      "addError": "No se pudo agregar el símbolo a tu lista.",
+      "addConflictFallback": "No se pudo agregar el símbolo a tu lista.",
+      "removed": "{symbol} eliminada de tu lista.",
+      "removeError": "No se pudo eliminar {symbol}. Recargá para ver el estado actual.",
+      "missingExchange": "No se puede eliminar {symbol}: falta información del mercado."
+    },
+    "tagRequest": {
+      "submitted": "Solicitud enviada: {symbol} como {tag}.",
+      "labelToxic": "tóxica",
+      "labelTopGrowth": "top-growth"
+    }
+  },
+  "table": {
+    "columns": {
+      "symbol": "Símbolo",
+      "percentageChange": "Variación %",
+      "volatility": "Volatilidad %",
+      "percentPositiveDays": "% días positivos",
+      "returnStdDev": "Desv. estándar",
+      "maxDrawdown": "Caída máxima",
+      "isMomentum": "Es Tendencia",
+      "eps": "EPS",
+      "rsi": "RSI",
+      "oldestPrice": "Precio inicial",
+      "newestPrice": "Precio actual",
+      "targetPrice": "Precio objetivo",
+      "company": "Empresa",
+      "marketCap": "Capitalización",
+      "sector": "Sector",
+      "description": "Descripción",
+      "details": "Detalle",
+      "actions": "Acciones"
+    },
+    "values": {
+      "yes": "Sí",
+      "no": "No",
+      "empty": "—"
+    },
+    "tooltips": {
+      "eps": {
+        "title": "Ganancia por acción (EPS)",
+        "body1": "Indica cuánta ganancia genera la empresa por cada acción en circulación.",
+        "body2": "EPS = (Resultado Neto − Dividendos Preferentes) / Acciones en circulación promedio"
+      },
+      "rsi": {
+        "title": "Índice de Fuerza Relativa (RSI)",
+        "body1": "Las acciones con tendencia alcista suelen mantener un RSI por encima de 50 sin caer demasiado.",
+        "body2": "Un RSI sostenido entre 55 y 70 indica un crecimiento controlado (no sobrecomprado)."
+      }
+    }
+  },
+  "dateRange": {
+    "custom": "Personalizado",
+    "customRange": "Rango personalizado",
+    "start": "Desde",
+    "end": "Hasta",
+    "available": "Disponible · ",
+    "cancel": "Cancelar",
+    "apply": "Aplicar",
+    "close": "Cerrar",
+    "errors": {
+      "endBeforeStart": "La fecha de fin debe ser al menos un día posterior a la fecha de inicio",
+      "outOfRange": "La fecha seleccionada está fuera del rango disponible"
+    }
+  },
+  "watchlist": {
+    "title": "Mi lista",
+    "filtersStale": "Los filtros cambiaron — los resultados están desactualizados.",
+    "refresh": "Actualizar resultados",
+    "search": "Buscar",
+    "emptyTitle": "Tu lista está vacía",
+    "emptyHint": "Agregá símbolos desde el Scanner de Tendencias para verlos acá.",
+    "loggedOutTitle": "Iniciá sesión para ver tu lista",
+    "loggedOutHint": "Ingresá con Google para guardar y administrar tus símbolos.",
+    "removeAction": "Quitar de mi lista"
+  },
+  "notAdmin": {
+    "title": "Se requiere acción de administrador",
+    "explanationToxic": "Para marcar este ítem como <b>Tóxica</b>, tenés que ser administrador. Enviá un mensaje al administrador para solicitarlo.",
+    "explanationTopGrowth": "Para marcar este ítem como <b>Top Growth</b>, tenés que ser administrador. Enviá un mensaje al administrador para solicitarlo.",
+    "reason": "Motivo",
+    "reasonCounter": "{current}/{max}",
+    "cancel": "Cancelar",
+    "submit": "Enviar"
+  },
+  "errorDialog": {
+    "title": "Error",
+    "close": "Cerrar"
+  },
+  "stockDetail": {
+    "title": "{symbol} — precio de cierre y EMA 20",
+    "legendClose": "Cierre",
+    "legendEma": "EMA 20",
+    "loading": "Cargando...",
+    "close": "Cerrar"
+  },
+  "auth": {
+    "pageTitle": "Iniciar sesión",
+    "pageDescription": "Ingresá a Scanner de Tendencias",
+    "signIn": "Iniciar sesión",
+    "useGoogle": "Usá tu cuenta de Google para continuar.",
+    "or": "O",
+    "continueWithout": "Continuar al tablero sin iniciar sesión",
+    "terms": "Al continuar aceptás los <terms>Términos</terms> y la <privacy>Política de Privacidad</privacy> de Scanner de Tendencias. Nunca operamos en tu nombre ni compartimos los datos de tu cuenta con terceros."
+  },
+  "header": {
+    "menu": "menú",
+    "toggleTheme": "cambiar tema",
+    "login": "Iniciar sesión"
+  },
+  "about": {
+    "pageTitle": "ES",
+    "pageDescription": "Acerca de",
+    "title": "Scanner de Tendencias",
+    "intro": "Scanner de Tendencias se basa en una de las estrategias de inversión más usadas del mercado: el <accent>seguimiento de tendencia</accent>, también conocido como <momentumLink>momentum investing</momentumLink>. La idea es simple — las acciones que ya están subiendo suelen seguir subiendo por un tiempo.",
+    "bullets": [
+      {
+        "title": "Seguimiento de tendencia",
+        "body": "Las acciones que ya están subiendo tienden a seguir subiendo por un tramo — los flujos institucionales, el momentum de ganancias y el FOMO empujan en la misma dirección."
+      },
+      {
+        "title": "La calidad importa",
+        "body": "Las subas suaves, con poca caída intermedia, son más confiables que los movimientos del mismo tamaño impulsados por saltos bruscos."
+      },
+      {
+        "title": "Nosotros mostramos, vos decidís",
+        "body": "Scanner de Tendencias ordena y explica. La decisión de inversión queda en tus manos."
+      }
+    ],
+    "closing": "La plataforma escanea todos los tickers de Nasdaq y NYSE, destaca los que muestran un crecimiento notable y expone los indicadores que importan: volatilidad, datos sectoriales, señales técnicas y precios objetivo de analistas.",
+    "viewMore": "Ver más",
+    "viewLess": "Ver menos",
+    "howItWorksTitle": "Cómo funciona Scanner de Tendencias",
+    "howItWorks1": "El premio por momentum es uno de los efectos más robustos empíricamente en finanzas. Se ha documentado en más de 200 años de datos de acciones de EE. UU., en más de 40 países y en muchas clases de activos además de las acciones — bonos, divisas y commodities.",
+    "howItWorks2": "El crecimiento puro, sin embargo, no alcanza. Una idea central detrás de Scanner de Tendencias es la dimensión de calidad: la <qualityLink>distinción entre suba suave y suba caótica</qualityLink> de Gray y Vogel. Una suba sostenida refleja presión compradora constante y difusión lenta de información; los movimientos por saltos bruscos son más ruidosos y más propensos a revertir. Por eso el scanner muestra <accent>% de días positivos</accent>, <accent>desviación estándar de retorno</accent> y <accent>caída máxima</accent> junto con el retorno crudo.",
+    "howItWorks3": "Las implementaciones institucionales (AQR, BlackRock/iShares) también ajustan el momentum por riesgo, escalando los puntajes por la volatilidad del activo subyacente para que \"alto momentum\" no sea simplemente reflejo de mayor riesgo total. La columna <accent>Volatilidad %</accent> captura eso, y el <accent>RSI</accent> se incluye como señal técnica complementaria.",
+    "howItWorks4": "Una última aclaración: la literatura es consistente en que <carhartLink>ningún factor por sí solo es lo suficientemente confiable como para apostar todo a él</carhartLink> (Carhart, 1997). Scanner de Tendencias no te dice qué comprar — muestra señales que vos combinás con tu propio criterio, el aporte de tu comunidad y el resto de tu estrategia.",
+    "columnReferenceTitle": "Referencia de columnas — métricas de calidad de momentum",
+    "columns": [
+      {
+        "label": "Variación %",
+        "body": "Retorno total en el rango de fechas seleccionado: (más reciente − más antiguo) / más antiguo × 100. La señal cruda de crecimiento — todas las demás columnas son lentes de calidad sobre esta."
+      },
+      {
+        "label": "Volatilidad %",
+        "body": "Un puntaje de volatilidad estilo CPVI sobre el período. Valores más bajos indican momentum estable y \"aburrido\"; valores más altos indican comportamiento tipo \"lotería\" (con saltos, impulsado por noticias). El momentum suave de baja volatilidad ha rendido mejor históricamente."
+      },
+      {
+        "label": "% días positivos",
+        "body": "Porcentaje de ruedas en las que el cierre fue mayor que el cierre anterior. Nuestro indicador de suavidad — valores ≥ 50% señalan una suba sostenida, y se requiere ≥ 50% para Es Tendencia."
+      },
+      {
+        "label": "Desv. estándar",
+        "body": "Desviación estándar muestral de los retornos diarios sobre el período, en %. Una segunda mirada sobre la irregularidad — desviaciones altas significan que el camino fue accidentado aunque el resultado final haya sido bueno."
+      },
+      {
+        "label": "Caída máxima",
+        "body": "La mayor caída desde un máximo a un mínimo dentro del período, en %. Limitada a ≤ 25% para Es Tendencia — una acción que tuvo una caída profunda en medio del período no califica."
+      },
+      {
+        "label": "Es Tendencia",
+        "body": "Clasificación booleana. Para el escaneo completo: quintil superior de Variación % Y % días positivos ≥ 50 Y caída máxima ≤ 25. Para las listas, el ranking por quintil se reemplaza por un umbral absoluto de ≥ 20% de crecimiento, porque el ranking relativo es degenerado en listas chicas."
+      },
+      {
+        "label": "RSI",
+        "body": "Índice de Fuerza Relativa estándar de 14 períodos sobre los precios de cierre. Por encima de 70 suele leerse como sobrecompra, por debajo de 30 como sobreventa. Independiente de la clasificación Es Tendencia — se ofrece como señal complementaria."
+      }
+    ],
+    "aboutDeveloper": "Sobre el desarrollador",
+    "developerBody": "Como <devLink>desarrollador de software</devLink>, quería entender qué hacer con mis ahorros — cómo hacerlos crecer — así que compré algunas acciones: un puñado de blue chips y algunos nombres de energías renovables. Seis meses después estaba 1% abajo. No fue aterrador — una caída del 30% me habría espantado — pero perder 1% después de medio año de paciencia me pareció ridículo. Así que empecé a investigar, y eventualmente construí la herramienta que ojalá hubiera tenido desde el primer día."
+  }
+}

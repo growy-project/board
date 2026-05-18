@@ -11,8 +11,11 @@ import {
   useTheme,
 } from "@mui/material";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 // components
 import Profile from "./Profile";
+import LanguageToggle from "./LanguageToggle";
 import { IconMenu } from "@tabler/icons-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { useAppTheme } from "@/app/context/ThemeContext";
@@ -30,6 +33,16 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
   const lgUp = useMediaQuery(theme.breakpoints.up("lg"));
   const { user } = useAuth();
   const { mode, cycleMode } = useAppTheme();
+  const t = useTranslations("header");
+  const pathname = usePathname() ?? "/";
+  const searchParams = useSearchParams();
+  const loginHref = React.useMemo(() => {
+    const isOnLogin = pathname.startsWith("/authentication/login");
+    if (isOnLogin) return "/authentication/login";
+    const search = searchParams?.toString() ?? "";
+    const returnTo = `${pathname}${search ? `?${search}` : ""}`;
+    return `/authentication/login?returnTo=${encodeURIComponent(returnTo)}`;
+  }, [pathname, searchParams]);
 
   const ThemeIcon =
     mode === "light"
@@ -60,7 +73,7 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
       <ToolbarStyled>
         <IconButton
           color="inherit"
-          aria-label="menu"
+          aria-label={t("menu")}
           onClick={lgUp ? toggleSidebar : toggleMobileSidebar}
           sx={{
             display: "inline-flex",
@@ -71,14 +84,15 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
 
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">
-          <IconButton color="inherit" aria-label="toggle theme" onClick={cycleMode}>
+          <LanguageToggle />
+          <IconButton color="inherit" aria-label={t("toggleTheme")} onClick={cycleMode}>
             <ThemeIcon width={20} height={20} />
           </IconButton>
           {!user && (
             <Button
               variant="contained"
               component={Link}
-              href="/authentication/login"
+              href={loginHref}
               disableElevation
               sx={{
                 backgroundColor: "#278ab0", // Blue Grotto
@@ -88,7 +102,7 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
                 },
               }}
             >
-              Login
+              {t("login")}
             </Button>
           )}
           <Profile />

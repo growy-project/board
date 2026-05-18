@@ -1,8 +1,11 @@
 "use client";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import AuthLogin from "../auth/AuthLogin";
+import { isSafeReturnTo } from "@/i18n/config";
 
 const BLUE_900 = "#1c4670";
 const BLUE_700 = "#278ab0";
@@ -13,8 +16,13 @@ const FONT_SANS =
   '"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 
 const Login = () => {
+  const t = useTranslations();
+  const searchParams = useSearchParams();
+  const rawReturnTo = searchParams?.get("returnTo");
+  const continueHref = isSafeReturnTo(rawReturnTo) ? rawReturnTo : "/";
+
   return (
-    <PageContainer title="Login" description="Sign in to Momentum Scanner">
+    <PageContainer title={t("auth.pageTitle")} description={t("auth.pageDescription")}>
       <Box
         sx={{
           minHeight: "100vh",
@@ -69,7 +77,7 @@ const Login = () => {
               <circle cx="28" cy="8" r="2.5" fill="#fff" />
             </Box>
             <Typography sx={{ fontWeight: 700, fontSize: 18, letterSpacing: "-0.01em" }}>
-              Momentum <Box component="span" sx={{ color: BLUE_300 }}>Scanner</Box>
+              {t("brand.name")}
             </Typography>
           </Stack>
 
@@ -85,7 +93,7 @@ const Login = () => {
                 maxWidth: 480,
               }}
             >
-              Find stocks already on the move.
+              {t("brand.tagline")}
             </Typography>
             <Typography
               sx={{
@@ -96,8 +104,7 @@ const Login = () => {
                 margin: 0,
               }}
             >
-              Scan thousands of tickers for momentum, then drill into volatility, RSI, and sector
-              data — so you can analyze trends with the right context.
+              {t("brand.description")}
             </Typography>
           </Box>
 
@@ -112,8 +119,7 @@ const Login = () => {
               lineHeight: 1.6,
             }}
           >
-            &ldquo;Stocks that are already going up often keep rising for a period of time.
-            Momentum Scanner helps you spot strong trends and analyze them more clearly.&rdquo;
+            {t("brand.quote")}
           </Typography>
         </Box>
 
@@ -138,10 +144,10 @@ const Login = () => {
               letterSpacing: "-0.01em",
             }}
           >
-            Sign in
+            {t("auth.signIn")}
           </Typography>
           <Typography sx={{ fontSize: 14, color: INK_500, marginBottom: "32px" }}>
-            Use your Google account to continue.
+            {t("auth.useGoogle")}
           </Typography>
 
           <AuthLogin />
@@ -163,12 +169,12 @@ const Login = () => {
               },
             }}
           >
-            <Box component="span">OR</Box>
+            <Box component="span">{t("auth.or")}</Box>
           </Stack>
 
           <Button
             component={Link}
-            href="/"
+            href={continueHref}
             fullWidth
             variant="outlined"
             sx={{
@@ -185,7 +191,7 @@ const Login = () => {
               },
             }}
           >
-            Continue to dashboard without signing in
+            {t("auth.continueWithout")}
           </Button>
 
           <Typography
@@ -197,9 +203,10 @@ const Login = () => {
               "& a": { color: BLUE_700, textDecoration: "none" },
             }}
           >
-            By continuing you agree to Momentum Scanner&rsquo;s <a href="#">Terms</a> and{" "}
-            <a href="#">Privacy Policy</a>. We never trade on your behalf and never share account
-            data with third parties.
+            {t.rich("auth.terms", {
+              terms: (chunks) => <a href="#">{chunks}</a>,
+              privacy: (chunks) => <a href="#">{chunks}</a>,
+            })}
           </Typography>
         </Box>
       </Box>

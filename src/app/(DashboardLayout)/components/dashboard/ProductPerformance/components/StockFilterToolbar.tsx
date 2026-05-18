@@ -10,6 +10,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { Dayjs } from "dayjs";
+import { useTranslations } from "next-intl";
 import type { SymbolDateRangeResult } from "../../../../services/symbolService";
 import PresetChipGroup from "../../../dateRange/PresetChipGroup";
 import { pulseAnimation } from "../constants";
@@ -47,6 +48,7 @@ export default function StockFilterToolbar({
   onCustomRangeApply,
   onSearch,
 }: StockFilterToolbarProps) {
+  const t = useTranslations("dashboard");
   return (
     <Stack direction="row" spacing={2} alignItems="center">
       <FormControl
@@ -62,12 +64,12 @@ export default function StockFilterToolbar({
           },
         }}
       >
-        <InputLabel id="exchange-select-label">Exchange</InputLabel>
+        <InputLabel id="exchange-select-label">{t("filters.exchange")}</InputLabel>
         <Select
           labelId="exchange-select-label"
           id="exchange-select"
           value={exchange}
-          label="Exchange"
+          label={t("filters.exchange")}
           disabled={dateRangeLoading}
           onChange={onExchangeChange}
           MenuProps={{
@@ -92,7 +94,7 @@ export default function StockFilterToolbar({
       </FormControl>
 
       <TextField
-        label="Minimum % Change"
+        label={t("filters.minChange")}
         color="secondary"
         focused
         type="number"
@@ -127,7 +129,7 @@ export default function StockFilterToolbar({
           ...(needsSearch && { animation: `${pulseAnimation} 1.2s ease-in-out infinite` }),
         }}
       >
-        Search
+        {t("search")}
       </Button>
     </Stack>
   );

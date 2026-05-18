@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useTranslations } from "next-intl";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { useAuth } from "@/app/context/AuthContext";
 
@@ -19,6 +20,7 @@ import WatchlistFilterToolbar from "./MyWatchlist/components/WatchlistFilterTool
 import WatchlistActionsMenu from "./MyWatchlist/components/WatchlistActionsMenu";
 
 const MyWatchlist = () => {
+  const t = useTranslations("watchlist");
   const { token } = useAuth();
   const filters = useWatchlistFilters();
   const job = useWatchlistJob();
@@ -53,7 +55,7 @@ const MyWatchlist = () => {
 
   if (!token) {
     return (
-      <DashboardCard title="My Watchlist">
+      <DashboardCard title={t("title")}>
         <Box
           sx={{
             display: "flex",
@@ -65,9 +67,9 @@ const MyWatchlist = () => {
           }}
         >
           <LockOutlinedIcon sx={{ fontSize: 48 }} />
-          <Typography variant="h6">Please log in to view your watchlist</Typography>
+          <Typography variant="h6">{t("loggedOutTitle")}</Typography>
           <Typography variant="body2">
-            Sign in with Google to track and manage your saved symbols.
+            {t("loggedOutHint")}
           </Typography>
         </Box>
       </DashboardCard>
@@ -81,7 +83,7 @@ const MyWatchlist = () => {
   return (
     <>
       <DashboardCard
-        title="My Watchlist"
+        title={t("title")}
         action={
           <WatchlistFilterToolbar
             startDate={filters.startDate}
@@ -108,11 +110,11 @@ const MyWatchlist = () => {
                   onClick={handleSearch}
                   disabled={isJobRunning || !filters.startDate || !filters.endDate}
                 >
-                  Refresh results
+                  {t("refresh")}
                 </Button>
               }
             >
-              Filters changed — results below are out of date.
+              {t("filtersStale")}
             </Alert>
           )}
           {showTable && hasResults ? (
@@ -144,9 +146,9 @@ const MyWatchlist = () => {
               }}
             >
               <BookmarkBorderIcon sx={{ fontSize: 48 }} />
-              <Typography variant="h6">Your watchlist is empty</Typography>
+              <Typography variant="h6">{t("emptyTitle")}</Typography>
               <Typography variant="body2">
-                Add symbols from the Momentum Scanner to see them here.
+                {t("emptyHint")}
               </Typography>
             </Box>
           ) : (

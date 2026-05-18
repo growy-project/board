@@ -2,27 +2,47 @@ import { IconBookmark, IconInfoCircle, IconLayoutDashboard } from "@tabler/icons
 
 import { uniqueId } from "lodash";
 
-const Menuitems = [
+type MenuKey =
+  | "home"
+  | "dashboard"
+  | "watchlist"
+  | "about"
+  | "auth"
+  | "login"
+  | "logout";
+
+export type MenuItem = {
+  navlabel?: boolean;
+  subheaderKey?: MenuKey;
+  id?: string;
+  titleKey?: MenuKey;
+  icon?: React.ComponentType<{ stroke?: number | string; size?: string | number }>;
+  href?: string;
+  disabled?: boolean;
+  external?: boolean;
+};
+
+const Menuitems: MenuItem[] = [
   {
     navlabel: true,
-    subheader: "Home",
+    subheaderKey: "home",
   },
 
   {
     id: uniqueId(),
-    title: "Dashboard",
+    titleKey: "dashboard",
     icon: IconLayoutDashboard,
     href: "/",
   },
   {
     id: uniqueId(),
-    title: "My Watchlist",
+    titleKey: "watchlist",
     icon: IconBookmark,
     href: "/my-watchlist",
   },
   {
     id: uniqueId(),
-    title: "About",
+    titleKey: "about",
     icon: IconInfoCircle,
     href: "/about",
   },

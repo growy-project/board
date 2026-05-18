@@ -2,6 +2,7 @@ import React from "react";
 import { Dialog, Box, IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts/LineChart";
+import { useTranslations, useFormatter } from "next-intl";
 
 interface ChartDataPoint {
   [key: string]: unknown;
@@ -20,22 +21,6 @@ interface StockDetailDialogProps {
 const CLOSE_COLOR = "#278ab0";
 const EMA_COLOR = "#1dc690";
 
-const formatRangeLabel = (v: number) =>
-  new Date(v).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
-const formatAxisLabel = (v: number, context: { location: string }) =>
-  context.location.includes("tooltip")
-    ? new Date(v).toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : new Date(v).toLocaleDateString(undefined, { month: "short", year: "numeric" });
-
 function LegendSwatch({ color, label }: { color: string; label: string }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -51,6 +36,21 @@ export default function StockDetailDialog({
   chartDataset,
   onClose,
 }: StockDetailDialogProps) {
+  const t = useTranslations("stockDetail");
+  const format = useFormatter();
+
+  const formatRangeLabel = React.useCallback(
+    (v: number) => format.dateTime(new Date(v), "short"),
+    [format],
+  );
+  const formatAxisLabel = React.useCallback(
+    (v: number, context: { location: string }) =>
+      context.location.includes("tooltip")
+        ? format.dateTime(new Date(v), "short")
+        : format.dateTime(new Date(v), "monthYear"),
+    [format],
+  );
+
   const range =
     chartDataset && chartDataset.length > 0
       ? `${formatRangeLabel(chartDataset[0].unixDate)} — ${formatRangeLabel(
@@ -100,7 +100,7 @@ export default function StockDetailDialog({
       >
         <Box>
           <Typography sx={{ fontSize: 16, fontWeight: 600, color: "text.primary" }}>
-            {symbol} — close price & EMA 20
+            {t("title", { symbol: symbol ?? "" })}
           </Typography>
           {range && (
             <Typography sx={{ fontSize: 12, color: "text.secondary", mt: "2px" }}>
@@ -110,10 +110,10 @@ export default function StockDetailDialog({
         </Box>
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <Box sx={{ display: "flex", gap: "18px" }}>
-            <LegendSwatch color={CLOSE_COLOR} label="Close" />
-            <LegendSwatch color={EMA_COLOR} label="EMA 20" />
+            <LegendSwatch color={CLOSE_COLOR} label={t("legendClose")} />
+            <LegendSwatch color={EMA_COLOR} label={t("legendEma")} />
           </Box>
-          <IconButton onClick={onClose} size="small" aria-label="Close">
+          <IconButton onClick={onClose} size="small" aria-label={t("close")}>
             <Close />
           </IconButton>
         </Box>
@@ -147,7 +147,7 @@ export default function StockDetailDialog({
             {
               id: "closePrice",
               dataKey: "closePrice",
-              label: "Close",
+              label: t("legendClose"),
               showMark: false,
               area: true,
               curve: "monotoneX",
@@ -155,7 +155,7 @@ export default function StockDetailDialog({
             {
               id: "ema20",
               dataKey: "ema20",
-              label: "EMA 20",
+              label: t("legendEma"),
               showMark: false,
               curve: "monotoneX",
             },
@@ -175,7 +175,7 @@ export default function StockDetailDialog({
       ) : (
         <Box sx={{ height: 320, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Typography variant="body2" color="textSecondary">
-            Loading...
+            {t("loading")}
           </Typography>
         </Box>
       )}

@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import axios from "axios";
+import { useTranslations } from "next-intl";
 import * as symbolService from "../../../../services/symbolService";
 import * as realService from "../../../../services/statisticJobService";
 import * as watchlistService from "../../../../services/watchlistService";
@@ -9,6 +10,8 @@ import type { StockPerformance } from "../types";
 
 export function useSymbolActions(exchange: string, startUnixDate?: number | null, endUnixDate?: number | null) {
   const { user, token } = useAuth();
+  const tFeedback = useTranslations("dashboard.watchlistFeedback");
+  const tTag = useTranslations("dashboard.tagRequest");
   const [actionsMenuAnchor, setActionsMenuAnchor] = useState<null | HTMLElement>(null);
   const [actionsMenuStock, setActionsMenuStock] = useState<StockPerformance | null>(null);
   const [notAdminDialogOpen, setNotAdminDialogOpen] = useState(false);
@@ -95,21 +98,21 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
       await watchlistService.addToWatchlist(actionsMenuStock.symbol, exchange, token);
       setWatchlistFeedback({
         severity: "success",
-        message: `${actionsMenuStock.symbol} added to your watchlist.`,
+        message: tFeedback("added", { symbol: actionsMenuStock.symbol }),
       });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.status === 409) {
         const message = (err.response.data as { message?: string })?.message
-          ?? "Could not add symbol to watchlist.";
+          ?? tFeedback("addConflictFallback");
         setWatchlistFeedback({ severity: "warning", message });
       } else {
         setWatchlistFeedback({
           severity: "error",
-          message: "Failed to add symbol to your watchlist.",
+          message: tFeedback("addError"),
         });
       }
     }
-  }, [user, token, actionsMenuStock, exchange]);
+  }, [user, token, actionsMenuStock, exchange, tFeedback]);
 
   const handleNotAdminMessageChange = useCallback((value: string) => {
     if (value.length <= 300) setNotAdminMessage(value);
@@ -126,14 +129,14 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
           user.email,
           token
         );
-        const tagLabel = notAdminAction === "toxic" ? "toxic" : "top-growth";
-        setTagRequestSuccess(`Tag request submitted: ${actionsMenuStock.symbol} as ${tagLabel}.`);
+        const tagLabel = notAdminAction === "toxic" ? tTag("labelToxic") : tTag("labelTopGrowth");
+        setTagRequestSuccess(tTag("submitted", { symbol: actionsMenuStock.symbol, tag: tagLabel }));
       } finally {
         setIsSubmittingTag(false);
       }
     }
     setNotAdminDialogOpen(false);
-  }, [actionsMenuStock, notAdminAction, notAdminMessage, user, token]);
+  }, [actionsMenuStock, notAdminAction, notAdminMessage, user, token, tTag]);
 
   return {
     actionsMenuAnchor,

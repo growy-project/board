@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Dayjs } from "dayjs";
 import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+import { useTranslations } from "next-intl";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 
 import { useFilters } from "./ProductPerformance/hooks/useFilters";
@@ -20,6 +21,7 @@ import StockDetailDialog from "./ProductPerformance/components/StockDetailDialog
 export type { StockPerformance, JobStatus } from "./ProductPerformance/types";
 
 const ProductPerformance = () => {
+  const t = useTranslations("dashboard");
   const filters = useFilters();
   const job = useStockJob();
   const sort = useStockSort(job.status);
@@ -73,8 +75,8 @@ const ProductPerformance = () => {
   }, [filters.dateRangeLoading]);
 
   const dateRangeLoadingMessages = [
-    `Loading ${filters.exchange} symbols and ranges…`,
-    "This will be amazing",
+    t("loadingSymbols", { exchange: filters.exchange }),
+    t("loadingExtra"),
   ];
 
   const isJobRunning = Boolean(job.status && !job.status.isFinished);
@@ -84,7 +86,7 @@ const ProductPerformance = () => {
   return (
     <>
       <DashboardCard
-        title="Momentum Scanner"
+        title={t("title")}
         action={
           <StockFilterToolbar
             exchange={filters.exchange}
@@ -116,11 +118,11 @@ const ProductPerformance = () => {
                 onClick={handleSearch}
                 disabled={isJobRunning || !filters.startDate || !filters.endDate}
               >
-                Refresh results
+                {t("refresh")}
               </Button>
             }
           >
-            Filters changed — results below are out of date.
+            {t("filtersStale")}
           </Alert>
         )}
         {showTable && hasResults ? (
@@ -143,9 +145,9 @@ const ProductPerformance = () => {
         ) : showTable && !hasResults ? (
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 6, gap: 1, color: "text.secondary" }}>
             <SearchOffIcon sx={{ fontSize: 48 }} />
-            <Typography variant="h6">No stocks matched your search</Typography>
+            <Typography variant="h6">{t("emptyTitle")}</Typography>
             <Typography variant="body2">
-              Try adjusting the exchange, minimum % change, or date range.
+              {t("emptyHint")}
             </Typography>
           </Box>
         ) : (
@@ -198,7 +200,7 @@ const ProductPerformance = () => {
           variant="filled"
           onClose={() => actions.setLoginPromptOpen(false)}
         >
-          Please log in to tag a symbol.
+          {t("loginToTag")}
         </Alert>
       </Snackbar>
 

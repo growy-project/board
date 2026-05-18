@@ -1,6 +1,7 @@
 import React from "react";
 import { keyframes } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 export const ADMIN_EMAIL = "growyserver@gmail.com";
 
@@ -10,30 +11,32 @@ export const pulseAnimation = keyframes`
   100% { box-shadow: 0 0 0 0 rgba(39, 138, 176, 0); }
 `;
 
-export const EPS_TOOLTIP_CONTENT = (
-  <Box>
-    <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
-      Earnings Per Share(EPS)
-    </Typography>
-    <Typography variant="body2" sx={{ mb: 0.5 }}>
-      It tells you how much profit a company makes for each outstanding share.
-    </Typography>
-    <Typography variant="body2">
-      EPS = (Net Income − Preferred Dividends) / Average Outstanding Shares
-    </Typography>
-  </Box>
-);
+export function EpsTooltipContent() {
+  const t = useTranslations("table.tooltips.eps");
+  return (
+    <Box>
+      <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
+        {t("title")}
+      </Typography>
+      <Typography variant="body2" sx={{ mb: 0.5 }}>
+        {t("body1")}
+      </Typography>
+      <Typography variant="body2">{t("body2")}</Typography>
+    </Box>
+  );
+}
 
-export const RSI_TOOLTIP_CONTENT = (
-  <Box>
-    <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
-      Relative Strength Index (RSI)
-    </Typography>
-    <Typography variant="body2" sx={{ mb: 0.5 }}>
-      Stocks trending up often hold RSI above 50 without dipping too much.
-    </Typography>
-    <Typography variant="body2">
-      A sustained RSI between 55–70 indicates controlled growth (not overheated).
-    </Typography>
-  </Box>
-);
+export function RsiTooltipContent() {
+  const t = useTranslations("table.tooltips.rsi");
+  return (
+    <Box>
+      <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>
+        {t("title")}
+      </Typography>
+      <Typography variant="body2" sx={{ mb: 0.5 }}>
+        {t("body1")}
+      </Typography>
+      <Typography variant="body2">{t("body2")}</Typography>
+    </Box>
+  );
+}

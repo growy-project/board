@@ -1,7 +1,8 @@
 import React from "react";
 import { TableHead, TableRow, TableCell, TableSortLabel, Typography, Box, Tooltip } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import { EPS_TOOLTIP_CONTENT, RSI_TOOLTIP_CONTENT } from "../constants";
+import { useTranslations } from "next-intl";
+import { EpsTooltipContent, RsiTooltipContent } from "../constants";
 import type { SortableColumn } from "../utils";
 
 interface StockTableHeadProps {
@@ -18,6 +19,7 @@ const stickyCell = {
 };
 
 export default function StockTableHead({ orderBy, order, onSort }: StockTableHeadProps) {
+  const t = useTranslations("table.columns");
   const sortLabel = (col: SortableColumn, label: string) => (
     <TableSortLabel
       active={orderBy === col}
@@ -32,25 +34,25 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
     <TableHead>
       <TableRow>
         <TableCell sx={{ ...stickyCell, left: 0, zIndex: 3 }}>
-          <Typography variant="subtitle2" fontWeight={600}>Symbol</Typography>
+          <Typography variant="subtitle2" fontWeight={600}>{t("symbol")}</Typography>
         </TableCell>
         <TableCell align="right" sx={{ ...stickyCell, width: "120px" }}>
-          {sortLabel("percentageChange", "Percentage Change")}
+          {sortLabel("percentageChange", t("percentageChange"))}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
-          {sortLabel("volatility", "Volatility %")}
+          {sortLabel("volatility", t("volatility"))}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
-          {sortLabel("percentPositiveDays", "% Positive Days")}
+          {sortLabel("percentPositiveDays", t("percentPositiveDays"))}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
-          {sortLabel("returnStdDev", "Return StdDev")}
+          {sortLabel("returnStdDev", t("returnStdDev"))}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
-          {sortLabel("maxDrawdown", "Max Drawdown")}
+          {sortLabel("maxDrawdown", t("maxDrawdown"))}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
-          <Typography variant="subtitle2" fontWeight={600}>Is Momentum</Typography>
+          <Typography variant="subtitle2" fontWeight={600}>{t("isMomentum")}</Typography>
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
           <TableSortLabel
@@ -59,8 +61,8 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
             onClick={() => onSort("eps")}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}>
-              <Typography variant="subtitle2" fontWeight={600}>EPS</Typography>
-              <Tooltip title={EPS_TOOLTIP_CONTENT} arrow placement="top">
+              <Typography variant="subtitle2" fontWeight={600}>{t("eps")}</Typography>
+              <Tooltip title={<EpsTooltipContent />} arrow placement="top">
                 <InfoOutlined fontSize="small" sx={{ color: "text.secondary", cursor: "help" }} />
               </Tooltip>
             </Box>
@@ -73,39 +75,39 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
             onClick={() => onSort("rsi")}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "flex-end" }}>
-              <Typography variant="subtitle2" fontWeight={600}>RSI</Typography>
-              <Tooltip title={RSI_TOOLTIP_CONTENT} arrow placement="top">
+              <Typography variant="subtitle2" fontWeight={600}>{t("rsi")}</Typography>
+              <Tooltip title={<RsiTooltipContent />} arrow placement="top">
                 <InfoOutlined fontSize="small" sx={{ color: "text.secondary", cursor: "help" }} />
               </Tooltip>
             </Box>
           </TableSortLabel>
         </TableCell>
         <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
-          {sortLabel("oldestPrice", "Oldest Price")}
+          {sortLabel("oldestPrice", t("oldestPrice"))}
         </TableCell>
         <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
-          {sortLabel("newestPrice", "Newest Price")}
+          {sortLabel("newestPrice", t("newestPrice"))}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
-          {sortLabel("targetPrice", "Target Price")}
+          {sortLabel("targetPrice", t("targetPrice"))}
         </TableCell>
         <TableCell sx={stickyCell}>
-          <Typography variant="subtitle2" fontWeight={600}>Company</Typography>
+          <Typography variant="subtitle2" fontWeight={600}>{t("company")}</Typography>
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
-          {sortLabel("marketCapitalization", "Market Cap")}
+          {sortLabel("marketCapitalization", t("marketCap"))}
         </TableCell>
         <TableCell sx={{ ...stickyCell, width: "90px" }}>
-          <Typography variant="subtitle2" fontWeight={600}>Sector</Typography>
+          <Typography variant="subtitle2" fontWeight={600}>{t("sector")}</Typography>
         </TableCell>
         <TableCell sx={stickyCell}>
-          <Typography variant="subtitle2" fontWeight={600}>Description</Typography>
+          <Typography variant="subtitle2" fontWeight={600}>{t("description")}</Typography>
         </TableCell>
         <TableCell sx={{ ...stickyCell, right: 80, width: "80px", zIndex: 3 }}>
-          <Typography variant="subtitle2" fontWeight={600}>Details</Typography>
+          <Typography variant="subtitle2" fontWeight={600}>{t("details")}</Typography>
         </TableCell>
         <TableCell sx={{ ...stickyCell, right: 0, width: "80px", zIndex: 3 }}>
-          <Typography variant="subtitle2" fontWeight={600}>Actions</Typography>
+          <Typography variant="subtitle2" fontWeight={600}>{t("actions")}</Typography>
         </TableCell>
       </TableRow>
     </TableHead>

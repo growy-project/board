@@ -30,14 +30,34 @@ Because `next.config.js` sets `output: 'export'` and `images: { unoptimized: tru
 `.env.local` (local dev) and the GitHub Actions workflow (prod build) must both define:
 - `NEXT_PUBLIC_API_BASE_URL` — backend origin (prod: `https://growy-api.eastus.cloudapp.azure.com`)
 - `NEXT_PUBLIC_GOOGLE_CLIENT_ID` — Google OAuth client ID used by `@react-oauth/google`
+- `NEXT_PUBLIC_LOCALE` — `en` or `es`. Selects the UI language and locale-aware formatting at build time (see Localization below). Defaults to `en` if unset.
 
 Service modules read the API URL with a hardcoded fallback:
 ```ts
 process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://growy-api.eastus.cloudapp.azure.com"
 ```
 
+## Localization
+The site uses a **domain-per-language** strategy: one build per locale, deployed to its own domain.
+- `momentum-scanner.com` is the **English** build (`NEXT_PUBLIC_LOCALE=en`).
+- `cedear-scanner.com` is the **Spanish** build (`NEXT_PUBLIC_LOCALE=es`).
+
+Implementation:
+- Library: `next-intl` in "without i18n routing" mode — a single `NextIntlClientProvider` at the root with the build-time locale baked in. No `[locale]` route segment, no middleware (which static export forbids).
+- Locale is read from `process.env.NEXT_PUBLIC_LOCALE` in `src/i18n/config.ts`. Both message catalogs (`src/i18n/messages/{en,es}.json`) are imported, but only the active one is wired into the provider.
+- UI strings: use `useTranslations("namespace")` from `next-intl` in components.
+- Formatting: use `useFormatter()` (wraps `Intl.NumberFormat` / `Intl.DateTimeFormat`). Named formats live in `src/i18n/config.ts`'s `formats` export — prefer those over inline options where possible.
+- MUI x-date-pickers: locale flows into `createTheme(..., enUS|esES)` in `src/utils/theme/DefaultColors.tsx`, and `<LocalizationProvider adapterLocale={...}>` reads the active locale.
+- Day.js locale is set once in `src/i18n/Provider.tsx`.
+- The header `LanguageToggle` is a cross-domain link (build-time locale is fixed; clicking it navigates to the other domain at the same path).
+- Login flow honors a `returnTo` query param (validated by `isSafeReturnTo`) so cross-domain language switches preserve the destination after Google re-auth.
+
+To preview the other locale locally, set `NEXT_PUBLIC_LOCALE=es` in `.env.local` and restart the dev server.
+
 ## Deployment
 Deploys to Azure Static Web Apps via `.github/workflows/azure-static-web-apps-gentle-stone-0ea32490f.yml` on push to `main`. Build-time env vars are injected through the `env:` block on the `Build And Deploy` step and must exist as GitHub Secrets. SWA Application Settings in the Azure portal do **not** reach the static build — always set build-time vars in the workflow.
+
+The Spanish build (`cedear-scanner.com`) requires a duplicate workflow file with `NEXT_PUBLIC_LOCALE: es` and its own `AZURE_STATIC_WEB_APPS_API_TOKEN_*` secret. The English workflow already pins `NEXT_PUBLIC_LOCALE: en`.
 
 ## Project Structure
 
