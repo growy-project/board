@@ -2,8 +2,9 @@
 import React, { JSX } from "react";
 import { Box, Typography } from "@mui/material";
 import { GoogleLogin } from "@react-oauth/google";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
+import { isSafeReturnTo } from "@/i18n/config";
 
 interface loginType {
   title?: string;
@@ -14,12 +15,14 @@ interface loginType {
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleSuccess = async (credentialResponse: { credential?: string }) => {
     if (!credentialResponse.credential) return;
     try {
       await login(credentialResponse.credential);
-      router.push("/");
+      const returnTo = searchParams?.get("returnTo");
+      router.push(isSafeReturnTo(returnTo) ? returnTo : "/");
     } catch (err) {
       console.error("Login failed", err);
     }

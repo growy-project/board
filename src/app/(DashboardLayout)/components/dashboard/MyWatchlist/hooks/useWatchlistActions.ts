@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import * as watchlistService from "../../../../services/watchlistService";
 import * as statisticJobService from "../../../../services/statisticJobService";
 import { useAuth } from "@/app/context/AuthContext";
@@ -12,6 +13,7 @@ interface UseWatchlistActionsArgs {
 
 export function useWatchlistActions({ startUnixDate, endUnixDate, removeSymbolLocally }: UseWatchlistActionsArgs) {
   const { token } = useAuth();
+  const tFeedback = useTranslations("dashboard.watchlistFeedback");
   const [actionsMenuAnchor, setActionsMenuAnchor] = useState<null | HTMLElement>(null);
   const [actionsMenuStock, setActionsMenuStock] = useState<StockPerformance | null>(null);
   const [symbolHistory, setSymbolHistory] = useState<unknown>(null);
@@ -61,7 +63,7 @@ export function useWatchlistActions({ startUnixDate, endUnixDate, removeSymbolLo
     if (!exchange) {
       setFeedback({
         severity: "error",
-        message: `Cannot remove ${symbol}: missing exchange information.`,
+        message: tFeedback("missingExchange", { symbol }),
       });
       return;
     }
@@ -70,15 +72,15 @@ export function useWatchlistActions({ startUnixDate, endUnixDate, removeSymbolLo
       await watchlistService.removeFromWatchlist(symbol, exchange, token);
       setFeedback({
         severity: "success",
-        message: `${symbol} removed from your watchlist.`,
+        message: tFeedback("removed", { symbol }),
       });
     } catch {
       setFeedback({
         severity: "error",
-        message: `Failed to remove ${symbol}. Refresh to see the latest state.`,
+        message: tFeedback("removeError", { symbol }),
       });
     }
-  }, [actionsMenuStock, token, removeSymbolLocally]);
+  }, [actionsMenuStock, token, removeSymbolLocally, tFeedback]);
 
   return {
     actionsMenuAnchor,

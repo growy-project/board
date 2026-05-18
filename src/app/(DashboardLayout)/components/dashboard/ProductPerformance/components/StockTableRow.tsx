@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, MoreVert } from "@mui/icons-material";
+import { useFormatter, useTranslations } from "next-intl";
 import type { StockPerformance } from "../types";
 
 export interface StockTableRowProps {
@@ -17,12 +18,33 @@ export interface StockTableRowProps {
   onActionsClick: (e: React.MouseEvent<HTMLButtonElement>, product: StockPerformance) => void;
 }
 
+const EMPTY = "—";
+
+function formatMarketCap(
+  value: number,
+  format: ReturnType<typeof useFormatter>,
+): string {
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000_000) {
+    return `${format.number(value / 1_000_000_000, "decimal2")}B`;
+  }
+  if (abs >= 1_000_000) {
+    return `${format.number(value / 1_000_000, "decimal2")}M`;
+  }
+  if (abs >= 1_000) {
+    return `${format.number(value / 1_000, "decimal2")}K`;
+  }
+  return format.number(value, "decimal2");
+}
+
 const StockTableRow = React.memo(function StockTableRow({
   product,
   exchange,
   onDetailClick,
   onActionsClick,
 }: StockTableRowProps) {
+  const format = useFormatter();
+  const tv = useTranslations("table.values");
   const effectiveExchange = product.exchange ?? exchange;
   return (
     <TableRow>
@@ -53,37 +75,43 @@ const StockTableRow = React.memo(function StockTableRow({
             color: "#fff",
           }}
           size="small"
-          label={`${product.percentageChange.toFixed(2)}%`}
+          label={format.number(product.percentageChange / 100, "percent2")}
         />
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.volatility.toFixed(1)}%
+          {format.number(product.volatility / 100, "percent1")}
         </Typography>
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.percentPositiveDays != null ? `${product.percentPositiveDays.toFixed(1)}%` : "—"}
+          {product.percentPositiveDays != null
+            ? format.number(product.percentPositiveDays / 100, "percent1")
+            : EMPTY}
         </Typography>
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.returnStdDev != null ? `${product.returnStdDev.toFixed(2)}%` : "—"}
+          {product.returnStdDev != null
+            ? format.number(product.returnStdDev / 100, "percent2")
+            : EMPTY}
         </Typography>
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.maxDrawdown != null ? `${product.maxDrawdown.toFixed(2)}%` : "—"}
+          {product.maxDrawdown != null
+            ? format.number(product.maxDrawdown / 100, "percent2")
+            : EMPTY}
         </Typography>
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.isInMomentum == null ? "—" : product.isInMomentum ? "Yes" : "No"}
+          {product.isInMomentum == null ? EMPTY : product.isInMomentum ? tv("yes") : tv("no")}
         </Typography>
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.eps != null ? `$${product.eps.toFixed(2)}` : "—"}
+          {product.eps != null ? format.number(product.eps, "currency") : EMPTY}
         </Typography>
       </TableCell>
       <TableCell align="right">
@@ -99,28 +127,28 @@ const StockTableRow = React.memo(function StockTableRow({
             color: "#fff",
           }}
           size="small"
-          label={product.rsi.toFixed(1)}
+          label={format.number(product.rsi, "decimal1")}
         />
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          ${product.oldestPrice.toFixed(2)}
+          {format.number(product.oldestPrice, "currency")}
         </Typography>
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          ${product.newestPrice.toFixed(2)}
+          {format.number(product.newestPrice, "currency")}
         </Typography>
       </TableCell>
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.targetPrice != null ? `$${product.targetPrice.toFixed(2)}` : "—"}
+          {product.targetPrice != null ? format.number(product.targetPrice, "currency") : EMPTY}
         </Typography>
       </TableCell>
       <TableCell>
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.companyName == null ? (
-            "—"
+            EMPTY
           ) : product.companyName.length > 25 ? (
             <Tooltip title={product.companyName} arrow placement="top">
               <span>{product.companyName.slice(0, 25)}…</span>
@@ -133,19 +161,19 @@ const StockTableRow = React.memo(function StockTableRow({
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.marketCapitalization
-            ? `${(product.marketCapitalization / 1_000_000_000).toFixed(2)}B`
-            : "—"}
+            ? formatMarketCap(product.marketCapitalization, format)
+            : EMPTY}
         </Typography>
       </TableCell>
       <TableCell>
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.sector ?? "—"}
+          {product.sector ?? EMPTY}
         </Typography>
       </TableCell>
       <TableCell>
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.description == null ? (
-            "—"
+            EMPTY
           ) : product.description.length > 25 ? (
             <Tooltip
               title={product.description}

@@ -13,7 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { IconLogin, IconLogout } from "@tabler/icons-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import NavItem from "./NavItem";
 import NavGroup from "./NavGroup/NavGroup";
 import { useAuth } from "@/app/context/AuthContext";
@@ -23,6 +23,7 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
   const pathDirect = pathname;
   const { user, logout } = useAuth();
   const theme = useTheme();
+  const t = useTranslations("menu");
 
   const ListItemStyled = styled(ListItem)(() => ({
     padding: 0,
@@ -45,12 +46,24 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav" component="div">
         {Menuitems.map((item) => {
-          if (item.subheader) {
-            return <NavGroup item={item} key={item.subheader} />;
+          if (item.subheaderKey) {
+            return (
+              <NavGroup
+                item={{ navlabel: true, subheader: t(item.subheaderKey) }}
+                key={item.subheaderKey}
+              />
+            );
           } else {
             return (
               <NavItem
-                item={item}
+                item={{
+                  id: item.id,
+                  title: item.titleKey ? t(item.titleKey) : undefined,
+                  icon: item.icon,
+                  href: item.href,
+                  disabled: item.disabled,
+                  external: item.external,
+                }}
                 key={item.id}
                 pathDirect={pathDirect}
                 onClick={toggleMobileSidebar}
@@ -60,7 +73,7 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
         })}
 
         {/* Auth subheader */}
-        <NavGroup item={{ navlabel: true, subheader: "Auth" }} key="auth-subheader" />
+        <NavGroup item={{ navlabel: true, subheader: t("auth") }} key="auth-subheader" />
 
         {user ? (
           <List component="div" disablePadding>
@@ -69,7 +82,7 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
                 <ListItemIcon sx={{ minWidth: "36px", p: "3px 0", color: "inherit" }}>
                   <IconLogout stroke={1.5} size="1.3rem" />
                 </ListItemIcon>
-                <ListItemText>Logout</ListItemText>
+                <ListItemText>{t("logout")}</ListItemText>
               </ListItemButton>
             </ListItemStyled>
           </List>
@@ -77,7 +90,7 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
           <NavItem
             item={{
               id: "auth-login",
-              title: "Login",
+              title: t("login"),
               icon: IconLogin,
               href: "/authentication/login",
             }}

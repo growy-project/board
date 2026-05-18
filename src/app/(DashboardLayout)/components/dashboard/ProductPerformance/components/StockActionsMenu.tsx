@@ -1,5 +1,6 @@
 import React from "react";
 import { Menu, MenuItem } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 interface StockActionsMenuProps {
   anchorEl: HTMLElement | null;
@@ -16,11 +17,12 @@ export default function StockActionsMenu({
   onTagToxic,
   onTagTopGrowth,
 }: StockActionsMenuProps) {
+  const t = useTranslations("dashboard.actions");
   return (
     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={onClose}>
-      <MenuItem onClick={onAddToWatchlist}>Add to my watchlist</MenuItem>
-      <MenuItem onClick={onTagToxic}>Tag as Toxic</MenuItem>
-      <MenuItem onClick={onTagTopGrowth}>Tag as Top Growth</MenuItem>
+      <MenuItem onClick={onAddToWatchlist}>{t("watchlist")}</MenuItem>
+      <MenuItem onClick={onTagToxic}>{t("toxic")}</MenuItem>
+      <MenuItem onClick={onTagTopGrowth}>{t("topGrowth")}</MenuItem>
     </Menu>
   );
 }

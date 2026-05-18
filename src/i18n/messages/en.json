@@ -1,0 +1,214 @@
+{
+  "brand": {
+    "name": "Momentum Scanner",
+    "tagline": "Find stocks already on the move.",
+    "description": "Scan thousands of tickers for momentum, then drill into volatility, RSI, and sector data — so you can analyze trends with the right context.",
+    "quote": "“Stocks that are already going up often keep rising for a period of time. Momentum Scanner helps you spot strong trends and analyze them more clearly.”"
+  },
+  "menu": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "watchlist": "My Watchlist",
+    "about": "About",
+    "auth": "Auth",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "languageToggle": {
+    "label": "Español",
+    "ariaLabel": "Switch to Spanish"
+  },
+  "dashboard": {
+    "title": "Momentum Scanner",
+    "loadingSymbols": "Loading {exchange} symbols and ranges…",
+    "loadingExtra": "This will be amazing",
+    "filtersStale": "Filters changed — results below are out of date.",
+    "refresh": "Refresh results",
+    "search": "Search",
+    "emptyTitle": "No stocks matched your search",
+    "emptyHint": "Try adjusting the exchange, minimum % change, or date range.",
+    "loginToTag": "Please log in to tag a symbol.",
+    "actions": {
+      "watchlist": "Add to my watchlist",
+      "toxic": "Tag as Toxic",
+      "topGrowth": "Tag as Top Growth"
+    },
+    "filters": {
+      "exchange": "Exchange",
+      "minChange": "Minimum % Change",
+      "dateRangeAria": "Date range"
+    },
+    "watchlistFeedback": {
+      "added": "{symbol} added to your watchlist.",
+      "addError": "Failed to add symbol to your watchlist.",
+      "addConflictFallback": "Could not add symbol to watchlist.",
+      "removed": "{symbol} removed from your watchlist.",
+      "removeError": "Failed to remove {symbol}. Refresh to see the latest state.",
+      "missingExchange": "Cannot remove {symbol}: missing exchange information."
+    },
+    "tagRequest": {
+      "submitted": "Tag request submitted: {symbol} as {tag}.",
+      "labelToxic": "toxic",
+      "labelTopGrowth": "top-growth"
+    }
+  },
+  "table": {
+    "columns": {
+      "symbol": "Symbol",
+      "percentageChange": "Percentage Change",
+      "volatility": "Volatility %",
+      "percentPositiveDays": "% Positive Days",
+      "returnStdDev": "Return StdDev",
+      "maxDrawdown": "Max Drawdown",
+      "isMomentum": "Is Momentum",
+      "eps": "EPS",
+      "rsi": "RSI",
+      "oldestPrice": "Oldest Price",
+      "newestPrice": "Newest Price",
+      "targetPrice": "Target Price",
+      "company": "Company",
+      "marketCap": "Market Cap",
+      "sector": "Sector",
+      "description": "Description",
+      "details": "Details",
+      "actions": "Actions"
+    },
+    "values": {
+      "yes": "Yes",
+      "no": "No",
+      "empty": "—"
+    },
+    "tooltips": {
+      "eps": {
+        "title": "Earnings Per Share (EPS)",
+        "body1": "It tells you how much profit a company makes for each outstanding share.",
+        "body2": "EPS = (Net Income − Preferred Dividends) / Average Outstanding Shares"
+      },
+      "rsi": {
+        "title": "Relative Strength Index (RSI)",
+        "body1": "Stocks trending up often hold RSI above 50 without dipping too much.",
+        "body2": "A sustained RSI between 55–70 indicates controlled growth (not overheated)."
+      }
+    }
+  },
+  "dateRange": {
+    "custom": "Custom",
+    "customRange": "Custom range",
+    "start": "Start",
+    "end": "End",
+    "available": "Available · ",
+    "cancel": "Cancel",
+    "apply": "Apply",
+    "close": "Close",
+    "errors": {
+      "endBeforeStart": "End date must be at least one day after start date",
+      "outOfRange": "Selected date is outside the available range"
+    }
+  },
+  "watchlist": {
+    "title": "My Watchlist",
+    "filtersStale": "Filters changed — results below are out of date.",
+    "refresh": "Refresh results",
+    "search": "Search",
+    "emptyTitle": "Your watchlist is empty",
+    "emptyHint": "Add symbols from the Momentum Scanner to see them here.",
+    "loggedOutTitle": "Please log in to view your watchlist",
+    "loggedOutHint": "Sign in with Google to track and manage your saved symbols.",
+    "removeAction": "Remove from my watchlist"
+  },
+  "notAdmin": {
+    "title": "Administrator action required",
+    "explanationToxic": "To mark this item as <b>Toxic</b>, you must be an administrator. Send a message to the administrator to request this.",
+    "explanationTopGrowth": "To mark this item as <b>Top Growth</b>, you must be an administrator. Send a message to the administrator to request this.",
+    "reason": "Reason",
+    "reasonCounter": "{current}/{max}",
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "errorDialog": {
+    "title": "Error",
+    "close": "Close"
+  },
+  "stockDetail": {
+    "title": "{symbol} — close price & EMA 20",
+    "legendClose": "Close",
+    "legendEma": "EMA 20",
+    "loading": "Loading...",
+    "close": "Close"
+  },
+  "auth": {
+    "pageTitle": "Login",
+    "pageDescription": "Sign in to Momentum Scanner",
+    "signIn": "Sign in",
+    "useGoogle": "Use your Google account to continue.",
+    "or": "OR",
+    "continueWithout": "Continue to dashboard without signing in",
+    "terms": "By continuing you agree to Momentum Scanner's <terms>Terms</terms> and <privacy>Privacy Policy</privacy>. We never trade on your behalf and never share account data with third parties."
+  },
+  "header": {
+    "menu": "menu",
+    "toggleTheme": "toggle theme",
+    "login": "Login"
+  },
+  "about": {
+    "pageTitle": "MS",
+    "pageDescription": "About",
+    "title": "Momentum Scanner",
+    "intro": "Momentum Scanner is built around one of the most widely used investing strategies in the market: <accent>trend following</accent>, also known as <momentumLink>momentum investing</momentumLink>. The idea is simple — stocks that are already going up often keep rising for a period of time.",
+    "bullets": [
+      {
+        "title": "Trend following",
+        "body": "Stocks already going up tend to keep going up for a stretch — institutional flows, earnings momentum, and FOMO all pull in the same direction."
+      },
+      {
+        "title": "Quality matters",
+        "body": "Smooth, low-drawdown climbs are more reliable than choppy, gap-driven moves of the same size."
+      },
+      {
+        "title": "We surface, you decide",
+        "body": "Momentum Scanner ranks and explains. The investment call stays with you."
+      }
+    ],
+    "closing": "The platform currently scans all Nasdaq and NYSE tickers, highlights those with notable growth, and shows the indicators that matter: volatility, sector data, technical signals, and analyst targets.",
+    "viewMore": "View more",
+    "viewLess": "View less",
+    "howItWorksTitle": "How Momentum Scanner works",
+    "howItWorks1": "The momentum premium is one of the most empirically robust effects in finance. It has been documented across more than 200 years of US equity data, in over 40 countries, and in many asset classes beyond stocks — bonds, currencies, and commodities.",
+    "howItWorks2": "Raw growth, though, isn't enough. A core idea behind Momentum Scanner is the quality dimension: Gray & Vogel's <qualityLink>smooth-vs-choppy distinction</qualityLink>. A steady climb reflects sustained buying pressure and slow information diffusion; gap-driven moves are noisier and more likely to mean-revert. That's why the scanner shows <accent>% Positive Days</accent>, <accent>Return StdDev</accent> and <accent>Max Drawdown</accent> alongside the raw return.",
+    "howItWorks3": "Institutional implementations (AQR, BlackRock/iShares) also risk-adjust momentum, scaling scores by the underlying asset's volatility so that \"high momentum\" is not just a reflection of higher overall risk. The <accent>Volatility %</accent> column captures that, and <accent>RSI</accent> is provided as a complementary technical signal.",
+    "howItWorks4": "One last note: the literature is consistent that <carhartLink>no single factor is reliable enough to bet everything on</carhartLink> (Carhart, 1997). Momentum Scanner doesn't tell you what to buy — it surfaces signals you combine with your own judgment, community input, and the rest of your strategy.",
+    "columnReferenceTitle": "Column reference — momentum quality metrics",
+    "columns": [
+      {
+        "label": "Percentage Change",
+        "body": "Total return across the selected date range: (newest − oldest) / oldest × 100. The raw growth signal — every other column is a quality lens on top of it."
+      },
+      {
+        "label": "Volatility %",
+        "body": "A CPVI-style volatility score over the window. Lower values mean steadier, \"boring\" momentum; higher values mean \"lottery\" behavior (gappy, news-driven). Smooth low-vol momentum has historically outperformed."
+      },
+      {
+        "label": "% Positive Days",
+        "body": "Share of trading days where the close was higher than the prior close, as a %. Our smoothness proxy — values ≥ 50% indicate a steady climb, and ≥ 50% is required for Is Momentum."
+      },
+      {
+        "label": "Return StdDev",
+        "body": "Sample standard deviation of daily returns over the window, in %. A second view on choppiness — high stddev means the path was bumpy even if the endpoint was good."
+      },
+      {
+        "label": "Max Drawdown",
+        "body": "The largest peak-to-trough drop during the window, in %. Capped at ≤ 25% for Is Momentum — a stock that took a deep dip mid-window doesn't qualify."
+      },
+      {
+        "label": "Is Momentum",
+        "body": "A boolean classification. For the full scan: top quintile of Percentage Change AND % Positive Days ≥ 50 AND Max Drawdown ≤ 25. For watchlists, the top-quintile rank is replaced by an absolute ≥ 20% growth threshold, because relative ranking is degenerate on small lists."
+      },
+      {
+        "label": "RSI",
+        "body": "Standard 14-period Relative Strength Index on the closing prices. Above 70 is generally read as overbought, below 30 as oversold. Independent of the Is Momentum classification — provided as a complementary signal."
+      }
+    ],
+    "aboutDeveloper": "About the developer",
+    "developerBody": "As a <devLink>software developer</devLink>, I wanted to figure out what to do with my savings — how to make them grow — so I bought some stocks: a handful of blue chips and a few green-energy names. Six months later I was down 1%. It wasn't scary — a 30% drop would have sent me running — but losing 1% on half a year of patience felt ridiculous. So I started researching, and eventually built the tool I wished I'd had from day one."
+  }
+}

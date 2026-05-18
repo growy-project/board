@@ -12,6 +12,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import type { SymbolDateRangeResult } from "../../services/symbolService";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "../wizard/wizardTheme";
 import {
@@ -41,6 +42,10 @@ export default function PresetChipGroup({
   onEndChange,
   onCustomRangeApply,
 }: PresetChipGroupProps) {
+  const t = useTranslations("dateRange");
+  const tFilters = useTranslations("dashboard.filters");
+  const format = useFormatter();
+  const locale = useLocale();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const activePreset = detectActivePreset(startDate, endDate, range);
   const isCustom = !activePreset && Boolean(startDate && endDate);
@@ -55,19 +60,19 @@ export default function PresetChipGroup({
 
   const customLabel =
     isCustom && startDate && endDate
-      ? `${startDate.format("MMM DD")} → ${endDate.format("MMM DD")}`
-      : "Custom";
+      ? `${format.dateTime(startDate.toDate(), "compact")} → ${format.dateTime(endDate.toDate(), "compact")}`
+      : t("custom");
 
   const customTooltip =
     isCustom && startDate && endDate
-      ? `${startDate.format("MMM DD, YYYY")} → ${endDate.format("MMM DD, YYYY")}`
+      ? `${format.dateTime(startDate.toDate(), "short")} → ${format.dateTime(endDate.toDate(), "short")}`
       : "";
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
       <Box
         role="radiogroup"
-        aria-label="Date range"
+        aria-label={tFilters("dateRangeAria")}
         sx={{
           display: "inline-flex",
           alignItems: "center",
@@ -223,6 +228,8 @@ function CustomRangePopover({
   onEndChange,
   onApply,
 }: PopoverProps) {
+  const t = useTranslations("dateRange");
+  const format = useFormatter();
   const [draftStart, setDraftStart] = React.useState<Dayjs | null>(startDate);
   const [draftEnd, setDraftEnd] = React.useState<Dayjs | null>(endDate);
 
@@ -250,9 +257,9 @@ function CustomRangePopover({
     draftStart && draftEnd && !draftEnd.isAfter(draftStart, "day"),
   );
   const errorMessage = isOrderInvalid
-    ? "End date must be at least one day after start date"
+    ? t("errors.endBeforeStart")
     : isStartOutOfRange || isEndOutOfRange
-      ? "Selected date is outside the available range"
+      ? t("errors.outOfRange")
       : null;
   const isInvalid = Boolean(errorMessage);
 
@@ -300,12 +307,12 @@ function CustomRangePopover({
             letterSpacing: "0.02em",
           }}
         >
-          Custom range
+          {t("customRange")}
         </Typography>
         <IconButton
           size="small"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={t("close")}
           sx={{ width: 24, height: 24, color: WIZARD_COLORS.ink500 }}
         >
           <CloseIcon />
@@ -321,7 +328,7 @@ function CustomRangePopover({
         }}
       >
         <DateField
-          label="Start"
+          label={t("start")}
           value={draftStart}
           onChange={setDraftStart}
           minDate={minDate}
@@ -329,7 +336,7 @@ function CustomRangePopover({
           error={isOrderInvalid || isStartOutOfRange}
         />
         <DateField
-          label="End"
+          label={t("end")}
           value={draftEnd}
           onChange={setDraftEnd}
           minDate={minDate}
@@ -363,19 +370,19 @@ function CustomRangePopover({
             borderBottom: `1px solid ${WIZARD_COLORS.border}`,
           }}
         >
-          Available ·{" "}
+          {t("available")}
           <Box
             component="b"
             sx={{ color: WIZARD_COLORS.ink700, fontWeight: 600 }}
           >
-            {dayjs(range.firstDate).format("MMM D, YYYY")}
+            {format.dateTime(dayjs(range.firstDate).toDate(), "short")}
           </Box>{" "}
           →{" "}
           <Box
             component="b"
             sx={{ color: WIZARD_COLORS.ink700, fontWeight: 600 }}
           >
-            {dayjs(range.lastDate).format("MMM D, YYYY")}
+            {format.dateTime(dayjs(range.lastDate).toDate(), "short")}
           </Box>
         </Typography>
       )}
@@ -392,7 +399,7 @@ function CustomRangePopover({
             },
           }}
         >
-          Cancel
+          {t("cancel")}
         </Button>
         <Button
           variant="contained"
@@ -405,7 +412,7 @@ function CustomRangePopover({
             "&:disabled": { bgcolor: WIZARD_COLORS.sand200, color: "#999" },
           }}
         >
-          Apply
+          {t("apply")}
         </Button>
       </Stack>
     </Popover>

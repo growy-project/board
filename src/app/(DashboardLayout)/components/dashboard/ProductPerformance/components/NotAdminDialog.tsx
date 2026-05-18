@@ -10,6 +10,7 @@ import {
   Alert,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { useTranslations } from "next-intl";
 
 interface NotAdminDialogProps {
   open: boolean;
@@ -30,6 +31,8 @@ export default function NotAdminDialog({
   onCancel,
   onSubmit,
 }: NotAdminDialogProps) {
+  const t = useTranslations("notAdmin");
+  const explanationKey = action === "toxic" ? "explanationToxic" : "explanationTopGrowth";
   return (
     <Dialog
       open={open}
@@ -37,29 +40,29 @@ export default function NotAdminDialog({
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle>Administrator action required</DialogTitle>
+      <DialogTitle>{t("title")}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <Alert severity="warning">
-            To mark this item as{" "}
-            <strong>{action === "toxic" ? "Toxic" : "Top Growth"}</strong>, you must be an
-            administrator. Send a message to the administrator to request this.
+            {t.rich(explanationKey, {
+              b: (chunks) => <strong>{chunks}</strong>,
+            })}
           </Alert>
           <TextField
-            label="Reason"
+            label={t("reason")}
             multiline
             rows={4}
             value={message}
             onChange={(e) => onMessageChange(e.target.value)}
             inputProps={{ maxLength: 300 }}
-            helperText={`${message.length}/300`}
+            helperText={t("reasonCounter", { current: message.length, max: 300 })}
             fullWidth
             disabled={submitting}
           />
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} disabled={submitting}>Cancel</Button>
+        <Button onClick={onCancel} disabled={submitting}>{t("cancel")}</Button>
         <LoadingButton
           variant="contained"
           loading={submitting}
@@ -67,7 +70,7 @@ export default function NotAdminDialog({
           onClick={onSubmit}
           sx={{ backgroundColor: "#278ab0", "&:hover": { backgroundColor: "#1c4670" } }}
         >
-          Submit
+          {t("submit")}
         </LoadingButton>
       </DialogActions>
     </Dialog>

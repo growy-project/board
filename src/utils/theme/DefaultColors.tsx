@@ -1,5 +1,9 @@
 import { createTheme } from "@mui/material/styles";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { enUS, esES } from "@mui/x-date-pickers/locales";
+import { locale } from "@/i18n/config";
+
+const datePickerLocale = locale === "es" ? esES : enUS;
 
 export const plus = Plus_Jakarta_Sans({
   weight: ["300", "400", "500", "600", "700"],
@@ -140,7 +144,7 @@ const baselightTheme = createTheme({
       },
     },
   },
-});
+}, datePickerLocale);
 
 const basedarkTheme = createTheme({
   direction: "ltr",
@@ -227,7 +231,7 @@ const basedarkTheme = createTheme({
     },
     MuiCard: { styleOverrides: { root: { borderRadius: "7px" } } },
   },
-});
+}, datePickerLocale);
 
 const basenavyTheme = createTheme({
   direction: "ltr",
@@ -314,6 +318,6 @@ const basenavyTheme = createTheme({
     },
     MuiCard: { styleOverrides: { root: { borderRadius: "7px" } } },
   },
-});
+}, datePickerLocale);
 
 export { baselightTheme, basedarkTheme, basenavyTheme };

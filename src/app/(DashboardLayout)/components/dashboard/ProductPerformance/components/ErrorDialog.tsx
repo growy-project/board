@@ -9,6 +9,7 @@ import {
   Box,
 } from "@mui/material";
 import { ErrorOutline } from "@mui/icons-material";
+import { useTranslations } from "next-intl";
 
 interface ErrorDialogProps {
   error: string | null;
@@ -16,12 +17,13 @@ interface ErrorDialogProps {
 }
 
 export default function ErrorDialog({ error, onClose }: ErrorDialogProps) {
+  const t = useTranslations("errorDialog");
   return (
     <Dialog open={error !== null} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#d32f2f" }}>
           <ErrorOutline />
-          <Typography variant="h6">Error</Typography>
+          <Typography variant="h6">{t("title")}</Typography>
         </Box>
       </DialogTitle>
       <DialogContent>
@@ -33,7 +35,7 @@ export default function ErrorDialog({ error, onClose }: ErrorDialogProps) {
           variant="contained"
           sx={{ backgroundColor: "#278ab0", "&:hover": { backgroundColor: "#1c4670" } }}
         >
-          Close
+          {t("close")}
         </Button>
       </DialogActions>
     </Dialog>

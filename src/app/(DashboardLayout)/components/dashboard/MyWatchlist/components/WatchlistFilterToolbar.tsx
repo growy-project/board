@@ -1,6 +1,7 @@
 import React from "react";
 import { Stack, Button } from "@mui/material";
 import { Dayjs } from "dayjs";
+import { useTranslations } from "next-intl";
 import type { SymbolDateRangeResult } from "../../../../services/symbolService";
 import PresetChipGroup from "../../../dateRange/PresetChipGroup";
 import { pulseAnimation } from "../../ProductPerformance/constants";
@@ -30,6 +31,7 @@ export default function WatchlistFilterToolbar({
   onEndDateChange,
   onSearch,
 }: WatchlistFilterToolbarProps) {
+  const t = useTranslations("watchlist");
   const controlsDisabled = disabled || dateRangeLoading;
 
   return (
@@ -57,7 +59,7 @@ export default function WatchlistFilterToolbar({
           ...(needsSearch && { animation: `${pulseAnimation} 1.2s ease-in-out infinite` }),
         }}
       >
-        Search
+        {t("search")}
       </Button>
     </Stack>
   );
