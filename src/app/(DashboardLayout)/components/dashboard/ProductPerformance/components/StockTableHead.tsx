@@ -36,7 +36,7 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
         <TableCell sx={{ ...stickyCell, left: 0, zIndex: 3 }}>
           <Typography variant="subtitle2" fontWeight={600}>{t("symbol")}</Typography>
         </TableCell>
-        <TableCell align="right" sx={{ ...stickyCell, width: "120px" }}>
+        <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
           {sortLabel("percentageChange", t("percentageChange"))}
         </TableCell>
         <TableCell align="right" sx={stickyCell}>
@@ -103,10 +103,10 @@ export default function StockTableHead({ orderBy, order, onSort }: StockTableHea
         <TableCell sx={stickyCell}>
           <Typography variant="subtitle2" fontWeight={600}>{t("description")}</Typography>
         </TableCell>
-        <TableCell sx={{ ...stickyCell, right: 80, width: "80px", zIndex: 3 }}>
+        <TableCell sx={{ ...stickyCell, position: { xs: "static", sm: "sticky" }, right: { xs: "auto", sm: 80 }, width: "80px", zIndex: { xs: 1, sm: 3 } }}>
           <Typography variant="subtitle2" fontWeight={600}>{t("details")}</Typography>
         </TableCell>
-        <TableCell sx={{ ...stickyCell, right: 0, width: "80px", zIndex: 3 }}>
+        <TableCell sx={{ ...stickyCell, position: { xs: "static", sm: "sticky" }, right: { xs: "auto", sm: 0 }, width: "80px", zIndex: { xs: 1, sm: 3 } }}>
           <Typography variant="subtitle2" fontWeight={600}>{t("actions")}</Typography>
         </TableCell>
       </TableRow>

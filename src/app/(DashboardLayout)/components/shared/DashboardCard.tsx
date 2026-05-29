@@ -2,7 +2,7 @@ import React, { JSX } from "react";
 import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
 
 type Props = {
-  title?: string;
+  title?: React.ReactNode;
   subtitle?: string;
   action?: JSX.Element | any;
   footer?: JSX.Element;
@@ -40,11 +40,21 @@ const DashboardCard = ({
               direction="row"
               spacing={2}
               justifyContent="space-between"
-              alignItems={"center"}
+              alignItems="center"
               mb={3}
+              sx={{
+                flexWrap: { xs: "wrap", sm: "nowrap" },
+                "& > :first-of-type": {
+                  flexBasis: { xs: "100%", sm: "auto" },
+                  mb: { xs: 1, sm: 0 },
+                },
+                "& > :last-of-type": {
+                  width: { xs: "100%", sm: "auto" },
+                },
+              }}
             >
               <Box>
-                {title ? <Typography variant="h5">{title}</Typography> : ""}
+                {title ? <Typography variant="h5" sx={{ m: 0 }}>{title}</Typography> : ""}
 
                 {subtitle ? (
                   <Typography variant="subtitle2" color="textSecondary">

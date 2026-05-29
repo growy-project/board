@@ -207,8 +207,8 @@ const StockTableRow = React.memo(function StockTableRow({
       </TableCell>
       <TableCell
         sx={{
-          position: "sticky",
-          right: 80,
+          position: { xs: "static", sm: "sticky" },
+          right: { xs: "auto", sm: 80 },
           width: "80px",
           zIndex: 1,
           backgroundColor: "background.paper",
@@ -227,8 +227,8 @@ const StockTableRow = React.memo(function StockTableRow({
       </TableCell>
       <TableCell
         sx={{
-          position: "sticky",
-          right: 0,
+          position: { xs: "static", sm: "sticky" },
+          right: { xs: "auto", sm: 0 },
           width: "80px",
           zIndex: 1,
           backgroundColor: "background.paper",

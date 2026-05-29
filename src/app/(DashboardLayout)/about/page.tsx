@@ -49,7 +49,7 @@ const AboutPage = () => {
         <Box>
           <Typography
             variant="h6"
-            sx={{ mb: 2, fontWeight: 500, lineHeight: 1.5 }}
+            sx={{ mb: 2, fontWeight: 500, lineHeight: 1.5, textAlign: "justify" }}
           >
             {t.rich("intro", {
               accent: (chunks) => <Accent>{chunks}</Accent>,
@@ -82,7 +82,7 @@ const AboutPage = () => {
             ))}
           </Stack>
 
-          <Typography variant="body1" sx={{ fontSize: "1.05rem" }}>
+          <Typography variant="body1" sx={{ fontSize: "1.05rem", textAlign: "justify" }}>
             {t("closing")}
           </Typography>
 
@@ -105,11 +105,11 @@ const AboutPage = () => {
               {t("howItWorksTitle")}
             </Typography>
 
-            <Typography variant="body1" sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 2, textAlign: "justify" }}>
               {t("howItWorks1")}
             </Typography>
 
-            <Typography variant="body1" sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 2, textAlign: "justify" }}>
               {t.rich("howItWorks2", {
                 accent: (chunks) => <Accent>{chunks}</Accent>,
                 qualityLink: (chunks) => (
@@ -118,13 +118,13 @@ const AboutPage = () => {
               })}
             </Typography>
 
-            <Typography variant="body1" sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 2, textAlign: "justify" }}>
               {t.rich("howItWorks3", {
                 accent: (chunks) => <Accent>{chunks}</Accent>,
               })}
             </Typography>
 
-            <Typography variant="body1" sx={{ mb: 2 }}>
+            <Typography variant="body1" sx={{ mb: 2, textAlign: "justify" }}>
               {t.rich("howItWorks4", {
                 carhartLink: (chunks) => (
                   <ExternalLink href={CARHART_URL}>{chunks}</ExternalLink>
@@ -147,7 +147,7 @@ const AboutPage = () => {
                   >
                     {c.label}
                   </Typography>
-                  <Typography variant="body2" sx={{ fontSize: "0.95rem" }}>
+                  <Typography variant="body2" sx={{ fontSize: "0.95rem", textAlign: "justify" }}>
                     {c.body}
                   </Typography>
                 </Box>
@@ -168,7 +168,7 @@ const AboutPage = () => {
           </Button>
 
           <Collapse in={devExpanded} timeout="auto" unmountOnExit>
-            <Typography variant="body1" sx={{ fontSize: "1.05rem", mt: 2 }}>
+            <Typography variant="body1" sx={{ fontSize: "1.05rem", mt: 2, textAlign: "justify" }}>
               {t.rich("developerBody", {
                 devLink: (chunks) => (
                   <ExternalLink href={DEVELOPER_URL}>{chunks}</ExternalLink>

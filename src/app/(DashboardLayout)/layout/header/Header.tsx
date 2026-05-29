@@ -9,6 +9,7 @@ import {
   Button,
   useMediaQuery,
   useTheme,
+  Typography,
 } from "@mui/material";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -81,6 +82,31 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }: ItemType) => {
         >
           <IconMenu width="20" height="20" />
         </IconButton>
+
+        <Typography
+          variant="h6"
+          sx={{
+            ml: 2,
+            fontWeight: 700,
+            color: "text.primary",
+            display: { xs: "none", sm: "block" },
+          }}
+        >
+          Momentum Scanner
+        </Typography>
+
+        <Typography
+          variant="body2"
+          sx={{
+            ml: 2,
+            fontWeight: 700,
+            color: "text.primary",
+            display: { xs: "block", sm: "none" },
+            letterSpacing: "0.05em",
+          }}
+        >
+          MS
+        </Typography>
 
         <Box flexGrow={1} />
         <Stack spacing={1} direction="row" alignItems="center">

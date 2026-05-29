@@ -85,6 +85,9 @@ export default function PresetChipGroup({
           opacity: disabled ? 0.55 : 1,
           pointerEvents: disabled ? "none" : "auto",
           boxSizing: "border-box",
+          width: { xs: "100%", sm: "auto" },
+          flexWrap: { xs: "wrap", sm: "nowrap" },
+          minHeight: { xs: "auto", sm: 40 },
         }}
       >
         {PRESETS.map((p) => (
@@ -93,6 +96,7 @@ export default function PresetChipGroup({
             active={p === activePreset}
             onClick={() => applyPreset(p)}
             disabled={!range}
+            sx={{ display: { xs: ["YTD", "1Y", "Max"].includes(p) ? "none" : "inline-flex", sm: "inline-flex" } }}
           >
             {p}
           </PresetChip>
@@ -122,7 +126,9 @@ export default function PresetChipGroup({
               alignItems: "center",
               gap: "6px",
               height: 30,
-              padding: "0 12px 0 10px",
+              padding: { xs: "0 8px", sm: "0 12px 0 10px" },
+              minWidth: 0,
+              maxWidth: { xs: "100px", sm: "auto" },
               borderRadius: "5px",
               fontFamily: WIZARD_MONO_FONT,
               fontSize: 12,
@@ -140,7 +146,16 @@ export default function PresetChipGroup({
             }}
           >
             <CalendarIcon />
-            <span>{customLabel}</span>
+            <span
+              style={{
+                minWidth: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {customLabel}
+            </span>
           </ButtonBase>
         </Tooltip>
 
@@ -164,11 +179,13 @@ function PresetChip({
   disabled,
   onClick,
   children,
+  sx,
 }: {
   active: boolean;
   disabled?: boolean;
   onClick: () => void;
   children: React.ReactNode;
+  sx?: any;
 }) {
   return (
     <ButtonBase
@@ -200,6 +217,7 @@ function PresetChip({
               boxShadow: `0 0 0 1px ${WIZARD_COLORS.border}`,
             },
         "&.Mui-disabled": { opacity: 0.5 },
+        ...sx,
       }}
     >
       {children}
