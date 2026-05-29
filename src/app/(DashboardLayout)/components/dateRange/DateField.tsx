@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Dayjs } from "dayjs";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "../wizard/wizardTheme";
@@ -21,6 +21,10 @@ export default function DateField({
   maxDate,
   error = false,
 }: DateFieldProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const format = isMobile ? "MMM D, YY" : "MMM D, YYYY";
+
   return (
     <Box
       sx={{
@@ -59,6 +63,7 @@ export default function DateField({
         onChange={onChange}
         minDate={minDate}
         maxDate={maxDate}
+        format={format}
         slotProps={{
           textField: {
             variant: "standard",

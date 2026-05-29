@@ -15,11 +15,12 @@
     "logout": "Cerrar sesión"
   },
   "languageToggle": {
-    "label": "English",
+    "label": "EN",
     "ariaLabel": "Cambiar a inglés"
   },
   "dashboard": {
-    "title": "Scanner de Tendencias",
+    "title": "Tablero",
+    "shortTitle": "Tablero",
     "loadingSymbols": "Cargando símbolos y rangos de {exchange}…",
     "loadingExtra": "Esto va a estar increíble",
     "filtersStale": "Los filtros cambiaron — los resultados están desactualizados.",
@@ -73,6 +74,7 @@
       "details": "Detalle",
       "actions": "Acciones"
     },
+    "sortBy": "Ordenar por",
     "values": {
       "yes": "Sí",
       "no": "No",
@@ -151,9 +153,9 @@
     "login": "Iniciar sesión"
   },
   "about": {
-    "pageTitle": "ES",
+    "pageTitle": "Acerca de",
     "pageDescription": "Acerca de",
-    "title": "Scanner de Tendencias",
+    "title": "Acerca de",
     "intro": "Scanner de Tendencias se basa en una de las estrategias de inversión más usadas del mercado: el <accent>seguimiento de tendencia</accent>, también conocido como <momentumLink>momentum investing</momentumLink>. La idea es simple — las acciones que ya están subiendo suelen seguir subiendo por un tiempo.",
     "bullets": [
       {

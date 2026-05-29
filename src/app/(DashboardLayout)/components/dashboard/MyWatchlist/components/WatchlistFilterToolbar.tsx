@@ -35,7 +35,12 @@ export default function WatchlistFilterToolbar({
   const controlsDisabled = disabled || dateRangeLoading;
 
   return (
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      spacing={2}
+      alignItems={{ xs: "stretch", sm: "center" }}
+      sx={{ width: { xs: "100%", sm: "auto" } }}
+    >
       <PresetChipGroup
         startDate={startDate}
         endDate={endDate}
@@ -54,8 +59,9 @@ export default function WatchlistFilterToolbar({
           color: "white",
           "&:hover": { backgroundColor: "#1c4670" },
           "&:disabled": { backgroundColor: "#eaeae0", color: "#999" },
-          minWidth: "100px",
+          minWidth: { xs: "auto", sm: "100px" },
           height: "40px",
+          width: { xs: "100%", sm: "auto" },
           ...(needsSearch && { animation: `${pulseAnimation} 1.2s ease-in-out infinite` }),
         }}
       >

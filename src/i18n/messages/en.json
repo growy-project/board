@@ -15,11 +15,12 @@
     "logout": "Logout"
   },
   "languageToggle": {
-    "label": "Español",
+    "label": "ES",
     "ariaLabel": "Switch to Spanish"
   },
   "dashboard": {
-    "title": "Momentum Scanner",
+    "title": "Dashboard",
+    "shortTitle": "Dashboard",
     "loadingSymbols": "Loading {exchange} symbols and ranges…",
     "loadingExtra": "This will be amazing",
     "filtersStale": "Filters changed — results below are out of date.",
@@ -55,7 +56,7 @@
   "table": {
     "columns": {
       "symbol": "Symbol",
-      "percentageChange": "Percentage Change",
+      "percentageChange": "% Change",
       "volatility": "Volatility %",
       "percentPositiveDays": "% Positive Days",
       "returnStdDev": "Return StdDev",
@@ -73,6 +74,7 @@
       "details": "Details",
       "actions": "Actions"
     },
+    "sortBy": "Sort by",
     "values": {
       "yes": "Yes",
       "no": "No",
@@ -151,9 +153,9 @@
     "login": "Login"
   },
   "about": {
-    "pageTitle": "MS",
+    "pageTitle": "About",
     "pageDescription": "About",
-    "title": "Momentum Scanner",
+    "title": "About",
     "intro": "Momentum Scanner is built around one of the most widely used investing strategies in the market: <accent>trend following</accent>, also known as <momentumLink>momentum investing</momentumLink>. The idea is simple — stocks that are already going up often keep rising for a period of time.",
     "bullets": [
       {

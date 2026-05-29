@@ -50,11 +50,18 @@ export default function StockFilterToolbar({
 }: StockFilterToolbarProps) {
   const t = useTranslations("dashboard");
   return (
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      spacing={2}
+      alignItems={{ xs: "stretch", sm: "center" }}
+      sx={{ width: { xs: "100%", sm: "auto" } }}
+    >
+      {/* Exchange */}
       <FormControl
         size="small"
         sx={{
           minWidth: "120px",
+          width: { xs: "100%", sm: "auto" },
           "& .MuiOutlinedInput-root": {
             "&:hover fieldset": { borderColor: "#278ab0" },
             "&.Mui-focused fieldset": { borderColor: "#1c4670" },
@@ -93,6 +100,7 @@ export default function StockFilterToolbar({
         </Select>
       </FormControl>
 
+      {/* Min % Change */}
       <TextField
         label={t("filters.minChange")}
         color="secondary"
@@ -101,10 +109,11 @@ export default function StockFilterToolbar({
         value={minPercentageChange}
         onChange={onMinPercentageChange}
         size="small"
-        sx={{ width: "130px" }}
+        sx={{ width: { xs: "100%", sm: "130px" } }}
         disabled={dateRangeLoading}
       />
 
+      {/* Preset Chips */}
       <PresetChipGroup
         startDate={startDate}
         endDate={endDate}
@@ -115,6 +124,7 @@ export default function StockFilterToolbar({
         onCustomRangeApply={onCustomRangeApply}
       />
 
+      {/* Search Button */}
       <Button
         variant="contained"
         onClick={onSearch}
@@ -124,8 +134,9 @@ export default function StockFilterToolbar({
           color: "white",
           "&:hover": { backgroundColor: "#1c4670" },
           "&:disabled": { backgroundColor: "#eaeae0", color: "#999" },
-          minWidth: "100px",
           height: "40px",
+          minWidth: { xs: "auto", sm: "100px" },
+          width: { xs: "100%", sm: "auto" },
           ...(needsSearch && { animation: `${pulseAnimation} 1.2s ease-in-out infinite` }),
         }}
       >

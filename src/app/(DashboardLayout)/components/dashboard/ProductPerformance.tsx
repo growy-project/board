@@ -86,7 +86,12 @@ const ProductPerformance = () => {
   return (
     <>
       <DashboardCard
-        title={t("title")}
+        title={
+          <>
+            <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>{t("title")}</Box>
+            <Box component="span" sx={{ display: { xs: "inline", sm: "none" } }}>{t("shortTitle")}</Box>
+          </>
+        }
         action={
           <StockFilterToolbar
             exchange={filters.exchange}
