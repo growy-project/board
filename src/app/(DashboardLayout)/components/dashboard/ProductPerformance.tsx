@@ -8,6 +8,7 @@ import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCa
 import { useFilters } from "./ProductPerformance/hooks/useFilters";
 import { useStockJob } from "./ProductPerformance/hooks/useStockJob";
 import { useStockSort } from "./ProductPerformance/hooks/useStockSort";
+import { useColumnFilters } from "./ProductPerformance/hooks/useColumnFilters";
 import { useSymbolActions } from "./ProductPerformance/hooks/useSymbolActions";
 
 import StockFilterToolbar from "./ProductPerformance/components/StockFilterToolbar";
@@ -22,16 +23,17 @@ export type { StockPerformance, JobStatus } from "./ProductPerformance/types";
 
 const ProductPerformance = () => {
   const t = useTranslations("dashboard");
+  const tf = useTranslations("table.filters");
   const filters = useFilters();
   const job = useStockJob();
   const sort = useStockSort(job.status);
+  const columnFilters = useColumnFilters(sort.sortedResults, job.status?.result);
   const actions = useSymbolActions(filters.exchange, filters.startDate?.unix(), filters.endDate?.unix());
 
   // Run the initial search once the date range has been seeded
   useEffect(() => {
     if (filters.triggerInitialSearch && filters.startDate && filters.endDate) {
       filters.clearNeedsSearch();
-      sort.resetPage();
       job.handleSearch({
         startUnixDate: filters.startDate.unix(),
         endUnixDate: filters.endDate.unix(),
@@ -45,7 +47,6 @@ const ProductPerformance = () => {
   const handleSearch = () => {
     if (!filters.startDate || !filters.endDate) return;
     filters.clearNeedsSearch();
-    sort.resetPage();
     job.handleSearch({
       startUnixDate: filters.startDate.unix(),
       endUnixDate: filters.endDate.unix(),
@@ -58,7 +59,6 @@ const ProductPerformance = () => {
     filters.handleStartDateChange(start);
     filters.handleEndDateChange(end);
     filters.clearNeedsSearch();
-    sort.resetPage();
     job.handleSearch({
       startUnixDate: start.unix(),
       endUnixDate: end.unix(),
@@ -131,22 +131,35 @@ const ProductPerformance = () => {
           </Alert>
         )}
         {showTable && hasResults ? (
-          <StockTable
-            sortedResults={sort.sortedResults}
-            exchange={filters.exchange}
-            isPageLoading={job.isPageLoading}
-            isStale={filters.needsSearch}
-            orderBy={sort.orderBy}
-            order={sort.order}
-            currentPage={sort.currentPage}
-            pageSize={sort.pageSize}
-            totalItems={job.status?.totalItems}
-            totalPages={job.status?.totalPages}
-            onSort={sort.handleSort}
-            onPageChange={sort.handlePageChange}
-            onDetailClick={actions.handleDetailClick}
-            onActionsClick={actions.handleActionsClick}
-          />
+          <>
+            <Box sx={{ display: { xs: "none", sm: "flex" }, justifyContent: "flex-end", mb: 1 }}>
+              <Button
+                variant="outlined"
+                onClick={columnFilters.resetFilters}
+                disabled={!columnFilters.hasActiveFilters}
+                sx={{
+                  color: "#1c4670",
+                  borderColor: "#278ab0",
+                  "&:hover": { borderColor: "#1c4670", backgroundColor: "#eaeae0" },
+                }}
+              >
+                {tf("clear")}
+              </Button>
+            </Box>
+            <StockTable
+              sortedResults={columnFilters.filteredResults}
+              exchange={filters.exchange}
+              isPageLoading={job.isPageLoading}
+              isStale={filters.needsSearch}
+              orderBy={sort.orderBy}
+              order={sort.order}
+              totalItems={columnFilters.filteredResults.length}
+              filters={columnFilters}
+              onSort={sort.handleSort}
+              onDetailClick={actions.handleDetailClick}
+              onActionsClick={actions.handleActionsClick}
+            />
+          </>
         ) : showTable && !hasResults ? (
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 6, gap: 1, color: "text.secondary" }}>
             <SearchOffIcon sx={{ fontSize: 48 }} />

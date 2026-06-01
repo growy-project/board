@@ -4,21 +4,24 @@ import {
   Table,
   TableBody,
   Typography,
-  Pagination,
   useMediaQuery,
   useTheme,
   Button,
   Menu,
   MenuItem,
+  Collapse,
+  Badge,
 } from "@mui/material";
-import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
+import { ArrowUpward, ArrowDownward, FilterList } from "@mui/icons-material";
 import { useTranslations } from "next-intl";
 import StockTableHead from "./StockTableHead";
 import StockTableRow from "./StockTableRow";
 import TickerCard from "./TickerCard";
+import ColumnFilters from "./ColumnFilters";
 import { GradientCircularProgress } from "./StockLoadingOverlay";
 import type { StockPerformance } from "../types";
 import type { SortableColumn } from "../utils";
+import type { UseColumnFiltersResult } from "../hooks/useColumnFilters";
 
 interface StockTableProps {
   sortedResults: StockPerformance[];
@@ -27,12 +30,9 @@ interface StockTableProps {
   isStale: boolean;
   orderBy: SortableColumn;
   order: "asc" | "desc";
-  currentPage: number;
-  pageSize: number;
   totalItems?: number;
-  totalPages?: number;
+  filters: UseColumnFiltersResult;
   onSort: (col: SortableColumn) => void;
-  onPageChange: (e: React.ChangeEvent<unknown>, page: number) => void;
   onDetailClick: (product: StockPerformance) => void;
   onActionsClick: (e: React.MouseEvent<HTMLButtonElement>, product: StockPerformance) => void;
 }
@@ -58,19 +58,18 @@ export default function StockTable({
   isStale,
   orderBy,
   order,
-  currentPage,
-  pageSize,
   totalItems,
-  totalPages,
+  filters,
   onSort,
-  onPageChange,
   onDetailClick,
   onActionsClick,
 }: StockTableProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const tTable = useTranslations("table");
+  const tf = useTranslations("table.filters");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   const activeColumnLabel = SORT_COLUMNS.find((col) => col.key === orderBy)?.labelKey || "percentageChange";
 
@@ -108,7 +107,17 @@ export default function StockTable({
             </Box>
           )}
 
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+            <Badge color="primary" variant="dot" invisible={!filters.hasActiveFilters}>
+              <Button
+                size="small"
+                variant="text"
+                startIcon={<FilterList fontSize="small" />}
+                onClick={() => setShowFilters((v) => !v)}
+              >
+                {tf("filters")}
+              </Button>
+            </Badge>
             <Button
               size="small"
               variant="text"
@@ -137,6 +146,12 @@ export default function StockTable({
               ))}
             </Menu>
           </Box>
+
+          <Collapse in={showFilters} unmountOnExit>
+            <Box sx={{ mb: 1 }}>
+              <ColumnFilters filters={filters} />
+            </Box>
+          </Collapse>
 
           <Box sx={{ mt: 2 }}>
             {sortedResults.map((product) => (
@@ -187,7 +202,7 @@ export default function StockTable({
             </Box>
           )}
           <Table aria-label="simple table" sx={{ whiteSpace: "nowrap", mt: 2 }}>
-            <StockTableHead orderBy={orderBy} order={order} onSort={onSort} />
+            <StockTableHead orderBy={orderBy} order={order} onSort={onSort} filters={filters} />
             <TableBody>
               {sortedResults.map((product) => (
                 <StockTableRow
@@ -203,33 +218,11 @@ export default function StockTable({
         </Box>
       )}
 
-      {totalItems && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mt: 2,
-            flexDirection: { xs: "column", sm: "row" },
-            gap: { xs: 2, sm: 0 },
-          }}
-        >
+      {totalItems != null && (
+        <Box sx={{ mt: 2 }}>
           <Typography variant="body2" color="textSecondary">
-            Showing {(currentPage - 1) * pageSize + 1} to{" "}
-            {Math.min(currentPage * pageSize, totalItems)} of {totalItems} results
+            {tTable("resultsCount", { count: totalItems })}
           </Typography>
-          {totalPages && totalPages > 1 && (
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={onPageChange}
-              disabled={isPageLoading}
-              color="primary"
-              size="medium"
-              showFirstButton
-              showLastButton
-            />
-          )}
         </Box>
       )}
     </Box>

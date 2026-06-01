@@ -75,6 +75,15 @@
       "actions": "Acciones"
     },
     "sortBy": "Ordenar por",
+    "resultsCount": "{count, plural, =0 {Sin resultados} one {# resultado} other {# resultados}}",
+    "filters": {
+      "momentum": "Es Tendencia",
+      "minMarketCap": "Cap. mínima (M)",
+      "filters": "Filtros",
+      "apply": "Aplicar",
+      "all": "Todos",
+      "clear": "Limpiar filtros"
+    },
     "values": {
       "yes": "Sí",
       "no": "No",
