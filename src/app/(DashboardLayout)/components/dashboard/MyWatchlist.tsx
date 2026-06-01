@@ -11,6 +11,7 @@ import { useWatchlistJob } from "./MyWatchlist/hooks/useWatchlistJob";
 import { useWatchlistFilters } from "./MyWatchlist/hooks/useWatchlistFilters";
 import { useWatchlistActions } from "./MyWatchlist/hooks/useWatchlistActions";
 import { useStockSort } from "./ProductPerformance/hooks/useStockSort";
+import { useColumnFilters } from "./ProductPerformance/hooks/useColumnFilters";
 
 import StockTable from "./ProductPerformance/components/StockTable";
 import StockLoadingOverlay from "./ProductPerformance/components/StockLoadingOverlay";
@@ -21,10 +22,12 @@ import WatchlistActionsMenu from "./MyWatchlist/components/WatchlistActionsMenu"
 
 const MyWatchlist = () => {
   const t = useTranslations("watchlist");
+  const tf = useTranslations("table.filters");
   const { token } = useAuth();
   const filters = useWatchlistFilters();
   const job = useWatchlistJob();
   const sort = useStockSort(job.status);
+  const columnFilters = useColumnFilters(sort.sortedResults, job.status?.result);
   const actions = useWatchlistActions({
     startUnixDate: filters.startDate?.unix(),
     endUnixDate: filters.endDate?.unix(),
@@ -35,7 +38,6 @@ const MyWatchlist = () => {
     if (!token || !filters.triggerInitialSearch || !filters.startDate || !filters.endDate) return;
     filters.clearTriggerInitialSearch();
     filters.clearNeedsSearch();
-    sort.resetPage();
     job.handleSearch(
       { startUnixDate: filters.startDate.unix(), endUnixDate: filters.endDate.unix() },
       token,
@@ -46,7 +48,6 @@ const MyWatchlist = () => {
   const handleSearch = () => {
     if (!token || !filters.startDate || !filters.endDate) return;
     filters.clearNeedsSearch();
-    sort.resetPage();
     job.handleSearch(
       { startUnixDate: filters.startDate.unix(), endUnixDate: filters.endDate.unix() },
       token,
@@ -118,22 +119,35 @@ const MyWatchlist = () => {
             </Alert>
           )}
           {showTable && hasResults ? (
-            <StockTable
-              sortedResults={sort.sortedResults}
-              exchange=""
-              isPageLoading={job.isPageLoading}
-              isStale={filters.needsSearch}
-              orderBy={sort.orderBy}
-              order={sort.order}
-              currentPage={sort.currentPage}
-              pageSize={sort.pageSize}
-              totalItems={job.status?.totalItems}
-              totalPages={job.status?.totalPages}
-              onSort={sort.handleSort}
-              onPageChange={sort.handlePageChange}
-              onDetailClick={actions.handleDetailClick}
-              onActionsClick={actions.handleActionsClick}
-            />
+            <>
+              <Box sx={{ display: { xs: "none", sm: "flex" }, justifyContent: "flex-end", mb: 1 }}>
+                <Button
+                  variant="outlined"
+                  onClick={columnFilters.resetFilters}
+                  disabled={!columnFilters.hasActiveFilters}
+                  sx={{
+                    color: "#1c4670",
+                    borderColor: "#278ab0",
+                    "&:hover": { borderColor: "#1c4670", backgroundColor: "#eaeae0" },
+                  }}
+                >
+                  {tf("clear")}
+                </Button>
+              </Box>
+              <StockTable
+                sortedResults={columnFilters.filteredResults}
+                exchange=""
+                isPageLoading={job.isPageLoading}
+                isStale={filters.needsSearch}
+                orderBy={sort.orderBy}
+                order={sort.order}
+                totalItems={columnFilters.filteredResults.length}
+                filters={columnFilters}
+                onSort={sort.handleSort}
+                onDetailClick={actions.handleDetailClick}
+                onActionsClick={actions.handleActionsClick}
+              />
+            </>
           ) : showTable && !hasResults ? (
             <Box
               sx={{

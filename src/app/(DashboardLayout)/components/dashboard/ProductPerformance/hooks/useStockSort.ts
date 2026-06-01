@@ -35,8 +35,6 @@ export function useStockSort(status: JobStatus | null) {
   const saved = typeof window !== "undefined" ? readSavedSort() : null;
   const [orderBy, setOrderBy] = useState<SortableColumn>(saved?.orderBy ?? "percentageChange");
   const [order, setOrder] = useState<"asc" | "desc">(saved?.order ?? "desc");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 20;
 
   useEffect(() => {
     localStorage.setItem(SORT_KEY, JSON.stringify({ orderBy, order }));
@@ -60,11 +58,5 @@ export function useStockSort(status: JobStatus | null) {
     }
   }, [orderBy]);
 
-  const handlePageChange = useCallback((_: React.ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page);
-  }, []);
-
-  const resetPage = useCallback(() => setCurrentPage(1), []);
-
-  return { orderBy, order, currentPage, pageSize, sortedResults, handleSort, handlePageChange, resetPage };
+  return { orderBy, order, sortedResults, handleSort };
 }
