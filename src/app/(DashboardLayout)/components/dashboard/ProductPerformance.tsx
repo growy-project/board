@@ -23,7 +23,6 @@ export type { StockPerformance, JobStatus } from "./ProductPerformance/types";
 
 const ProductPerformance = () => {
   const t = useTranslations("dashboard");
-  const tf = useTranslations("table.filters");
   const filters = useFilters();
   const job = useStockJob();
   const sort = useStockSort(job.status);
@@ -131,21 +130,6 @@ const ProductPerformance = () => {
           </Alert>
         )}
         {showTable && hasResults ? (
-          <>
-            <Box sx={{ display: { xs: "none", sm: "flex" }, justifyContent: "flex-end", mb: 1 }}>
-              <Button
-                variant="outlined"
-                onClick={columnFilters.resetFilters}
-                disabled={!columnFilters.hasActiveFilters}
-                sx={{
-                  color: "#1c4670",
-                  borderColor: "#278ab0",
-                  "&:hover": { borderColor: "#1c4670", backgroundColor: "#eaeae0" },
-                }}
-              >
-                {tf("clear")}
-              </Button>
-            </Box>
             <StockTable
               sortedResults={columnFilters.filteredResults}
               exchange={filters.exchange}
@@ -159,7 +143,6 @@ const ProductPerformance = () => {
               onDetailClick={actions.handleDetailClick}
               onActionsClick={actions.handleActionsClick}
             />
-          </>
         ) : showTable && !hasResults ? (
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 6, gap: 1, color: "text.secondary" }}>
             <SearchOffIcon sx={{ fontSize: 48 }} />

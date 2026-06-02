@@ -10,10 +10,12 @@ import {
 import { Visibility, MoreVert } from "@mui/icons-material";
 import { useFormatter, useTranslations } from "next-intl";
 import type { StockPerformance } from "../types";
+import type { ColumnVisibility } from "../hooks/useColumnVisibility";
 
 export interface StockTableRowProps {
   product: StockPerformance;
   exchange: string;
+  visible: ColumnVisibility;
   onDetailClick: (product: StockPerformance) => void;
   onActionsClick: (e: React.MouseEvent<HTMLButtonElement>, product: StockPerformance) => void;
 }
@@ -40,6 +42,7 @@ function formatMarketCap(
 const StockTableRow = React.memo(function StockTableRow({
   product,
   exchange,
+  visible,
   onDetailClick,
   onActionsClick,
 }: StockTableRowProps) {
@@ -67,6 +70,7 @@ const StockTableRow = React.memo(function StockTableRow({
           </a>
         </Typography>
       </TableCell>
+      {visible.percentageChange && (
       <TableCell align="right">
         <Chip
           sx={{
@@ -78,11 +82,15 @@ const StockTableRow = React.memo(function StockTableRow({
           label={format.number(product.percentageChange / 100, "percent2")}
         />
       </TableCell>
+      )}
+      {visible.volatility && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {format.number(product.volatility / 100, "percent1")}
         </Typography>
       </TableCell>
+      )}
+      {visible.percentPositiveDays && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.percentPositiveDays != null
@@ -90,6 +98,8 @@ const StockTableRow = React.memo(function StockTableRow({
             : EMPTY}
         </Typography>
       </TableCell>
+      )}
+      {visible.returnStdDev && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.returnStdDev != null
@@ -97,6 +107,8 @@ const StockTableRow = React.memo(function StockTableRow({
             : EMPTY}
         </Typography>
       </TableCell>
+      )}
+      {visible.maxDrawdown && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.maxDrawdown != null
@@ -104,16 +116,29 @@ const StockTableRow = React.memo(function StockTableRow({
             : EMPTY}
         </Typography>
       </TableCell>
+      )}
+      {visible.isMomentum && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.isInMomentum == null ? EMPTY : product.isInMomentum ? tv("yes") : tv("no")}
         </Typography>
       </TableCell>
+      )}
+      {visible.isBouncing && (
+      <TableCell align="right">
+        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+          {product.isBouncing == null ? EMPTY : product.isBouncing ? tv("yes") : tv("no")}
+        </Typography>
+      </TableCell>
+      )}
+      {visible.eps && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.eps != null ? format.number(product.eps, "currency") : EMPTY}
         </Typography>
       </TableCell>
+      )}
+      {visible.rsi && (
       <TableCell align="right">
         <Chip
           sx={{
@@ -130,21 +155,29 @@ const StockTableRow = React.memo(function StockTableRow({
           label={format.number(product.rsi, "decimal1")}
         />
       </TableCell>
+      )}
+      {visible.oldestPrice && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {format.number(product.oldestPrice, "currency")}
         </Typography>
       </TableCell>
+      )}
+      {visible.newestPrice && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {format.number(product.newestPrice, "currency")}
         </Typography>
       </TableCell>
+      )}
+      {visible.targetPrice && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.targetPrice != null ? format.number(product.targetPrice, "currency") : EMPTY}
         </Typography>
       </TableCell>
+      )}
+      {visible.company && (
       <TableCell>
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.companyName == null ? (
@@ -158,6 +191,8 @@ const StockTableRow = React.memo(function StockTableRow({
           )}
         </Typography>
       </TableCell>
+      )}
+      {visible.marketCapitalization && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.marketCapitalization
@@ -165,11 +200,15 @@ const StockTableRow = React.memo(function StockTableRow({
             : EMPTY}
         </Typography>
       </TableCell>
+      )}
+      {visible.sector && (
       <TableCell>
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.sector ?? EMPTY}
         </Typography>
       </TableCell>
+      )}
+      {visible.description && (
       <TableCell>
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
           {product.description == null ? (
@@ -205,6 +244,7 @@ const StockTableRow = React.memo(function StockTableRow({
           )}
         </Typography>
       </TableCell>
+      )}
       <TableCell
         sx={{
           position: { xs: "static", sm: "sticky" },

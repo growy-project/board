@@ -22,7 +22,6 @@ import WatchlistActionsMenu from "./MyWatchlist/components/WatchlistActionsMenu"
 
 const MyWatchlist = () => {
   const t = useTranslations("watchlist");
-  const tf = useTranslations("table.filters");
   const { token } = useAuth();
   const filters = useWatchlistFilters();
   const job = useWatchlistJob();
@@ -119,21 +118,6 @@ const MyWatchlist = () => {
             </Alert>
           )}
           {showTable && hasResults ? (
-            <>
-              <Box sx={{ display: { xs: "none", sm: "flex" }, justifyContent: "flex-end", mb: 1 }}>
-                <Button
-                  variant="outlined"
-                  onClick={columnFilters.resetFilters}
-                  disabled={!columnFilters.hasActiveFilters}
-                  sx={{
-                    color: "#1c4670",
-                    borderColor: "#278ab0",
-                    "&:hover": { borderColor: "#1c4670", backgroundColor: "#eaeae0" },
-                  }}
-                >
-                  {tf("clear")}
-                </Button>
-              </Box>
               <StockTable
                 sortedResults={columnFilters.filteredResults}
                 exchange=""
@@ -147,7 +131,6 @@ const MyWatchlist = () => {
                 onDetailClick={actions.handleDetailClick}
                 onActionsClick={actions.handleActionsClick}
               />
-            </>
           ) : showTable && !hasResults ? (
             <Box
               sx={{

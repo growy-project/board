@@ -18,6 +18,7 @@ import { useTranslations } from "next-intl";
 import { EpsTooltipContent, RsiTooltipContent } from "../constants";
 import type { SortableColumn } from "../utils";
 import type { MomentumFilter, UseColumnFiltersResult } from "../hooks/useColumnFilters";
+import type { ColumnVisibility } from "../hooks/useColumnVisibility";
 import ColumnFilterPopover from "./ColumnFilterPopover";
 
 interface StockTableHeadProps {
@@ -25,6 +26,7 @@ interface StockTableHeadProps {
   order: "asc" | "desc";
   onSort: (column: SortableColumn) => void;
   filters: UseColumnFiltersResult;
+  visible: ColumnVisibility;
 }
 
 const stickyCell = {
@@ -65,7 +67,7 @@ const headerRow = (align: "flex-start" | "flex-end") => ({
   justifyContent: align,
 });
 
-export default function StockTableHead({ orderBy, order, onSort, filters }: StockTableHeadProps) {
+export default function StockTableHead({ orderBy, order, onSort, filters, visible }: StockTableHeadProps) {
   const t = useTranslations("table.columns");
   const tf = useTranslations("table.filters");
   const tv = useTranslations("table.values");
@@ -108,22 +110,33 @@ export default function StockTableHead({ orderBy, order, onSort, filters }: Stoc
             </ColumnFilterPopover>
           </Box>
         </TableCell>
+        {visible.percentageChange && (
         <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
           {sortLabel("percentageChange", t("percentageChange"))}
         </TableCell>
+        )}
+        {visible.volatility && (
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("volatility", t("volatility"))}
         </TableCell>
+        )}
+        {visible.percentPositiveDays && (
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("percentPositiveDays", t("percentPositiveDays"))}
         </TableCell>
+        )}
+        {visible.returnStdDev && (
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("returnStdDev", t("returnStdDev"))}
         </TableCell>
+        )}
+        {visible.maxDrawdown && (
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("maxDrawdown", t("maxDrawdown"))}
         </TableCell>
+        )}
         {/* Is Momentum — title + filter icon. */}
+        {visible.isMomentum && (
         <TableCell align="right" sx={stickyCell}>
           <Box sx={headerRow("flex-end")}>
             <Typography variant="subtitle2" fontWeight={600}>{t("isMomentum")}</Typography>
@@ -149,6 +162,36 @@ export default function StockTableHead({ orderBy, order, onSort, filters }: Stoc
             </ColumnFilterPopover>
           </Box>
         </TableCell>
+        )}
+        {/* Is Bouncing — title + filter icon. */}
+        {visible.isBouncing && (
+        <TableCell align="right" sx={stickyCell}>
+          <Box sx={headerRow("flex-end")}>
+            <Typography variant="subtitle2" fontWeight={600}>{t("isBouncing")}</Typography>
+            <ColumnFilterPopover
+              active={filters.bouncing !== "all"}
+              value={filters.bouncing}
+              onCommit={filters.setBouncing}
+              label={tf("bouncing")}
+            >
+              {(draft, setDraft) => (
+                <FormControl size="small" fullWidth sx={accentField}>
+                  <Select
+                    value={draft}
+                    onChange={(e: SelectChangeEvent) => setDraft(e.target.value as MomentumFilter)}
+                    MenuProps={menuProps}
+                  >
+                    <MenuItem value="all">{tf("all")}</MenuItem>
+                    <MenuItem value="yes">{tv("yes")}</MenuItem>
+                    <MenuItem value="no">{tv("no")}</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+            </ColumnFilterPopover>
+          </Box>
+        </TableCell>
+        )}
+        {visible.eps && (
         <TableCell align="right" sx={stickyCell}>
           <TableSortLabel
             active={orderBy === "eps"}
@@ -163,6 +206,8 @@ export default function StockTableHead({ orderBy, order, onSort, filters }: Stoc
             </Box>
           </TableSortLabel>
         </TableCell>
+        )}
+        {visible.rsi && (
         <TableCell align="right" sx={stickyCell}>
           <TableSortLabel
             active={orderBy === "rsi"}
@@ -177,19 +222,29 @@ export default function StockTableHead({ orderBy, order, onSort, filters }: Stoc
             </Box>
           </TableSortLabel>
         </TableCell>
+        )}
+        {visible.oldestPrice && (
         <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
           {sortLabel("oldestPrice", t("oldestPrice"))}
         </TableCell>
+        )}
+        {visible.newestPrice && (
         <TableCell align="right" sx={{ ...stickyCell, width: "80px" }}>
           {sortLabel("newestPrice", t("newestPrice"))}
         </TableCell>
+        )}
+        {visible.targetPrice && (
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("targetPrice", t("targetPrice"))}
         </TableCell>
+        )}
+        {visible.company && (
         <TableCell sx={stickyCell}>
           <Typography variant="subtitle2" fontWeight={600}>{t("company")}</Typography>
         </TableCell>
+        )}
         {/* Market Cap — sortable title + filter icon (min cap in millions). */}
+        {visible.marketCapitalization && (
         <TableCell align="right" sx={stickyCell}>
           <Box sx={headerRow("flex-end")}>
             {sortLabel("marketCapitalization", t("marketCap"))}
@@ -217,7 +272,9 @@ export default function StockTableHead({ orderBy, order, onSort, filters }: Stoc
             </ColumnFilterPopover>
           </Box>
         </TableCell>
+        )}
         {/* Sector — title + filter icon. */}
+        {visible.sector && (
         <TableCell sx={stickyCell}>
           <Box sx={headerRow("flex-start")}>
             <Typography variant="subtitle2" fontWeight={600}>{t("sector")}</Typography>
@@ -252,9 +309,12 @@ export default function StockTableHead({ orderBy, order, onSort, filters }: Stoc
             </ColumnFilterPopover>
           </Box>
         </TableCell>
+        )}
+        {visible.description && (
         <TableCell sx={stickyCell}>
           <Typography variant="subtitle2" fontWeight={600}>{t("description")}</Typography>
         </TableCell>
+        )}
         <TableCell sx={{ ...stickyCell, position: { xs: "static", sm: "sticky" }, right: { xs: "auto", sm: 80 }, width: "80px", zIndex: { xs: 1, sm: 3 } }}>
           <Typography variant="subtitle2" fontWeight={600}>{t("details")}</Typography>
         </TableCell>
