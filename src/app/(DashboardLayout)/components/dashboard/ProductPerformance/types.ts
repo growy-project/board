@@ -16,6 +16,7 @@ export interface StockPerformance {
   returnStdDev: number | null;
   maxDrawdown: number | null;
   isInMomentum: boolean | null;
+  isBouncing: boolean | null;
 }
 
 export interface JobStatus {

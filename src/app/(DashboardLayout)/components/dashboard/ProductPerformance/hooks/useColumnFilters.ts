@@ -9,10 +9,12 @@ const MILLION = 1_000_000;
 export interface UseColumnFiltersResult {
   symbol: string;
   momentum: MomentumFilter;
+  bouncing: MomentumFilter;
   sector: string;
   minMarketCap: string;
   setSymbol: (v: string) => void;
   setMomentum: (v: MomentumFilter) => void;
+  setBouncing: (v: MomentumFilter) => void;
   setSector: (v: string) => void;
   setMinMarketCap: (v: string) => void;
   sectorOptions: string[];
@@ -34,6 +36,7 @@ export function useColumnFilters(
 ): UseColumnFiltersResult {
   const [symbol, setSymbol] = useState<string>("");
   const [momentum, setMomentum] = useState<MomentumFilter>("all");
+  const [bouncing, setBouncing] = useState<MomentumFilter>("all");
   const [sector, setSector] = useState<string>("");
   const [minMarketCap, setMinMarketCap] = useState<string>("");
 
@@ -57,6 +60,9 @@ export function useColumnFilters(
       if (momentum === "yes" && row.isInMomentum !== true) return false;
       if (momentum === "no" && row.isInMomentum !== false) return false;
 
+      if (bouncing === "yes" && row.isBouncing !== true) return false;
+      if (bouncing === "no" && row.isBouncing !== false) return false;
+
       if (sector !== "" && row.sector !== sector) return false;
 
       if (minCapActive) {
@@ -66,14 +72,19 @@ export function useColumnFilters(
 
       return true;
     });
-  }, [rows, symbol, momentum, sector, minMarketCap]);
+  }, [rows, symbol, momentum, bouncing, sector, minMarketCap]);
 
   const hasActiveFilters =
-    symbol.trim() !== "" || momentum !== "all" || sector !== "" || minMarketCap.trim() !== "";
+    symbol.trim() !== "" ||
+    momentum !== "all" ||
+    bouncing !== "all" ||
+    sector !== "" ||
+    minMarketCap.trim() !== "";
 
   const resetFilters = useCallback(() => {
     setSymbol("");
     setMomentum("all");
+    setBouncing("all");
     setSector("");
     setMinMarketCap("");
   }, []);
@@ -81,10 +92,12 @@ export function useColumnFilters(
   return {
     symbol,
     momentum,
+    bouncing,
     sector,
     minMarketCap,
     setSymbol,
     setMomentum,
+    setBouncing,
     setSector,
     setMinMarketCap,
     sectorOptions,

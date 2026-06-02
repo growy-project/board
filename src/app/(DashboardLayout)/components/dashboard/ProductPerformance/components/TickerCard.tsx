@@ -255,6 +255,30 @@ const TickerCard = React.memo(function TickerCard({
             }}
           />
 
+          <Chip
+            size="small"
+            label={
+              product.isBouncing == null
+                ? EMPTY
+                : product.isBouncing
+                  ? "Is Bouncing: Yes"
+                  : "Is Bouncing: No"
+            }
+            sx={{
+              backgroundColor:
+                product.isBouncing === true ? "#e8f5e9" : "transparent",
+              color:
+                product.isBouncing === true
+                  ? "#1dc690"
+                  : "text.secondary",
+              border:
+                product.isBouncing === false
+                  ? "1px solid"
+                  : "none",
+              borderColor: product.isBouncing === false ? "divider" : undefined,
+            }}
+          />
+
           {product.sector && (
             <Chip
               size="small"

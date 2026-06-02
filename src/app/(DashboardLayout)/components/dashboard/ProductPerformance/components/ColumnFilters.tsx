@@ -47,12 +47,14 @@ export default function ColumnFilters({ filters }: ColumnFiltersProps) {
   const {
     symbol,
     momentum,
+    bouncing,
     sector,
     minMarketCap,
     sectorOptions,
     hasActiveFilters,
     setSymbol: onSymbolChange,
     setMomentum: onMomentumChange,
+    setBouncing: onBouncingChange,
     setSector: onSectorChange,
     setMinMarketCap: onMinMarketCapChange,
     resetFilters: onClear,
@@ -86,6 +88,23 @@ export default function ColumnFilters({ filters }: ColumnFiltersProps) {
           value={momentum}
           label={tf("momentum")}
           onChange={(e: SelectChangeEvent) => onMomentumChange(e.target.value as MomentumFilter)}
+          MenuProps={menuProps}
+        >
+          <MenuItem value="all">{tf("all")}</MenuItem>
+          <MenuItem value="yes">{tv("yes")}</MenuItem>
+          <MenuItem value="no">{tv("no")}</MenuItem>
+        </Select>
+      </FormControl>
+
+      {/* Is Bouncing */}
+      <FormControl size="small" sx={accentSx}>
+        <InputLabel id="bouncing-filter-label">{tf("bouncing")}</InputLabel>
+        <Select
+          labelId="bouncing-filter-label"
+          id="bouncing-filter"
+          value={bouncing}
+          label={tf("bouncing")}
+          onChange={(e: SelectChangeEvent) => onBouncingChange(e.target.value as MomentumFilter)}
           MenuProps={menuProps}
         >
           <MenuItem value="all">{tf("all")}</MenuItem>

@@ -18,10 +18,12 @@ import StockTableHead from "./StockTableHead";
 import StockTableRow from "./StockTableRow";
 import TickerCard from "./TickerCard";
 import ColumnFilters from "./ColumnFilters";
+import ColumnChooser from "./ColumnChooser";
 import { GradientCircularProgress } from "./StockLoadingOverlay";
 import type { StockPerformance } from "../types";
 import type { SortableColumn } from "../utils";
 import type { UseColumnFiltersResult } from "../hooks/useColumnFilters";
+import { useColumnVisibility } from "../hooks/useColumnVisibility";
 
 interface StockTableProps {
   sortedResults: StockPerformance[];
@@ -70,6 +72,7 @@ export default function StockTable({
   const tf = useTranslations("table.filters");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const columns = useColumnVisibility();
 
   const activeColumnLabel = SORT_COLUMNS.find((col) => col.key === orderBy)?.labelKey || "percentageChange";
 
@@ -169,6 +172,23 @@ export default function StockTable({
 
       {/* Desktop: Traditional Table */}
       {!isMobile && (
+        <>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={filters.resetFilters}
+            disabled={!filters.hasActiveFilters}
+            sx={{
+              color: "#1c4670",
+              borderColor: "#278ab0",
+              "&:hover": { borderColor: "#1c4670", backgroundColor: "#eaeae0" },
+            }}
+          >
+            {tf("clear")}
+          </Button>
+          <ColumnChooser visible={columns.visible} onToggle={columns.toggle} onReset={columns.reset} />
+        </Box>
         <Box
           sx={{
             position: "relative",
@@ -202,13 +222,14 @@ export default function StockTable({
             </Box>
           )}
           <Table aria-label="simple table" sx={{ whiteSpace: "nowrap", mt: 2 }}>
-            <StockTableHead orderBy={orderBy} order={order} onSort={onSort} filters={filters} />
+            <StockTableHead orderBy={orderBy} order={order} onSort={onSort} filters={filters} visible={columns.visible} />
             <TableBody>
               {sortedResults.map((product) => (
                 <StockTableRow
                   key={product.symbol}
                   product={product}
                   exchange={exchange}
+                  visible={columns.visible}
                   onDetailClick={onDetailClick}
                   onActionsClick={onActionsClick}
                 />
@@ -216,6 +237,7 @@ export default function StockTable({
             </TableBody>
           </Table>
         </Box>
+        </>
       )}
 
       {totalItems != null && (
