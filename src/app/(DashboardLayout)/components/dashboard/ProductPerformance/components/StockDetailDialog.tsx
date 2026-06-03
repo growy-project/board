@@ -1,8 +1,9 @@
 import React from "react";
-import { Dialog, Box, IconButton, Typography } from "@mui/material";
+import { Dialog, Box, IconButton, Typography, Divider, Button, Chip } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { useTranslations, useFormatter } from "next-intl";
+import type { StockPerformance } from "../types";
 
 interface ChartDataPoint {
   [key: string]: unknown;
@@ -14,12 +15,31 @@ interface ChartDataPoint {
 interface StockDetailDialogProps {
   open: boolean;
   symbol: string | undefined;
+  stock: StockPerformance | null | undefined;
   chartDataset: ChartDataPoint[] | null;
   onClose: () => void;
 }
 
 const CLOSE_COLOR = "#278ab0";
 const EMA_COLOR = "#1dc690";
+const EMPTY = "—";
+
+function formatMarketCap(
+  value: number,
+  format: ReturnType<typeof useFormatter>,
+): string {
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000_000) {
+    return `${format.number(value / 1_000_000_000, "decimal2")}B`;
+  }
+  if (abs >= 1_000_000) {
+    return `${format.number(value / 1_000_000, "decimal2")}M`;
+  }
+  if (abs >= 1_000) {
+    return `${format.number(value / 1_000, "decimal2")}K`;
+  }
+  return format.number(value, "decimal2");
+}
 
 function LegendSwatch({ color, label }: { color: string; label: string }) {
   return (
@@ -30,9 +50,31 @@ function LegendSwatch({ color, label }: { color: string; label: string }) {
   );
 }
 
+function StatBlock({
+  label,
+  value,
+  valueColor,
+}: {
+  label: string;
+  value: string;
+  valueColor?: string;
+}) {
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+      <Typography sx={{ fontSize: 10, fontWeight: 600, color: "text.secondary", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        {label}
+      </Typography>
+      <Typography sx={{ fontSize: 13, fontWeight: 700, color: valueColor ?? "text.primary" }}>
+        {value}
+      </Typography>
+    </Box>
+  );
+}
+
 export default function StockDetailDialog({
   open,
   symbol,
+  stock,
   chartDataset,
   onClose,
 }: StockDetailDialogProps) {
@@ -72,6 +114,12 @@ export default function StockDetailDialog({
     return { min: Math.max(0, min - padding), max: max + padding };
   }, [chartDataset]);
 
+  const pctChange = stock?.percentageChange;
+  const pctLabel =
+    pctChange != null
+      ? `${pctChange >= 0 ? "+" : ""}${format.number(pctChange, "decimal2")}%`
+      : null;
+
   return (
     <Dialog
       open={open}
@@ -89,6 +137,7 @@ export default function StockDetailDialog({
         </defs>
       </svg>
 
+      {/* Header */}
       <Box
         sx={{
           display: "flex",
@@ -99,9 +148,24 @@ export default function StockDetailDialog({
         }}
       >
         <Box>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, color: "text.primary" }}>
-            {t("title", { symbol: symbol ?? "" })}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+            <Typography sx={{ fontSize: 16, fontWeight: 600, color: "text.primary" }}>
+              {stock?.companyName ? `${stock.companyName} — ${symbol ?? ""}` : (symbol ?? "")}
+            </Typography>
+            {pctLabel && (
+              <Chip
+                label={pctLabel}
+                size="small"
+                sx={{
+                  backgroundColor: "#1dc690",
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: 12,
+                  height: 22,
+                }}
+              />
+            )}
+          </Box>
           {range && (
             <Typography sx={{ fontSize: 12, color: "text.secondary", mt: "2px" }}>
               {range}
@@ -119,6 +183,7 @@ export default function StockDetailDialog({
         </Box>
       </Box>
 
+      {/* Chart */}
       {chartDataset ? (
         <LineChart
           dataset={chartDataset}
@@ -179,6 +244,46 @@ export default function StockDetailDialog({
           </Typography>
         </Box>
       )}
+
+      {/* Stats row + Close button */}
+      <Divider sx={{ mt: 2, mb: 2 }} />
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
+        <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          {stock && (
+            <>
+              <StatBlock
+                label={t("price")}
+                value={format.number(stock.newestPrice, "currency")}
+              />
+              <StatBlock
+                label={t("target")}
+                value={stock.targetPrice != null ? format.number(stock.targetPrice, "currency") : EMPTY}
+                valueColor={stock.targetPrice != null ? EMA_COLOR : undefined}
+              />
+              <StatBlock
+                label={t("rsi")}
+                value={format.number(stock.rsi, "decimal2")}
+                valueColor={EMA_COLOR}
+              />
+              <StatBlock
+                label={t("marketCap")}
+                value={stock.marketCapitalization != null ? formatMarketCap(stock.marketCapitalization, format) : EMPTY}
+              />
+              <StatBlock
+                label={t("sector")}
+                value={stock.sector ?? EMPTY}
+              />
+            </>
+          )}
+        </Box>
+        <Button
+          variant="contained"
+          onClick={onClose}
+          sx={{ backgroundColor: "#278ab0", "&:hover": { backgroundColor: "#1c4670" } }}
+        >
+          {t("close")}
+        </Button>
+      </Box>
     </Dialog>
   );
 }

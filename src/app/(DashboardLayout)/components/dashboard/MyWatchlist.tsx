@@ -165,6 +165,7 @@ const MyWatchlist = () => {
       <StockDetailDialog
         open={actions.dialogOpen}
         symbol={actions.selectedStock?.symbol}
+        stock={actions.selectedStock ?? null}
         chartDataset={actions.chartDataset}
         onClose={() => actions.setDialogOpen(false)}
       />

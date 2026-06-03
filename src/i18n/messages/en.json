@@ -147,7 +147,13 @@
     "close": "Close"
   },
   "stockDetail": {
-    "title": "{symbol} — close price & EMA 20",
+    "title": "Stock Details — {symbol}",
+    "company": "Company",
+    "price": "Price",
+    "target": "Target",
+    "rsi": "RSI",
+    "marketCap": "Market Cap",
+    "sector": "Sector",
     "legendClose": "Close",
     "legendEma": "EMA 20",
     "loading": "Loading...",
