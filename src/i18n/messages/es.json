@@ -147,7 +147,13 @@
     "close": "Cerrar"
   },
   "stockDetail": {
-    "title": "{symbol} — precio de cierre y EMA 20",
+    "title": "Detalles — {symbol}",
+    "company": "Empresa",
+    "price": "Precio",
+    "target": "Objetivo",
+    "rsi": "RSI",
+    "marketCap": "Cap. de mercado",
+    "sector": "Sector",
     "legendClose": "Cierre",
     "legendEma": "EMA 20",
     "loading": "Cargando...",
