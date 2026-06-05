@@ -9,10 +9,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import type { SymbolDateRangeResult } from "../../services/symbolService";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "../wizard/wizardTheme";
 import {
@@ -22,6 +20,7 @@ import {
   detectActivePreset,
 } from "./presets";
 import DateField from "./DateField";
+import AppLocalizationProvider from "./AppLocalizationProvider";
 
 interface PresetChipGroupProps {
   startDate: Dayjs | null;
@@ -45,7 +44,6 @@ export default function PresetChipGroup({
   const t = useTranslations("dateRange");
   const tFilters = useTranslations("dashboard.filters");
   const format = useFormatter();
-  const locale = useLocale();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const activePreset = detectActivePreset(startDate, endDate, range);
   const isCustom = !activePreset && Boolean(startDate && endDate);
@@ -69,7 +67,7 @@ export default function PresetChipGroup({
       : "";
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
+    <AppLocalizationProvider>
       <Box
         role="radiogroup"
         aria-label={tFilters("dateRangeAria")}
@@ -170,7 +168,7 @@ export default function PresetChipGroup({
           onApply={onCustomRangeApply}
         />
       </Box>
-    </LocalizationProvider>
+    </AppLocalizationProvider>
   );
 }
 
