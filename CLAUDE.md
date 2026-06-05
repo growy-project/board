@@ -31,6 +31,7 @@ Because `next.config.js` sets `output: 'export'` and `images: { unoptimized: tru
 - `NEXT_PUBLIC_API_BASE_URL` — backend origin (prod: `https://growy-api.eastus.cloudapp.azure.com`)
 - `NEXT_PUBLIC_GOOGLE_CLIENT_ID` — Google OAuth client ID used by `@react-oauth/google`
 - `NEXT_PUBLIC_LOCALE` — `en` or `es`. Selects the UI language and locale-aware formatting at build time (see Localization below). Defaults to `en` if unset.
+- `NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING` — Azure Application Insights connection string for client-side telemetry (`src/telemetry/`). **Per-domain**: the English build (`momentum-scanner.com`) uses the momentum App Insights resource, the Spanish build (`cedear-scanner.com`) uses the cedear one. In the workflows these come from the `NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING_EN` / `_ES` GitHub Secrets. Optional/blank locally → telemetry disabled.
 
 Service modules read the API URL with a hardcoded fallback:
 ```ts

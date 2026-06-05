@@ -73,77 +73,139 @@ Select or provision a target log analytics workspace and click Save.
 Open the newly linked Application Insights resource instance and retrieve the Connection String from the global Overview metadata panel.
 
 ## Phase 3: Frontend SDK Integration
+
+> **Stack note:** the frontend is **Next.js 14/15 (App Router) + TypeScript,
+> statically exported** (`output: 'export'`) — not Vite/CRA. So browser env vars
+> must be prefixed `NEXT_PUBLIC_*` and read via `process.env` (there is no
+> `import.meta.env`), and any code that touches `window` must be guarded so it
+> does not run during the static-export prerender. The steps below reflect that.
+
 1. Dependency Installation
 The Microsoft Application Insights web tracking module must be added to the frontend dependency array.
 
 Bash
 npm install @microsoft/applicationinsights-web
-2. Environment Configuration
-The connection string must be decoupled from application code through environment variable files to enforce clean configuration decoupling across dev, staging, and production boundaries.
 
-File: .env.production
+2. Environment Configuration
+The connection string is supplied at **build time** through `NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING`. Because the site ships as **two locale builds on two domains**, each build needs its own App Insights resource:
+
+| Build (locale) | Domain | GitHub Secret |
+|---|---|---|
+| `en` (momentum-scanner resource) | momentum-scanner.com | `NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING_EN` |
+| `es` (cedear-scanner resource) | cedear-scanner.com | `NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING_ES` |
+
+The connection strings are stored as the GitHub Secrets above (the actual values live in the Azure portal under each App Insights resource's Overview → Connection String; they are **not** committed to this repo). Each workflow injects the matching secret into its `Build And Deploy` step's `env:` block — SWA portal Application Settings do **not** reach the static build, so this must be done in the workflow:
+
+YAML
+env:
+  NEXT_PUBLIC_LOCALE: en
+  NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING: ${{ secrets.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING_EN }}
+
+For local dev, set (or leave blank in) `.env.local`:
 
 Code snippet
-VITE_APPINSIGHTS_CONNECTION_STRING=your_production_connection_string_here
+NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING=
+
+A blank/missing value disables telemetry, so dev runs send nothing by default.
+
 3. Telemetry Subsystem Initialization
-A core management file initializes the tracking instance and sets up auto-route tracking properties designed for single-page applications (SPAs).
+A TypeScript module initializes the tracking instance with SPA auto-route tracking. Initialization is **browser-guarded** so the SDK never touches `window` during prerender, and idempotent so React StrictMode's double-mount does not initialize twice. It also exposes thin helpers for Phase 4.
 
-File: src/telemetry.js
+File: src/telemetry/appInsights.ts
 
-JavaScript
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+TypeScript
+import {
+  ApplicationInsights,
+  type IEventTelemetry,
+  type IExceptionTelemetry,
+} from "@microsoft/applicationinsights-web";
 
-const connectionString = import.meta.env?.VITE_APPINSIGHTS_CONNECTION_STRING || process.env.REACT_APP_APPINSIGHTS_CONNECTION_STRING;
+const connectionString = process.env.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING;
 
-const appInsights = new ApplicationInsights({
-  config: {
-    connectionString: connectionString,
-    enableAutoRouteTracking: true,
-    maxAjaxCallsPerView: 50
-  }
-});
+let appInsights: ApplicationInsights | undefined;
 
-if (connectionString) {
+export function initTelemetry(): ApplicationInsights | undefined {
+  if (typeof window === "undefined") return undefined; // no SSR/prerender
+  if (!connectionString) return undefined;             // telemetry disabled
+  if (appInsights) return appInsights;                 // already initialized
+
+  appInsights = new ApplicationInsights({
+    config: {
+      connectionString,
+      enableAutoRouteTracking: true,
+      maxAjaxCallsPerView: 50,
+    },
+  });
   appInsights.loadAppInsights();
   appInsights.trackPageView();
+  return appInsights;
+}
+
+export function trackEvent(name: string, properties?: IEventTelemetry["properties"]): void {
+  appInsights?.trackEvent({ name, properties });
+}
+
+export function trackException(error: Error, properties?: IExceptionTelemetry["properties"]): void {
+  appInsights?.trackException({ exception: error, properties });
 }
 
 export { appInsights };
-4. Entry Point Execution Execution
-To capture initial DOM load contexts and structural client performance timings accurately, the tracking instance is imported directly into the application initialization flow.
 
-File: src/main.jsx (or src/index.js)
+4. Entry Point Execution
+There is no `main.jsx`/`index.js` in the App Router. Instead, a tiny `"use client"` component runs `initTelemetry()` in a `useEffect` (post-hydration, browser only) and is mounted once in the root layout. Do **not** use a top-level `import './telemetry'` side-effect — it would execute during the static prerender and crash the build.
 
-JavaScript
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './telemetry'; // Invokes instantaneous module execution
+File: src/telemetry/TelemetryInit.tsx
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-Phase 4: Telemetry Instrumentation Standards
-Developers can leverage the exported tracking reference to report custom transactional boundaries or process failures.
+TypeScript
+"use client";
+import { useEffect } from "react";
+import { initTelemetry } from "@/telemetry/appInsights";
 
+export default function TelemetryInit() {
+  useEffect(() => {
+    initTelemetry();
+  }, []);
+  return null;
+}
+
+File: src/app/layout.tsx (mount it inside the existing provider tree)
+
+TypeScript
+import TelemetryInit from "@/telemetry/TelemetryInit";
+// ...
+<body>
+  <TelemetryInit />
+  {/* existing providers */}
+</body>
+
+
+## Phase 4: Telemetry Instrumentation Standards
+Developers can leverage the exported tracking reference to report custom transactional boundaries or process failures. Custom events appear in the portal under **Usage → Events** and the `customEvents` table; the `properties` passed to `trackEvent` land in **customDimensions**.
+
+### Currently instrumented events
+| Event name | Fires when | Properties | Source |
+|---|---|---|---|
+| `SearchClicked` | User clicks the Search/Buscar button | `exchange`, `minPercentageChange`, `startDate`, `endDate` | `src/app/(DashboardLayout)/components/dashboard/ProductPerformance/components/StockFilterToolbar.tsx` |
+| `ExchangeChanged` | User picks a different exchange in the filter dropdown | `exchange` (new value) | `src/app/(DashboardLayout)/components/dashboard/ProductPerformance/components/StockFilterToolbar.tsx` |
+| `WatchlistAdd` | A symbol is **successfully** added to the watchlist (not fired on 409/already-added or errors) | `symbol`, `exchange` | `src/app/(DashboardLayout)/components/dashboard/ProductPerformance/hooks/useSymbolActions.ts` |
+
+All three call the browser-guarded `trackEvent` helper from `src/telemetry/appInsights.ts`, so they no-op when telemetry is disabled (e.g. local dev with a blank connection string) and never block the underlying action.
+
+### How to add more
 Pattern A: Custom Interaction Logs
-JavaScript
-import { appInsights } from '../telemetry';
+TypeScript
+import { trackEvent } from "@/telemetry/appInsights";
 
-const logUserInteraction = (eventName, analyticalProperties = {}) => {
-  appInsights.trackEvent({
-    name: eventName,
-    properties: analyticalProperties
-  });
+const logUserInteraction = (eventName: string, analyticalProperties: Record<string, unknown> = {}) => {
+  trackEvent(eventName, analyticalProperties);
 };
+
 Pattern B: Exception Ingestion
-JavaScript
-import { appInsights } from '../telemetry';
+TypeScript
+import { trackException } from "@/telemetry/appInsights";
 
 try {
   // Runtime or External Network API logic execution
 } catch (error) {
-  appInsights.trackException({ exception: error });
+  trackException(error instanceof Error ? error : new Error(String(error)));
 }
