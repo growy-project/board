@@ -14,6 +14,7 @@
     "@emotion/react": "11.11.1",
     "@emotion/server": "11.11.0",
     "@emotion/styled": "11.11.0",
+    "@microsoft/applicationinsights-web": "^3.4.1",
     "@mui/icons-material": "^7.3.10",
     "@mui/lab": "7.0.1-beta.24",
     "@mui/material": "^7.3.10",

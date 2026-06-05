@@ -14,6 +14,7 @@ import { useTranslations } from "next-intl";
 import type { SymbolDateRangeResult } from "../../../../services/symbolService";
 import PresetChipGroup from "../../../dateRange/PresetChipGroup";
 import { pulseAnimation } from "../constants";
+import { trackEvent } from "@/telemetry/appInsights";
 
 interface StockFilterToolbarProps {
   exchange: string;
@@ -49,6 +50,22 @@ export default function StockFilterToolbar({
   onSearch,
 }: StockFilterToolbarProps) {
   const t = useTranslations("dashboard");
+
+  const handleExchangeChange = (e: SelectChangeEvent) => {
+    trackEvent("ExchangeChanged", { exchange: e.target.value });
+    onExchangeChange(e);
+  };
+
+  const handleSearch = () => {
+    trackEvent("SearchClicked", {
+      exchange,
+      minPercentageChange: String(minPercentageChange),
+      startDate: startDate?.format("YYYY-MM-DD") ?? "",
+      endDate: endDate?.format("YYYY-MM-DD") ?? "",
+    });
+    onSearch();
+  };
+
   return (
     <Stack
       direction={{ xs: "column", sm: "row" }}
@@ -78,7 +95,7 @@ export default function StockFilterToolbar({
           value={exchange}
           label={t("filters.exchange")}
           disabled={dateRangeLoading}
-          onChange={onExchangeChange}
+          onChange={handleExchangeChange}
           MenuProps={{
             PaperProps: {
               sx: {
@@ -127,7 +144,7 @@ export default function StockFilterToolbar({
       {/* Search Button */}
       <Button
         variant="contained"
-        onClick={onSearch}
+        onClick={handleSearch}
         disabled={dateRangeLoading || startDate === null || endDate === null || isJobRunning}
         sx={{
           backgroundColor: "#278ab0",

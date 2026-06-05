@@ -10,6 +10,7 @@ import { AppThemeProvider, useAppTheme } from "@/app/context/ThemeContext";
 import { queryClient } from "@/app/(DashboardLayout)/queryClient";
 import I18nProvider from "@/i18n/Provider";
 import { locale, ALTERNATE_DOMAINS } from "@/i18n/config";
+import TelemetryInit from "@/telemetry/TelemetryInit";
 
 function ActiveThemeProvider({ children }: { children: React.ReactNode }) {
   const { mode } = useAppTheme();
@@ -36,6 +37,7 @@ export default function RootLayout({
         <link rel="alternate" hrefLang="x-default" href={ALTERNATE_DOMAINS.en + "/"} />
       </head>
       <body>
+        <TelemetryInit />
         <QueryClientProvider client={queryClient}>
           <GoogleOAuthProvider
             clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}

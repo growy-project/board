@@ -5,6 +5,7 @@ import * as symbolService from "../../../../services/symbolService";
 import * as realService from "../../../../services/statisticJobService";
 import * as watchlistService from "../../../../services/watchlistService";
 import { useAuth } from "@/app/context/AuthContext";
+import { trackEvent } from "@/telemetry/appInsights";
 import { ADMIN_EMAIL } from "../constants";
 import type { StockPerformance } from "../types";
 
@@ -96,6 +97,10 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
     if (!actionsMenuStock) return;
     try {
       await watchlistService.addToWatchlist(actionsMenuStock.symbol, exchange, token);
+      trackEvent("WatchlistAdd", {
+        symbol: actionsMenuStock.symbol,
+        exchange,
+      });
       setWatchlistFeedback({
         severity: "success",
         message: tFeedback("added", { symbol: actionsMenuStock.symbol }),
