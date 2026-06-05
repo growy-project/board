@@ -47,7 +47,7 @@ Implementation:
 - Locale is read from `process.env.NEXT_PUBLIC_LOCALE` in `src/i18n/config.ts`. Both message catalogs (`src/i18n/messages/{en,es}.json`) are imported, but only the active one is wired into the provider.
 - UI strings: use `useTranslations("namespace")` from `next-intl` in components.
 - Formatting: use `useFormatter()` (wraps `Intl.NumberFormat` / `Intl.DateTimeFormat`). Named formats live in `src/i18n/config.ts`'s `formats` export — prefer those over inline options where possible.
-- MUI x-date-pickers: locale flows into `createTheme(..., enUS|esES)` in `src/utils/theme/DefaultColors.tsx`, and `<LocalizationProvider adapterLocale={...}>` reads the active locale.
+- MUI x-date-pickers: the date-picker locale is **not** baked into the theme. Wrap pickers in `AppLocalizationProvider` (`src/app/(DashboardLayout)/components/dateRange/AppLocalizationProvider.tsx`), which reads the active locale (`useLocale()`) and applies both `adapterLocale` (Day.js month/weekday names) and `localeText` (enUS/esES picker UI strings).
 - Day.js locale is set once in `src/i18n/Provider.tsx`.
 - The header `LanguageToggle` is a cross-domain link (build-time locale is fixed; clicking it navigates to the other domain at the same path).
 - Login flow honors a `returnTo` query param (validated by `isSafeReturnTo`) so cross-domain language switches preserve the destination after Google re-auth.

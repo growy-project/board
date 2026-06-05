@@ -1,7 +1,5 @@
 import React from "react";
 import { Box, ButtonBase, Typography } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import type { SymbolDateRangeResult } from "../../services/symbolService";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "./wizardTheme";
@@ -12,6 +10,7 @@ import {
   detectActivePreset,
 } from "../dateRange/presets";
 import DateField from "../dateRange/DateField";
+import AppLocalizationProvider from "../dateRange/AppLocalizationProvider";
 
 interface Props {
   startDate: Dayjs | null;
@@ -41,7 +40,7 @@ export default function DateRangeStep({
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <AppLocalizationProvider>
       <Box
         sx={{
           display: "grid",
@@ -98,6 +97,6 @@ export default function DateRangeStep({
           );
         })}
       </Box>
-    </LocalizationProvider>
+    </AppLocalizationProvider>
   );
 }
