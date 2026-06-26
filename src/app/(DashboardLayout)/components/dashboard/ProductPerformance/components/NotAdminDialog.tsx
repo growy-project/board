@@ -14,7 +14,6 @@ import { useTranslations } from "next-intl";
 
 interface NotAdminDialogProps {
   open: boolean;
-  action: "toxic" | "topGrowth" | null;
   message: string;
   submitting: boolean;
   onMessageChange: (value: string) => void;
@@ -24,7 +23,6 @@ interface NotAdminDialogProps {
 
 export default function NotAdminDialog({
   open,
-  action,
   message,
   submitting,
   onMessageChange,
@@ -32,7 +30,6 @@ export default function NotAdminDialog({
   onSubmit,
 }: NotAdminDialogProps) {
   const t = useTranslations("notAdmin");
-  const explanationKey = action === "toxic" ? "explanationToxic" : "explanationTopGrowth";
   return (
     <Dialog
       open={open}
@@ -44,7 +41,7 @@ export default function NotAdminDialog({
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <Alert severity="warning">
-            {t.rich(explanationKey, {
+            {t.rich("explanationTopGrowth", {
               b: (chunks) => <strong>{chunks}</strong>,
             })}
           </Alert>

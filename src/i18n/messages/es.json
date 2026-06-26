@@ -31,7 +31,6 @@
     "loginToTag": "Iniciá sesión para etiquetar un símbolo.",
     "actions": {
       "watchlist": "Agregar a mi lista",
-      "toxic": "Marcar como Tóxica",
       "topGrowth": "Marcar como Top Growth"
     },
     "filters": {
@@ -49,7 +48,6 @@
     },
     "tagRequest": {
       "submitted": "Solicitud enviada: {symbol} como {tag}.",
-      "labelToxic": "tóxica",
       "labelTopGrowth": "top-growth"
     }
   },
@@ -135,7 +133,6 @@
   },
   "notAdmin": {
     "title": "Se requiere acción de administrador",
-    "explanationToxic": "Para marcar este ítem como <b>Tóxica</b>, tenés que ser administrador. Enviá un mensaje al administrador para solicitarlo.",
     "explanationTopGrowth": "Para marcar este ítem como <b>Top Growth</b>, tenés que ser administrador. Enviá un mensaje al administrador para solicitarlo.",
     "reason": "Motivo",
     "reasonCounter": "{current}/{max}",
@@ -157,7 +154,9 @@
     "legendClose": "Cierre",
     "legendEma": "EMA 20",
     "loading": "Cargando...",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "googleFinance": "Google Finance",
+    "yahooFinance": "Yahoo Finance"
   },
   "auth": {
     "pageTitle": "Iniciar sesión",

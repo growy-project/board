@@ -2,7 +2,7 @@ import React from "react";
 import { Dialog, Box, IconButton, Typography, Divider, Button, Chip } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts/LineChart";
-import { useTranslations, useFormatter } from "next-intl";
+import { useTranslations, useFormatter, useLocale } from "next-intl";
 import type { StockPerformance } from "../types";
 
 interface ChartDataPoint {
@@ -16,6 +16,7 @@ interface StockDetailDialogProps {
   open: boolean;
   symbol: string | undefined;
   stock: StockPerformance | null | undefined;
+  exchange: string;
   chartDataset: ChartDataPoint[] | null;
   onClose: () => void;
 }
@@ -75,11 +76,17 @@ export default function StockDetailDialog({
   open,
   symbol,
   stock,
+  exchange,
   chartDataset,
   onClose,
 }: StockDetailDialogProps) {
   const t = useTranslations("stockDetail");
   const format = useFormatter();
+  const locale = useLocale();
+
+  const effectiveExchange = stock?.exchange ?? exchange;
+  const googleFinanceUrl = `https://www.google.com/finance/beta/quote/${symbol}:${effectiveExchange}?hl=${locale}&window=1Y`;
+  const yahooFinanceUrl = `https://finance.yahoo.com/quote/${symbol}/`;
 
   const formatRangeLabel = React.useCallback(
     (v: number) => format.dateTime(new Date(v), "short"),
@@ -273,6 +280,26 @@ export default function StockDetailDialog({
                 label={t("sector")}
                 value={stock.sector ?? EMPTY}
               />
+              {symbol && (
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignItems: "center", alignSelf: "flex-end" }}>
+                  <a
+                    href={googleFinanceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: CLOSE_COLOR, textDecoration: "underline", fontSize: 13, fontWeight: 600 }}
+                  >
+                    {t("googleFinance")}
+                  </a>
+                  <a
+                    href={yahooFinanceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: CLOSE_COLOR, textDecoration: "underline", fontSize: 13, fontWeight: 600 }}
+                  >
+                    {t("yahooFinance")}
+                  </a>
+                </Box>
+              )}
             </>
           )}
         </Box>

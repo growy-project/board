@@ -167,7 +167,6 @@ const ProductPerformance = () => {
 
       <NotAdminDialog
         open={actions.notAdminDialogOpen}
-        action={actions.notAdminAction}
         message={actions.notAdminMessage}
         submitting={actions.isSubmittingTag}
         onMessageChange={actions.handleNotAdminMessageChange}
@@ -179,7 +178,6 @@ const ProductPerformance = () => {
         anchorEl={actions.actionsMenuAnchor}
         onClose={actions.closeActionsMenu}
         onAddToWatchlist={actions.handleAddToWatchlist}
-        onTagToxic={actions.handleTagToxic}
         onTagTopGrowth={actions.handleTagTopGrowth}
       />
 
@@ -187,6 +185,7 @@ const ProductPerformance = () => {
         open={actions.dialogOpen}
         symbol={actions.selectedStock?.symbol}
         stock={actions.selectedStock ?? null}
+        exchange={filters.exchange}
         chartDataset={actions.chartDataset}
         onClose={() => actions.setDialogOpen(false)}
       />

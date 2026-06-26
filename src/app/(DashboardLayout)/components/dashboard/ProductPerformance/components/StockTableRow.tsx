@@ -59,15 +59,18 @@ const StockTableRow = React.memo(function StockTableRow({
           backgroundColor: "background.paper",
         }}
       >
-        <Typography sx={{ fontSize: "15px", fontWeight: "500" }}>
-          <a
-            href={`https://www.google.com/finance/quote/${product.symbol}${effectiveExchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "inherit", textDecoration: "underline" }}
-          >
-            {product.symbol}
-          </a>
+        <Typography
+          component="span"
+          onClick={() => onDetailClick(product)}
+          sx={{
+            fontSize: "15px",
+            fontWeight: "500",
+            cursor: "pointer",
+            textDecoration: "underline",
+            "&:hover": { color: "#1c4670" },
+          }}
+        >
+          {product.symbol}
         </Typography>
       </TableCell>
       {visible.percentageChange && (

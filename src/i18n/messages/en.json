@@ -31,7 +31,6 @@
     "loginToTag": "Please log in to tag a symbol.",
     "actions": {
       "watchlist": "Add to my watchlist",
-      "toxic": "Tag as Toxic",
       "topGrowth": "Tag as Top Growth"
     },
     "filters": {
@@ -49,7 +48,6 @@
     },
     "tagRequest": {
       "submitted": "Tag request submitted: {symbol} as {tag}.",
-      "labelToxic": "toxic",
       "labelTopGrowth": "top-growth"
     }
   },
@@ -135,7 +133,6 @@
   },
   "notAdmin": {
     "title": "Administrator action required",
-    "explanationToxic": "To mark this item as <b>Toxic</b>, you must be an administrator. Send a message to the administrator to request this.",
     "explanationTopGrowth": "To mark this item as <b>Top Growth</b>, you must be an administrator. Send a message to the administrator to request this.",
     "reason": "Reason",
     "reasonCounter": "{current}/{max}",
@@ -157,7 +154,9 @@
     "legendClose": "Close",
     "legendEma": "EMA 20",
     "loading": "Loading...",
-    "close": "Close"
+    "close": "Close",
+    "googleFinance": "Google Finance",
+    "yahooFinance": "Yahoo Finance"
   },
   "auth": {
     "pageTitle": "Login",

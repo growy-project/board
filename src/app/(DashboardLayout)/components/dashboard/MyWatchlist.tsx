@@ -166,6 +166,7 @@ const MyWatchlist = () => {
         open={actions.dialogOpen}
         symbol={actions.selectedStock?.symbol}
         stock={actions.selectedStock ?? null}
+        exchange=""
         chartDataset={actions.chartDataset}
         onClose={() => actions.setDialogOpen(false)}
       />

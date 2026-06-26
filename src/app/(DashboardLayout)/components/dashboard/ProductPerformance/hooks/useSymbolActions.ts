@@ -16,7 +16,7 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
   const [actionsMenuAnchor, setActionsMenuAnchor] = useState<null | HTMLElement>(null);
   const [actionsMenuStock, setActionsMenuStock] = useState<StockPerformance | null>(null);
   const [notAdminDialogOpen, setNotAdminDialogOpen] = useState(false);
-  const [notAdminAction, setNotAdminAction] = useState<"toxic" | "topGrowth" | null>(null);
+  const [notAdminAction, setNotAdminAction] = useState<"topGrowth" | null>(null);
   const [notAdminMessage, setNotAdminMessage] = useState("");
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
   const [tagRequestSuccess, setTagRequestSuccess] = useState<string | null>(null);
@@ -57,21 +57,6 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
   }, [exchange, startUnixDate, endUnixDate]);
 
   const closeActionsMenu = useCallback(() => setActionsMenuAnchor(null), []);
-
-  const handleTagToxic = useCallback(async () => {
-    setActionsMenuAnchor(null);
-    if (!user || !token) {
-      setLoginPromptOpen(true);
-      return;
-    }
-    if (user.email === ADMIN_EMAIL) {
-      if (actionsMenuStock) await symbolService.setToxic(actionsMenuStock.symbol, true, token);
-    } else {
-      setNotAdminAction("toxic");
-      setNotAdminMessage("");
-      setNotAdminDialogOpen(true);
-    }
-  }, [user, token, actionsMenuStock]);
 
   const handleTagTopGrowth = useCallback(async () => {
     setActionsMenuAnchor(null);
@@ -134,7 +119,7 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
           user.email,
           token
         );
-        const tagLabel = notAdminAction === "toxic" ? tTag("labelToxic") : tTag("labelTopGrowth");
+        const tagLabel = tTag("labelTopGrowth");
         setTagRequestSuccess(tTag("submitted", { symbol: actionsMenuStock.symbol, tag: tagLabel }));
       } finally {
         setIsSubmittingTag(false);
@@ -163,7 +148,6 @@ export function useSymbolActions(exchange: string, startUnixDate?: number | null
     handleActionsClick,
     handleDetailClick,
     closeActionsMenu,
-    handleTagToxic,
     handleTagTopGrowth,
     handleAddToWatchlist,
     watchlistFeedback,

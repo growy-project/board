@@ -161,7 +161,6 @@ export default function StockTable({
               <TickerCard
                 key={product.symbol}
                 product={product}
-                exchange={exchange}
                 onDetailClick={onDetailClick}
                 onActionsClick={onActionsClick}
               />
