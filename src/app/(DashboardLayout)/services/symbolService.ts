@@ -16,16 +16,9 @@ export const setTopGrowth = async (symbol: string, value: boolean, token: string
   });
 };
 
-export const setToxic = async (symbol: string, value: boolean, token: string): Promise<void> => {
-  await axios.put(`${API_BASE_URL}/${symbol}/toxic`, null, {
-    params: { value },
-    headers: authHeaders(token),
-  });
-};
-
 export const requestTag = async (
   symbol: string,
-  tagType: "toxic" | "topGrowth",
+  tagType: "topGrowth",
   reason: string,
   requesterEmail: string,
   token: string

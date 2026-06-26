@@ -13,7 +13,6 @@ import type { StockPerformance } from "../types";
 
 export interface TickerCardProps {
   product: StockPerformance;
-  exchange: string;
   onDetailClick: (product: StockPerformance) => void;
   onActionsClick: (e: React.MouseEvent<HTMLButtonElement>, product: StockPerformance) => void;
 }
@@ -39,13 +38,11 @@ function formatMarketCap(
 
 const TickerCard = React.memo(function TickerCard({
   product,
-  exchange,
   onDetailClick,
   onActionsClick,
 }: TickerCardProps) {
   const format = useFormatter();
   const tv = useTranslations("table.values");
-  const effectiveExchange = product.exchange ?? exchange;
 
   return (
     <Card
@@ -72,25 +69,19 @@ const TickerCard = React.memo(function TickerCard({
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography
+              component="span"
+              onClick={() => onDetailClick(product)}
               sx={{
                 fontSize: "16px",
                 fontWeight: 600,
                 color: "text.primary",
+                cursor: "pointer",
+                textDecoration: "underline",
+                textDecorationThickness: "1px",
+                textUnderlineOffset: "2px",
               }}
             >
-              <a
-                href={`https://www.google.com/finance/quote/${product.symbol}${effectiveExchange === "NASDAQ" ? ":NASDAQ" : ""}?window=1Y`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: "inherit",
-                  textDecoration: "underline",
-                  textDecorationThickness: "1px",
-                  textUnderlineOffset: "2px",
-                }}
-              >
-                {product.symbol}
-              </a>
+              {product.symbol}
             </Typography>
             <Typography
               variant="caption"
