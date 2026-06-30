@@ -232,5 +232,38 @@
     ],
     "aboutDeveloper": "About the developer",
     "developerBody": "As a <devLink>software developer</devLink>, I wanted to figure out what to do with my savings — how to make them grow — so I bought some stocks: a handful of blue chips and a few green-energy names. Six months later I was down 1%. It wasn't scary — a 30% drop would have sent me running — but losing 1% on half a year of patience felt ridiculous. So I started researching, and eventually built the tool I wished I'd had from day one."
+  },
+  "terms": {
+    "pageTitle": "Terms & Disclaimer",
+    "pageDescription": "Terms of use and disclaimer for Momentum Scanner",
+    "title": "Terms of Use & Disclaimer",
+    "intro": "Momentum Scanner is an informational tool. By accessing and using this site you agree to the terms set out below. Please read them carefully before relying on any data shown here.",
+    "sections": [
+      {
+        "title": "Informational purpose only",
+        "body": "Everything on this platform — rankings, growth figures, technical indicators, sector data, and analyst targets — is provided for general informational and educational purposes only. It does not constitute financial, investment, tax, or legal advice, nor a recommendation, offer, or solicitation to buy, sell, or hold any security."
+      },
+      {
+        "title": "No investment advice",
+        "body": "We are not a broker, financial adviser, or registered investment professional, and nothing here is tailored to your personal circumstances, objectives, or risk tolerance. Any decision you make is your own. You should always do your own research and consult a qualified, licensed professional before making any investment."
+      },
+      {
+        "title": "Data may be inaccurate, delayed, or unavailable",
+        "body": "Market data is sourced from third parties and processed automatically. It can be incomplete, delayed, out of date, or simply wrong, and technical problems — outages, failed updates, calculation errors, or service interruptions — may cause figures to be missing or incorrect. We do not guarantee that any information is accurate, complete, timely, or continuously available. The service is provided \"as is\" and \"as available\", without warranties of any kind."
+      },
+      {
+        "title": "No liability for your decisions",
+        "body": "Investing involves risk, including the possible loss of your entire capital, and past performance is never a guarantee of future results. To the fullest extent permitted by law, we accept no responsibility or liability for any loss or damage — direct or indirect — arising from your use of this platform, from any errors or omissions in the data, or from any investment decision you make based on information found here. You use the platform entirely at your own risk."
+      },
+      {
+        "title": "Third-party content",
+        "body": "Links and references to external sites or data providers are offered for convenience only. We do not control and are not responsible for their content, accuracy, or availability."
+      },
+      {
+        "title": "Changes to these terms",
+        "body": "We may update, change, or discontinue any part of the service or these terms at any time and without notice. Continued use of the platform after changes are published means you accept the revised terms."
+      }
+    ],
+    "closing": "If you do not agree with these terms, please do not use the platform."
   }
 }

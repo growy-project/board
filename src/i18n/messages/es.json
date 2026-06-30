@@ -232,5 +232,38 @@
     ],
     "aboutDeveloper": "Sobre el desarrollador",
     "developerBody": "Como <devLink>desarrollador de software</devLink>, quería entender qué hacer con mis ahorros — cómo hacerlos crecer — así que compré algunas acciones: un puñado de blue chips y algunos nombres de energías renovables. Seis meses después estaba 1% abajo. No fue aterrador — una caída del 30% me habría espantado — pero perder 1% después de medio año de paciencia me pareció ridículo. Así que empecé a investigar, y eventualmente construí la herramienta que ojalá hubiera tenido desde el primer día."
+  },
+  "terms": {
+    "pageTitle": "Términos y Aviso Legal",
+    "pageDescription": "Términos de uso y aviso legal de Momentum Scanner",
+    "title": "Términos de Uso y Aviso Legal",
+    "intro": "Momentum Scanner es una herramienta informativa. Al acceder y utilizar este sitio aceptas los términos que se detallan a continuación. Léelos con atención antes de basarte en cualquier dato que se muestre aquí.",
+    "sections": [
+      {
+        "title": "Solo con fines informativos",
+        "body": "Todo lo que se muestra en esta plataforma — rankings, cifras de crecimiento, indicadores técnicos, datos sectoriales y precios objetivo de analistas — se ofrece únicamente con fines informativos y educativos. No constituye asesoramiento financiero, de inversión, fiscal ni legal, ni una recomendación, oferta o solicitud para comprar, vender o mantener ningún valor."
+      },
+      {
+        "title": "No es asesoramiento de inversión",
+        "body": "No somos un bróker, asesor financiero ni profesional de inversión registrado, y nada de lo aquí publicado está adaptado a tus circunstancias personales, objetivos o tolerancia al riesgo. Cualquier decisión que tomes es tuya. Debes investigar siempre por tu cuenta y consultar a un profesional cualificado y habilitado antes de realizar cualquier inversión."
+      },
+      {
+        "title": "Los datos pueden ser inexactos, estar retrasados o no disponibles",
+        "body": "Los datos de mercado provienen de terceros y se procesan de forma automática. Pueden estar incompletos, retrasados, desactualizados o ser sencillamente erróneos, y los problemas técnicos — caídas, actualizaciones fallidas, errores de cálculo o interrupciones del servicio — pueden hacer que las cifras falten o sean incorrectas. No garantizamos que la información sea exacta, completa, oportuna ni esté disponible de forma continua. El servicio se ofrece \"tal cual\" y \"según disponibilidad\", sin garantías de ningún tipo."
+      },
+      {
+        "title": "Sin responsabilidad por tus decisiones",
+        "body": "Invertir conlleva riesgos, incluida la posible pérdida de todo tu capital, y el rendimiento pasado nunca garantiza resultados futuros. En la máxima medida permitida por la ley, no asumimos ninguna responsabilidad por pérdidas o daños — directos o indirectos — derivados del uso de esta plataforma, de errores u omisiones en los datos, o de cualquier decisión de inversión que tomes basándote en la información aquí presentada. Usas la plataforma bajo tu propia responsabilidad."
+      },
+      {
+        "title": "Contenido de terceros",
+        "body": "Los enlaces y referencias a sitios externos o proveedores de datos se ofrecen solo por comodidad. No controlamos ni nos hacemos responsables de su contenido, exactitud o disponibilidad."
+      },
+      {
+        "title": "Cambios en estos términos",
+        "body": "Podemos actualizar, modificar o discontinuar cualquier parte del servicio o de estos términos en cualquier momento y sin previo aviso. El uso continuado de la plataforma tras la publicación de los cambios implica que aceptas los términos revisados."
+      }
+    ],
+    "closing": "Si no estás de acuerdo con estos términos, por favor no utilices la plataforma."
   }
 }
