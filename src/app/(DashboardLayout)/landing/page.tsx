@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppTheme } from '@/app/context/ThemeContext'
 import { markLandingSeen } from '@/utils/landingGate'
@@ -137,7 +138,9 @@ export default function Page() {
             fontSize: '.9rem',
             ...animated('0.6s')
                     }}>
-          <span>Terms</span>
+          <Link href="/terms" style={{ color: 'inherit', textDecoration: 'none' }}>
+            Terms
+          </Link>
           <span style={{ marginLeft: '50px' }}>Contact</span>
         </footer>
       </div>
