@@ -265,5 +265,51 @@
       }
     ],
     "closing": "Si no estás de acuerdo con estos términos, por favor no utilices la plataforma."
+  },
+  "landing": {
+    "heroBody": "Escaneá 9.372 tickers de Nasdaq y NYSE en segundos. Ordená los de mejor desempeño del mercado en cualquier rango de fechas y filtrá por volatilidad, sector y señales técnicas para encontrar tu próxima oportunidad.",
+    "footerTerms": "Términos",
+    "footerContact": "Contacto",
+    "contact": {
+      "title": "Contacto",
+      "titleLabel": "Asunto",
+      "messageLabel": "Mensaje",
+      "counter": "{current}/{max}",
+      "cancel": "Cancelar",
+      "send": "Enviar",
+      "error": "Algo salió mal. Por favor, intentá de nuevo.",
+      "loginPrompt": "Iniciá sesión para enviar un mensaje.",
+      "success": "¡Mensaje enviado! Gracias por escribirnos."
+    }
+  },
+  "wizard": {
+    "steps": {
+      "exchange": "01 · Bolsa",
+      "threshold": "02 · Umbral",
+      "dateRange": "03 · Rango de fechas"
+    },
+    "stepLabel": "Paso {step}",
+    "stepSuffix": " · de 3 · Configurá tu escaneo",
+    "close": "Cerrar",
+    "headings": {
+      "exchange": "¿Qué mercado querés escanear?",
+      "threshold": "¿Cuál es tu cambio % mínimo?",
+      "dateRange": "¿En qué ventana de tiempo?"
+    },
+    "help": {
+      "exchange": "Elegí una. Podés cambiarla después desde la barra de herramientas — el resto de tus filtros se mantendrán.",
+      "threshold": "Los tickers por debajo de este umbral no aparecerán en tus resultados. La mayoría empieza con 5% para movimientos diarios, o 20% para rupturas semanales.",
+      "dateRange": "El escaneo ordena el desempeño de principio a fin. La mayoría empieza con un preajuste rápido y ajusta después."
+    },
+    "back": "Atrás",
+    "continue": "Continuar",
+    "runScan": "Ejecutar escaneo",
+    "increase": "Aumentar",
+    "decrease": "Disminuir",
+    "exchange": {
+      "NASDAQ": { "meta": "6.383 tickers · orientado a tecnología" },
+      "NYSE": { "meta": "2.550 tickers · mercado amplio" },
+      "CEDEAR": { "meta": "272 subyacentes · denominados en ARS", "pill": "Disponible · regional" }
+    }
   }
 }

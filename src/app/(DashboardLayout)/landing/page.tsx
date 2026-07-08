@@ -3,11 +3,16 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Snackbar, Alert } from '@mui/material'
+import { useTranslations } from 'next-intl'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppTheme } from '@/app/context/ThemeContext'
+import { useAuth } from '@/app/context/AuthContext'
+import { trackEvent } from '@/telemetry/appInsights'
 import { markLandingSeen } from '@/utils/landingGate'
 import { prefetchAllExchangeDateRanges } from '@/app/(DashboardLayout)/queries/dateRangeQuery'
 import ScanSetupWizard from '@/app/(DashboardLayout)/components/wizard/ScanSetupWizard'
+import ContactDialog from '@/app/(DashboardLayout)/components/landing/ContactDialog'
 
 const fadeInDown = `
   @keyframes fadeInDown {
@@ -44,10 +49,24 @@ const animated = (delay: string): React.CSSProperties => ({
 
 export default function Page() {
   const { mode } = useAppTheme()
+  const { user, token } = useAuth()
+  const t = useTranslations('landing')
+  const tBrand = useTranslations('brand')
   const queryClient = useQueryClient()
   const arrowColor = mode === 'light' ? '#1a1a1a' : '#ffffff'
   const [wizardOpen, setWizardOpen] = useState(false)
   const openWizard = () => setWizardOpen(true)
+  const [contactOpen, setContactOpen] = useState(false)
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false)
+  const [contactSuccess, setContactSuccess] = useState(false)
+
+  const handleContactClick = () => {
+    if (!user || !token) {
+      setLoginPromptOpen(true)
+      return
+    }
+    setContactOpen(true)
+  }
 
   useEffect(() => {
     markLandingSeen()
@@ -71,7 +90,7 @@ export default function Page() {
         <style>{fadeInDown}</style>
 
         <div onClick={openWizard} style={{ cursor: 'pointer', ...animated('0s') }}>
-          <h1>Momentum Scanner</h1>
+          <h1>{tBrand('name')}</h1>
         </div>
 
         <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: '2rem', flex: 1, marginTop: '40px', ...animated('0.3s') }}>
@@ -105,9 +124,7 @@ export default function Page() {
           </div>
           <div onClick={openWizard} style={{ flex: '1 1 300px', minWidth: 0, cursor: 'pointer' }}>
             <h2 style={{ lineHeight: '1.8' }}>
-              Scan 9,372 Nasdaq &amp; NYSE tickers in seconds.
-              Rank the market’s strongest performers over any date range and filter by volatility,
-              sector, and technical signals to find your next lead.
+              {t('heroBody')}
             </h2>
             <div style={{ marginTop: '110px', ...animated('2.9s') }}>
               <Image
@@ -139,13 +156,67 @@ export default function Page() {
             ...animated('0.6s')
                     }}>
           <Link href="/terms" style={{ color: 'inherit', textDecoration: 'none' }}>
-            Terms
+            {t('footerTerms')}
           </Link>
-          <span style={{ marginLeft: '50px' }}>Contact</span>
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={handleContactClick}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                handleContactClick()
+              }
+            }}
+            style={{ marginLeft: '50px', cursor: 'pointer' }}
+          >
+            {t('footerContact')}
+          </span>
         </footer>
       </div>
 
       <ScanSetupWizard open={wizardOpen} onClose={() => setWizardOpen(false)} />
+
+      <ContactDialog
+        open={contactOpen}
+        token={token ?? ''}
+        onClose={() => setContactOpen(false)}
+        onSent={() => {
+          setContactOpen(false)
+          setContactSuccess(true)
+          trackEvent('ContactMessageSent')
+        }}
+      />
+
+      <Snackbar
+        open={loginPromptOpen}
+        autoHideDuration={4000}
+        onClose={() => setLoginPromptOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          onClose={() => setLoginPromptOpen(false)}
+        >
+          {t('contact.loginPrompt')}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={contactSuccess}
+        autoHideDuration={4000}
+        onClose={() => setContactSuccess(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          severity="success"
+          variant="filled"
+          onClose={() => setContactSuccess(false)}
+        >
+          {t('contact.success')}
+        </Alert>
+      </Snackbar>
     </>
   )
 }
