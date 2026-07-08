@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, ButtonBase, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
+import { useTranslations } from "next-intl";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "./wizardTheme";
 
 export type ExchangeId = "NASDAQ" | "NYSE" | "CEDEAR";
@@ -8,20 +9,18 @@ export type ExchangeId = "NASDAQ" | "NYSE" | "CEDEAR";
 interface ExchangeOption {
   id: ExchangeId;
   name: string;
-  meta: string;
   full?: boolean;
-  pill?: string;
+  hasPill?: boolean;
 }
 
 const OPTIONS: ExchangeOption[] = [
-  { id: "NASDAQ", name: "NASDAQ", meta: "6,383 tickers · tech-weighted" },
-  { id: "NYSE", name: "NYSE", meta: "2,550 tickers · broad market" },
+  { id: "NASDAQ", name: "NASDAQ" },
+  { id: "NYSE", name: "NYSE" },
   {
     id: "CEDEAR",
     name: "CEDEAR",
-    meta: "272 underlying names · ARS-denominated",
     full: true,
-    pill: "Available · regional",
+    hasPill: true,
   },
 ];
 
@@ -31,6 +30,7 @@ interface Props {
 }
 
 export default function ExchangeStep({ value, onChange }: Props) {
+  const t = useTranslations("wizard");
   return (
     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
       {OPTIONS.map((opt) => {
@@ -91,9 +91,9 @@ export default function ExchangeStep({ value, onChange }: Props) {
                 fontFamily: WIZARD_MONO_FONT,
               }}
             >
-              {opt.meta}
+              {t(`exchange.${opt.id}.meta`)}
             </Typography>
-            {opt.pill && (
+            {opt.hasPill && (
               <Box
                 component="span"
                 sx={{
@@ -110,7 +110,7 @@ export default function ExchangeStep({ value, onChange }: Props) {
                   background: WIZARD_COLORS.sand200,
                 }}
               >
-                {opt.pill}
+                {t("exchange.CEDEAR.pill")}
               </Box>
             )}
           </ButtonBase>

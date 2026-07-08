@@ -13,6 +13,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import dayjs, { Dayjs } from "dayjs";
 
 import { dateRangeQueryOptions } from "@/app/(DashboardLayout)/queries/dateRangeQuery";
@@ -29,9 +30,13 @@ interface Props {
   onClose: () => void;
 }
 
-const STEP_LABELS = ["01 · Exchange", "02 · Threshold", "03 · Date range"] as const;
-
 export default function ScanSetupWizard({ open, onClose }: Props) {
+  const t = useTranslations("wizard");
+  const STEP_LABELS = [
+    t("steps.exchange"),
+    t("steps.threshold"),
+    t("steps.dateRange"),
+  ] as const;
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [exchange, setExchange] = useState<ExchangeId>("NASDAQ");
@@ -113,17 +118,17 @@ export default function ScanSetupWizard({ open, onClose }: Props) {
 
   const stepHeading =
     step === 1
-      ? "Which market do you want to scan?"
+      ? t("headings.exchange")
       : step === 2
-      ? "What's your minimum % change?"
-      : "Over what window?";
+      ? t("headings.threshold")
+      : t("headings.dateRange");
 
   const stepHelp =
     step === 1
-      ? "Pick one. You can change it later from the toolbar — your other filters will carry over."
+      ? t("help.exchange")
       : step === 2
-      ? "Tickers below this threshold won't appear in your results. Most users start at 5% for daily-mover scans, or 20% for weekly breakouts."
-      : "The scan ranks performance from start to end. Most users start with a quick preset and refine after.";
+      ? t("help.threshold")
+      : t("help.dateRange");
 
   return (
     <Dialog
@@ -159,11 +164,11 @@ export default function ScanSetupWizard({ open, onClose }: Props) {
             color: WIZARD_COLORS.ink500,
           }}
         >
-          <Box component="span" sx={{ color: WIZARD_COLORS.blue700 }}>{`Step ${step}`}</Box>
-          {" · of 3 · Set up your scan"}
+          <Box component="span" sx={{ color: WIZARD_COLORS.blue700 }}>{t("stepLabel", { step })}</Box>
+          {t("stepSuffix")}
         </Typography>
         <IconButton
-          aria-label="Close"
+          aria-label={t("close")}
           onClick={onClose}
           sx={{
             width: 28,
@@ -309,7 +314,7 @@ export default function ScanSetupWizard({ open, onClose }: Props) {
               "&.Mui-disabled": { opacity: 0.4 },
             }}
           >
-            Back
+            {t("back")}
           </Button>
           <Button
             onClick={handleContinue}
@@ -328,7 +333,7 @@ export default function ScanSetupWizard({ open, onClose }: Props) {
               "&.Mui-disabled": { opacity: 0.4, background: WIZARD_COLORS.blue700, color: "white" },
             }}
           >
-            {step === 3 ? "Run scan" : "Continue"}
+            {step === 3 ? t("runScan") : t("continue")}
           </Button>
         </Box>
       </Box>

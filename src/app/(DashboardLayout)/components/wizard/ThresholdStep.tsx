@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, ButtonBase, IconButton, InputBase, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "./wizardTheme";
 
 const PRESETS = [2, 5, 10, 20, 50];
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function ThresholdStep({ value, onChange }: Props) {
+  const t = useTranslations("wizard");
   const clamp = (n: number) => (Number.isFinite(n) ? Math.max(0, n) : 0);
 
   return (
@@ -63,10 +65,10 @@ export default function ThresholdStep({ value, onChange }: Props) {
           </Box>
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <StepperButton aria-label="Increase" onClick={() => onChange(clamp(value + 1))}>
+          <StepperButton aria-label={t("increase")} onClick={() => onChange(clamp(value + 1))}>
             +
           </StepperButton>
-          <StepperButton aria-label="Decrease" onClick={() => onChange(clamp(value - 1))}>
+          <StepperButton aria-label={t("decrease")} onClick={() => onChange(clamp(value - 1))}>
             −
           </StepperButton>
         </Box>

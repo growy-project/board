@@ -265,5 +265,51 @@
       }
     ],
     "closing": "If you do not agree with these terms, please do not use the platform."
+  },
+  "landing": {
+    "heroBody": "Scan 9,372 Nasdaq & NYSE tickers in seconds. Rank the market's strongest performers over any date range and filter by volatility, sector, and technical signals to find your next lead.",
+    "footerTerms": "Terms",
+    "footerContact": "Contact",
+    "contact": {
+      "title": "Contact",
+      "titleLabel": "Subject",
+      "messageLabel": "Message",
+      "counter": "{current}/{max}",
+      "cancel": "Cancel",
+      "send": "Send",
+      "error": "Something went wrong. Please try again.",
+      "loginPrompt": "Please log in to send a message.",
+      "success": "Message sent. Thanks for reaching out!"
+    }
+  },
+  "wizard": {
+    "steps": {
+      "exchange": "01 · Exchange",
+      "threshold": "02 · Threshold",
+      "dateRange": "03 · Date range"
+    },
+    "stepLabel": "Step {step}",
+    "stepSuffix": " · of 3 · Set up your scan",
+    "close": "Close",
+    "headings": {
+      "exchange": "Which market do you want to scan?",
+      "threshold": "What's your minimum % change?",
+      "dateRange": "Over what window?"
+    },
+    "help": {
+      "exchange": "Pick one. You can change it later from the toolbar — your other filters will carry over.",
+      "threshold": "Tickers below this threshold won't appear in your results. Most users start at 5% for daily-mover scans, or 20% for weekly breakouts.",
+      "dateRange": "The scan ranks performance from start to end. Most users start with a quick preset and refine after."
+    },
+    "back": "Back",
+    "continue": "Continue",
+    "runScan": "Run scan",
+    "increase": "Increase",
+    "decrease": "Decrease",
+    "exchange": {
+      "NASDAQ": { "meta": "6,383 tickers · tech-weighted" },
+      "NYSE": { "meta": "2,550 tickers · broad market" },
+      "CEDEAR": { "meta": "272 underlying names · ARS-denominated", "pill": "Available · regional" }
+    }
   }
 }

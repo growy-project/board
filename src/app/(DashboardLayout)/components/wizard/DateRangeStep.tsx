@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, ButtonBase, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 import dayjs, { Dayjs } from "dayjs";
 import type { SymbolDateRangeResult } from "../../services/symbolService";
 import { WIZARD_COLORS, WIZARD_MONO_FONT } from "./wizardTheme";
@@ -27,6 +28,7 @@ export default function DateRangeStep({
   onStartChange,
   onEndChange,
 }: Props) {
+  const t = useTranslations("dateRange");
   const minDate = range ? dayjs(range.firstDate) : undefined;
   const maxDate = range ? dayjs(range.lastDate) : undefined;
   const activePreset = detectActivePreset(startDate, endDate, range);
@@ -50,14 +52,14 @@ export default function DateRangeStep({
         }}
       >
         <DateField
-          label="Start"
+          label={t("start")}
           value={startDate}
           onChange={onStartChange}
           minDate={minDate}
           maxDate={endDate ?? maxDate}
         />
         <DateField
-          label="End"
+          label={t("end")}
           value={endDate}
           onChange={onEndChange}
           minDate={startDate ?? minDate}
