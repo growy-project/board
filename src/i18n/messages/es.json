@@ -2,7 +2,7 @@
   "brand": {
     "name": "Scanner de Tendencias",
     "tagline": "Encontrá acciones que ya están subiendo.",
-    "description": "Escaneá miles de tickers en busca de momentum y profundizá en volatilidad, RSI y datos sectoriales — para analizar tendencias con el contexto adecuado.",
+    "description": "Escaneá miles de tickers en busca de momentum y profundizá en la calidad de la tendencia, RSI y datos sectoriales — para analizar tendencias con el contexto adecuado.",
     "quote": "«Las acciones que ya están subiendo suelen seguir subiendo por un tiempo. Scanner de Tendencias te ayuda a detectar tendencias fuertes y analizarlas con mayor claridad.»"
   },
   "menu": {
@@ -55,11 +55,9 @@
     "columns": {
       "symbol": "Símbolo",
       "percentageChange": "Variación %",
-      "volatility": "Volatilidad %",
       "percentPositiveDays": "% días positivos",
       "returnStdDev": "Desv. estándar",
       "maxDrawdown": "Caída máxima",
-      "isMomentum": "Es Tendencia",
       "isBouncing": "Está Rebotando",
       "eps": "EPS",
       "rsi": "RSI",
@@ -80,7 +78,6 @@
     "sortBy": "Ordenar por",
     "resultsCount": "{count, plural, =0 {Sin resultados} one {# resultado} other {# resultados}}",
     "filters": {
-      "momentum": "Es Tendencia",
       "bouncing": "Está Rebotando",
       "minMarketCap": "Cap. mínima (M)",
       "filters": "Filtros",
@@ -191,13 +188,13 @@
         "body": "Scanner de Tendencias ordena y explica. La decisión de inversión queda en tus manos."
       }
     ],
-    "closing": "La plataforma escanea todos los tickers de Nasdaq y NYSE, destaca los que muestran un crecimiento notable y expone los indicadores que importan: volatilidad, datos sectoriales, señales técnicas y precios objetivo de analistas.",
+    "closing": "La plataforma escanea todos los tickers de Nasdaq y NYSE, destaca los que muestran un crecimiento notable y expone los indicadores que importan: métricas de calidad de la tendencia, datos sectoriales, señales técnicas y precios objetivo de analistas.",
     "viewMore": "Ver más",
     "viewLess": "Ver menos",
     "howItWorksTitle": "Cómo funciona Scanner de Tendencias",
     "howItWorks1": "El premio por momentum es uno de los efectos más robustos empíricamente en finanzas. Se ha documentado en más de 200 años de datos de acciones de EE. UU., en más de 40 países y en muchas clases de activos además de las acciones — bonos, divisas y commodities.",
     "howItWorks2": "El crecimiento puro, sin embargo, no alcanza. Una idea central detrás de Scanner de Tendencias es la dimensión de calidad: la <qualityLink>distinción entre suba suave y suba caótica</qualityLink> de Gray y Vogel. Una suba sostenida refleja presión compradora constante y difusión lenta de información; los movimientos por saltos bruscos son más ruidosos y más propensos a revertir. Por eso el scanner muestra <accent>% de días positivos</accent>, <accent>desviación estándar de retorno</accent> y <accent>caída máxima</accent> junto con el retorno crudo.",
-    "howItWorks3": "Las implementaciones institucionales (AQR, BlackRock/iShares) también ajustan el momentum por riesgo, escalando los puntajes por la volatilidad del activo subyacente para que \"alto momentum\" no sea simplemente reflejo de mayor riesgo total. La columna <accent>Volatilidad %</accent> captura eso, y el <accent>RSI</accent> se incluye como señal técnica complementaria.",
+    "howItWorks3": "Las implementaciones institucionales (AQR, BlackRock/iShares) también ajustan el momentum por riesgo, escalando los puntajes por el riesgo del activo subyacente para que \"alto momentum\" no sea simplemente reflejo de un camino más accidentado. La <accent>desviación estándar</accent> y la <accent>caída máxima</accent> te dan esa lectura, y el <accent>RSI</accent> se incluye como señal técnica complementaria.",
     "howItWorks4": "Una última aclaración: la literatura es consistente en que <carhartLink>ningún factor por sí solo es lo suficientemente confiable como para apostar todo a él</carhartLink> (Carhart, 1997). Scanner de Tendencias no te dice qué comprar — muestra señales que vos combinás con tu propio criterio, el aporte de tu comunidad y el resto de tu estrategia.",
     "columnReferenceTitle": "Referencia de columnas — métricas de calidad de momentum",
     "columns": [
@@ -206,12 +203,8 @@
         "body": "Retorno total en el rango de fechas seleccionado: (más reciente − más antiguo) / más antiguo × 100. La señal cruda de crecimiento — todas las demás columnas son lentes de calidad sobre esta."
       },
       {
-        "label": "Volatilidad %",
-        "body": "Un puntaje de volatilidad estilo CPVI sobre el período. Valores más bajos indican momentum estable y \"aburrido\"; valores más altos indican comportamiento tipo \"lotería\" (con saltos, impulsado por noticias). El momentum suave de baja volatilidad ha rendido mejor históricamente."
-      },
-      {
         "label": "% días positivos",
-        "body": "Porcentaje de ruedas en las que el cierre fue mayor que el cierre anterior. Nuestro indicador de suavidad — valores ≥ 50% señalan una suba sostenida, y se requiere ≥ 50% para Es Tendencia."
+        "body": "Porcentaje de ruedas en las que el cierre fue mayor que el cierre anterior. Nuestro indicador de suavidad — valores ≥ 50% señalan una suba sostenida, y no unos pocos saltos bruscos haciendo todo el trabajo."
       },
       {
         "label": "Desv. estándar",
@@ -219,15 +212,11 @@
       },
       {
         "label": "Caída máxima",
-        "body": "La mayor caída desde un máximo a un mínimo dentro del período, en %. Limitada a ≤ 25% para Es Tendencia — una acción que tuvo una caída profunda en medio del período no califica."
-      },
-      {
-        "label": "Es Tendencia",
-        "body": "Clasificación booleana. Para el escaneo completo: quintil superior de Variación % Y % días positivos ≥ 50 Y caída máxima ≤ 25. Para las listas, el ranking por quintil se reemplaza por un umbral absoluto de ≥ 20% de crecimiento, porque el ranking relativo es degenerado en listas chicas."
+        "body": "La mayor caída desde un máximo a un mínimo dentro del período, en %. Una caída profunda en medio del período significa que la suba fue mucho menos cómoda de sostener de lo que sugiere el retorno de punta a punta."
       },
       {
         "label": "RSI",
-        "body": "Índice de Fuerza Relativa estándar de 14 períodos sobre los precios de cierre. Por encima de 70 suele leerse como sobrecompra, por debajo de 30 como sobreventa. Independiente de la clasificación Es Tendencia — se ofrece como señal complementaria."
+        "body": "Índice de Fuerza Relativa estándar de 14 períodos sobre los precios de cierre. Por encima de 70 suele leerse como sobrecompra, por debajo de 30 como sobreventa. Independiente del ranking de crecimiento — se ofrece como señal complementaria."
       }
     ],
     "aboutDeveloper": "Sobre el desarrollador",
@@ -267,7 +256,7 @@
     "closing": "Si no estás de acuerdo con estos términos, por favor no utilices la plataforma."
   },
   "landing": {
-    "heroBody": "Escaneá 9.372 tickers de Nasdaq y NYSE en segundos. Ordená los de mejor desempeño del mercado en cualquier rango de fechas y filtrá por volatilidad, sector y señales técnicas para encontrar tu próxima oportunidad.",
+    "heroBody": "Escaneá 9.372 tickers de Nasdaq y NYSE en segundos. Ordená los de mejor desempeño del mercado en cualquier rango de fechas y filtrá por sector, capitalización y señales técnicas para encontrar tu próxima oportunidad.",
     "footerTerms": "Términos",
     "footerContact": "Contacto",
     "contact": {

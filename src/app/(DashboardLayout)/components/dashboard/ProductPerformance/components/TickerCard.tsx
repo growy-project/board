@@ -190,24 +190,6 @@ const TickerCard = React.memo(function TickerCard({
               </Typography>
             </Box>
           </Box>
-
-          <Box>
-            <Box>
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                Volatility
-              </Typography>
-              <Typography
-                sx={{
-                  mt: 0.5,
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  color: "text.primary",
-                }}
-              >
-                {format.number(product.volatility / 100, "percent1")}
-              </Typography>
-            </Box>
-          </Box>
         </Box>
 
         {/* Tags and actions footer */}
@@ -222,30 +204,6 @@ const TickerCard = React.memo(function TickerCard({
             borderColor: "divider",
           }}
         >
-          <Chip
-            size="small"
-            label={
-              product.isInMomentum == null
-                ? EMPTY
-                : product.isInMomentum
-                  ? "Is Momentum: Yes"
-                  : "Is Momentum: No"
-            }
-            sx={{
-              backgroundColor:
-                product.isInMomentum === true ? "#e8f5e9" : "transparent",
-              color:
-                product.isInMomentum === true
-                  ? "#1dc690"
-                  : "text.secondary",
-              border:
-                product.isInMomentum === false
-                  ? "1px solid"
-                  : "none",
-              borderColor: product.isInMomentum === false ? "divider" : undefined,
-            }}
-          />
-
           <Chip
             size="small"
             label={
