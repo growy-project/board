@@ -6,7 +6,6 @@ const SORT_KEY = "dashboard_sort";
 
 const SORTABLE_COLUMNS: SortableColumn[] = [
   "percentageChange",
-  "volatility",
   "eps",
   "rsi",
   "oldestPrice",

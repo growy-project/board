@@ -10,7 +10,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import type { MomentumFilter, UseColumnFiltersResult } from "../hooks/useColumnFilters";
+import type { TriStateFilter, UseColumnFiltersResult } from "../hooks/useColumnFilters";
 
 interface ColumnFiltersProps {
   filters: UseColumnFiltersResult;
@@ -46,14 +46,12 @@ const menuProps = {
 export default function ColumnFilters({ filters }: ColumnFiltersProps) {
   const {
     symbol,
-    momentum,
     bouncing,
     sector,
     minMarketCap,
     sectorOptions,
     hasActiveFilters,
     setSymbol: onSymbolChange,
-    setMomentum: onMomentumChange,
     setBouncing: onBouncingChange,
     setSector: onSectorChange,
     setMinMarketCap: onMinMarketCapChange,
@@ -79,23 +77,6 @@ export default function ColumnFilters({ filters }: ColumnFiltersProps) {
         sx={{ ...accentSx, width: { xs: "100%", sm: "150px" } }}
       />
 
-      {/* Is Momentum */}
-      <FormControl size="small" sx={accentSx}>
-        <InputLabel id="momentum-filter-label">{tf("momentum")}</InputLabel>
-        <Select
-          labelId="momentum-filter-label"
-          id="momentum-filter"
-          value={momentum}
-          label={tf("momentum")}
-          onChange={(e: SelectChangeEvent) => onMomentumChange(e.target.value as MomentumFilter)}
-          MenuProps={menuProps}
-        >
-          <MenuItem value="all">{tf("all")}</MenuItem>
-          <MenuItem value="yes">{tv("yes")}</MenuItem>
-          <MenuItem value="no">{tv("no")}</MenuItem>
-        </Select>
-      </FormControl>
-
       {/* Is Bouncing */}
       <FormControl size="small" sx={accentSx}>
         <InputLabel id="bouncing-filter-label">{tf("bouncing")}</InputLabel>
@@ -104,7 +85,7 @@ export default function ColumnFilters({ filters }: ColumnFiltersProps) {
           id="bouncing-filter"
           value={bouncing}
           label={tf("bouncing")}
-          onChange={(e: SelectChangeEvent) => onBouncingChange(e.target.value as MomentumFilter)}
+          onChange={(e: SelectChangeEvent) => onBouncingChange(e.target.value as TriStateFilter)}
           MenuProps={menuProps}
         >
           <MenuItem value="all">{tf("all")}</MenuItem>

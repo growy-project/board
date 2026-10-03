@@ -86,13 +86,6 @@ const StockTableRow = React.memo(function StockTableRow({
         />
       </TableCell>
       )}
-      {visible.volatility && (
-      <TableCell align="right">
-        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {format.number(product.volatility / 100, "percent1")}
-        </Typography>
-      </TableCell>
-      )}
       {visible.percentPositiveDays && (
       <TableCell align="right">
         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
@@ -117,13 +110,6 @@ const StockTableRow = React.memo(function StockTableRow({
           {product.maxDrawdown != null
             ? format.number(product.maxDrawdown / 100, "percent2")
             : EMPTY}
-        </Typography>
-      </TableCell>
-      )}
-      {visible.isMomentum && (
-      <TableCell align="right">
-        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-          {product.isInMomentum == null ? EMPTY : product.isInMomentum ? tv("yes") : tv("no")}
         </Typography>
       </TableCell>
       )}

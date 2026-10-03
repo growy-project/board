@@ -17,7 +17,7 @@ import { InfoOutlined } from "@mui/icons-material";
 import { useTranslations } from "next-intl";
 import { EpsTooltipContent, RsiTooltipContent } from "../constants";
 import type { SortableColumn } from "../utils";
-import type { MomentumFilter, UseColumnFiltersResult } from "../hooks/useColumnFilters";
+import type { TriStateFilter, UseColumnFiltersResult } from "../hooks/useColumnFilters";
 import type { ColumnVisibility } from "../hooks/useColumnVisibility";
 import ColumnFilterPopover from "./ColumnFilterPopover";
 
@@ -115,11 +115,6 @@ export default function StockTableHead({ orderBy, order, onSort, filters, visibl
           {sortLabel("percentageChange", t("percentageChange"))}
         </TableCell>
         )}
-        {visible.volatility && (
-        <TableCell align="right" sx={stickyCell}>
-          {sortLabel("volatility", t("volatility"))}
-        </TableCell>
-        )}
         {visible.percentPositiveDays && (
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("percentPositiveDays", t("percentPositiveDays"))}
@@ -133,34 +128,6 @@ export default function StockTableHead({ orderBy, order, onSort, filters, visibl
         {visible.maxDrawdown && (
         <TableCell align="right" sx={stickyCell}>
           {sortLabel("maxDrawdown", t("maxDrawdown"))}
-        </TableCell>
-        )}
-        {/* Is Momentum — title + filter icon. */}
-        {visible.isMomentum && (
-        <TableCell align="right" sx={stickyCell}>
-          <Box sx={headerRow("flex-end")}>
-            <Typography variant="subtitle2" fontWeight={600}>{t("isMomentum")}</Typography>
-            <ColumnFilterPopover
-              active={filters.momentum !== "all"}
-              value={filters.momentum}
-              onCommit={filters.setMomentum}
-              label={tf("momentum")}
-            >
-              {(draft, setDraft) => (
-                <FormControl size="small" fullWidth sx={accentField}>
-                  <Select
-                    value={draft}
-                    onChange={(e: SelectChangeEvent) => setDraft(e.target.value as MomentumFilter)}
-                    MenuProps={menuProps}
-                  >
-                    <MenuItem value="all">{tf("all")}</MenuItem>
-                    <MenuItem value="yes">{tv("yes")}</MenuItem>
-                    <MenuItem value="no">{tv("no")}</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            </ColumnFilterPopover>
-          </Box>
         </TableCell>
         )}
         {/* Is Bouncing — title + filter icon. */}
@@ -178,7 +145,7 @@ export default function StockTableHead({ orderBy, order, onSort, filters, visibl
                 <FormControl size="small" fullWidth sx={accentField}>
                   <Select
                     value={draft}
-                    onChange={(e: SelectChangeEvent) => setDraft(e.target.value as MomentumFilter)}
+                    onChange={(e: SelectChangeEvent) => setDraft(e.target.value as TriStateFilter)}
                     MenuProps={menuProps}
                   >
                     <MenuItem value="all">{tf("all")}</MenuItem>

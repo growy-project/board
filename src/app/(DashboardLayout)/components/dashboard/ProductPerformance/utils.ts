@@ -3,7 +3,6 @@ import type { StockPerformance } from "./types";
 export type SortableColumn = keyof Pick<
   StockPerformance,
   | "percentageChange"
-  | "volatility"
   | "eps"
   | "rsi"
   | "oldestPrice"

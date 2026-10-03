@@ -1,20 +1,18 @@
 import { useState, useMemo, useCallback } from "react";
 import type { StockPerformance } from "../types";
 
-export type MomentumFilter = "all" | "yes" | "no";
+export type TriStateFilter = "all" | "yes" | "no";
 
 // Market-cap input is entered in millions, so the raw cap is compared against value * 1e6.
 const MILLION = 1_000_000;
 
 export interface UseColumnFiltersResult {
   symbol: string;
-  momentum: MomentumFilter;
-  bouncing: MomentumFilter;
+  bouncing: TriStateFilter;
   sector: string;
   minMarketCap: string;
   setSymbol: (v: string) => void;
-  setMomentum: (v: MomentumFilter) => void;
-  setBouncing: (v: MomentumFilter) => void;
+  setBouncing: (v: TriStateFilter) => void;
   setSector: (v: string) => void;
   setMinMarketCap: (v: string) => void;
   sectorOptions: string[];
@@ -35,8 +33,7 @@ export function useColumnFilters(
   dataKey: StockPerformance[] | undefined,
 ): UseColumnFiltersResult {
   const [symbol, setSymbol] = useState<string>("");
-  const [momentum, setMomentum] = useState<MomentumFilter>("all");
-  const [bouncing, setBouncing] = useState<MomentumFilter>("all");
+  const [bouncing, setBouncing] = useState<TriStateFilter>("all");
   const [sector, setSector] = useState<string>("");
   const [minMarketCap, setMinMarketCap] = useState<string>("");
 
@@ -57,9 +54,6 @@ export function useColumnFilters(
     return rows.filter((row) => {
       if (symbolQuery !== "" && !row.symbol.toLowerCase().includes(symbolQuery)) return false;
 
-      if (momentum === "yes" && row.isInMomentum !== true) return false;
-      if (momentum === "no" && row.isInMomentum !== false) return false;
-
       if (bouncing === "yes" && row.isBouncing !== true) return false;
       if (bouncing === "no" && row.isBouncing !== false) return false;
 
@@ -72,18 +66,16 @@ export function useColumnFilters(
 
       return true;
     });
-  }, [rows, symbol, momentum, bouncing, sector, minMarketCap]);
+  }, [rows, symbol, bouncing, sector, minMarketCap]);
 
   const hasActiveFilters =
     symbol.trim() !== "" ||
-    momentum !== "all" ||
     bouncing !== "all" ||
     sector !== "" ||
     minMarketCap.trim() !== "";
 
   const resetFilters = useCallback(() => {
     setSymbol("");
-    setMomentum("all");
     setBouncing("all");
     setSector("");
     setMinMarketCap("");
@@ -91,12 +83,10 @@ export function useColumnFilters(
 
   return {
     symbol,
-    momentum,
     bouncing,
     sector,
     minMarketCap,
     setSymbol,
-    setMomentum,
     setBouncing,
     setSector,
     setMinMarketCap,

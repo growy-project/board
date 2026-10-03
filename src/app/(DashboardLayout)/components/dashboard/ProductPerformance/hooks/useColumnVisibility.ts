@@ -5,11 +5,9 @@ import { useState, useCallback, useEffect } from "react";
 // `labelKey` reuses the existing `table.columns.*` keys (note marketCapitalization → "marketCap").
 export const TOGGLEABLE_COLUMNS = [
   { id: "percentageChange", labelKey: "percentageChange" },
-  { id: "volatility", labelKey: "volatility" },
   { id: "percentPositiveDays", labelKey: "percentPositiveDays" },
   { id: "returnStdDev", labelKey: "returnStdDev" },
   { id: "maxDrawdown", labelKey: "maxDrawdown" },
-  { id: "isMomentum", labelKey: "isMomentum" },
   { id: "isBouncing", labelKey: "isBouncing" },
   { id: "eps", labelKey: "eps" },
   { id: "rsi", labelKey: "rsi" },
@@ -28,7 +26,6 @@ export type ColumnVisibility = Record<ColumnId, boolean>;
 
 const DEFAULT_VISIBLE: ColumnId[] = [
   "percentageChange",
-  "volatility",
   "newestPrice",
   "targetPrice",
   "isBouncing",

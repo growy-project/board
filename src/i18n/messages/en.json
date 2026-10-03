@@ -2,7 +2,7 @@
   "brand": {
     "name": "Momentum Scanner",
     "tagline": "Find stocks already on the move.",
-    "description": "Scan thousands of tickers for momentum, then drill into volatility, RSI, and sector data — so you can analyze trends with the right context.",
+    "description": "Scan thousands of tickers for momentum, then drill into trend quality, RSI, and sector data — so you can analyze trends with the right context.",
     "quote": "“Stocks that are already going up often keep rising for a period of time. Momentum Scanner helps you spot strong trends and analyze them more clearly.”"
   },
   "menu": {
@@ -55,11 +55,9 @@
     "columns": {
       "symbol": "Symbol",
       "percentageChange": "% Change",
-      "volatility": "Volatility %",
       "percentPositiveDays": "% Positive Days",
       "returnStdDev": "Return StdDev",
       "maxDrawdown": "Max Drawdown",
-      "isMomentum": "Is Momentum",
       "isBouncing": "Is Bouncing",
       "eps": "EPS",
       "rsi": "RSI",
@@ -80,7 +78,6 @@
     "sortBy": "Sort by",
     "resultsCount": "{count, plural, =0 {No results} one {# result} other {# results}}",
     "filters": {
-      "momentum": "Is Momentum",
       "bouncing": "Is Bouncing",
       "minMarketCap": "Min Market Cap (M)",
       "filters": "Filters",
@@ -191,13 +188,13 @@
         "body": "Momentum Scanner ranks and explains. The investment call stays with you."
       }
     ],
-    "closing": "The platform currently scans all Nasdaq and NYSE tickers, highlights those with notable growth, and shows the indicators that matter: volatility, sector data, technical signals, and analyst targets.",
+    "closing": "The platform currently scans all Nasdaq and NYSE tickers, highlights those with notable growth, and shows the indicators that matter: trend-quality metrics, sector data, technical signals, and analyst targets.",
     "viewMore": "View more",
     "viewLess": "View less",
     "howItWorksTitle": "How Momentum Scanner works",
     "howItWorks1": "The momentum premium is one of the most empirically robust effects in finance. It has been documented across more than 200 years of US equity data, in over 40 countries, and in many asset classes beyond stocks — bonds, currencies, and commodities.",
     "howItWorks2": "Raw growth, though, isn't enough. A core idea behind Momentum Scanner is the quality dimension: Gray & Vogel's <qualityLink>smooth-vs-choppy distinction</qualityLink>. A steady climb reflects sustained buying pressure and slow information diffusion; gap-driven moves are noisier and more likely to mean-revert. That's why the scanner shows <accent>% Positive Days</accent>, <accent>Return StdDev</accent> and <accent>Max Drawdown</accent> alongside the raw return.",
-    "howItWorks3": "Institutional implementations (AQR, BlackRock/iShares) also risk-adjust momentum, scaling scores by the underlying asset's volatility so that \"high momentum\" is not just a reflection of higher overall risk. The <accent>Volatility %</accent> column captures that, and <accent>RSI</accent> is provided as a complementary technical signal.",
+    "howItWorks3": "Institutional implementations (AQR, BlackRock/iShares) also risk-adjust momentum, scaling scores by the underlying asset's risk so that \"high momentum\" is not just a reflection of a bumpier ride. <accent>Return StdDev</accent> and <accent>Max Drawdown</accent> give you that read, and <accent>RSI</accent> is provided as a complementary technical signal.",
     "howItWorks4": "One last note: the literature is consistent that <carhartLink>no single factor is reliable enough to bet everything on</carhartLink> (Carhart, 1997). Momentum Scanner doesn't tell you what to buy — it surfaces signals you combine with your own judgment, community input, and the rest of your strategy.",
     "columnReferenceTitle": "Column reference — momentum quality metrics",
     "columns": [
@@ -206,12 +203,8 @@
         "body": "Total return across the selected date range: (newest − oldest) / oldest × 100. The raw growth signal — every other column is a quality lens on top of it."
       },
       {
-        "label": "Volatility %",
-        "body": "A CPVI-style volatility score over the window. Lower values mean steadier, \"boring\" momentum; higher values mean \"lottery\" behavior (gappy, news-driven). Smooth low-vol momentum has historically outperformed."
-      },
-      {
         "label": "% Positive Days",
-        "body": "Share of trading days where the close was higher than the prior close, as a %. Our smoothness proxy — values ≥ 50% indicate a steady climb, and ≥ 50% is required for Is Momentum."
+        "body": "Share of trading days where the close was higher than the prior close, as a %. Our smoothness proxy — values ≥ 50% indicate a steady climb rather than a few big gap days doing all the work."
       },
       {
         "label": "Return StdDev",
@@ -219,15 +212,11 @@
       },
       {
         "label": "Max Drawdown",
-        "body": "The largest peak-to-trough drop during the window, in %. Capped at ≤ 25% for Is Momentum — a stock that took a deep dip mid-window doesn't qualify."
-      },
-      {
-        "label": "Is Momentum",
-        "body": "A boolean classification. For the full scan: top quintile of Percentage Change AND % Positive Days ≥ 50 AND Max Drawdown ≤ 25. For watchlists, the top-quintile rank is replaced by an absolute ≥ 20% growth threshold, because relative ranking is degenerate on small lists."
+        "body": "The largest peak-to-trough drop during the window, in %. A deep dip mid-window means the climb was far less comfortable to hold than the end-to-end return suggests."
       },
       {
         "label": "RSI",
-        "body": "Standard 14-period Relative Strength Index on the closing prices. Above 70 is generally read as overbought, below 30 as oversold. Independent of the Is Momentum classification — provided as a complementary signal."
+        "body": "Standard 14-period Relative Strength Index on the closing prices. Above 70 is generally read as overbought, below 30 as oversold. Independent of the growth ranking — provided as a complementary signal."
       }
     ],
     "aboutDeveloper": "About the developer",
@@ -267,7 +256,7 @@
     "closing": "If you do not agree with these terms, please do not use the platform."
   },
   "landing": {
-    "heroBody": "Scan 9,372 Nasdaq & NYSE tickers in seconds. Rank the market's strongest performers over any date range and filter by volatility, sector, and technical signals to find your next lead.",
+    "heroBody": "Scan 9,372 Nasdaq & NYSE tickers in seconds. Rank the market's strongest performers over any date range and filter by sector, market cap, and technical signals to find your next lead.",
     "footerTerms": "Terms",
     "footerContact": "Contact",
     "contact": {

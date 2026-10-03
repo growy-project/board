@@ -41,7 +41,6 @@ interface StockTableProps {
 
 const SORT_COLUMNS: Array<{ key: SortableColumn; labelKey: string }> = [
   { key: "percentageChange", labelKey: "percentageChange" },
-  { key: "volatility", labelKey: "volatility" },
   { key: "percentPositiveDays", labelKey: "percentPositiveDays" },
   { key: "returnStdDev", labelKey: "returnStdDev" },
   { key: "maxDrawdown", labelKey: "maxDrawdown" },
